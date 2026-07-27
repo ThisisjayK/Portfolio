@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>404 · Not found — Jay</title>
+<meta name="robots" content="noindex" />
+<meta name="theme-color" content="#00663a" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script>
+  // Set the theme before first paint so there is no flash of the wrong colours.
+  (function () {
+    try {
+      var t = localStorage.getItem("teardowns-theme");
+      document.documentElement.setAttribute(
+        "data-theme",
+        t === "light" ? "light" : "dark"
+      );
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<div id="root"></div>
+<script type="module" src="/src/notfound-main.tsx"></script>
+</body>
+</html>

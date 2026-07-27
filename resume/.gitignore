@@ -1,0 +1,8 @@
+# LaTeX build scratch — keep only the source (.cls/.tex) and the compiled resume.pdf
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+page.png

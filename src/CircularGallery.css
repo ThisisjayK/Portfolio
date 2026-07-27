@@ -19,9 +19,10 @@
   cursor: grabbing;
 }
 
-/* Was a hardcoded #fff, which sat almost invisibly on the light theme's pink
-   paper. --ink flips with the theme, so the ring stays legible on both. */
+/* The gallery is a drag/click (mouse/touch) surface with no keyboard operation,
+   and the focus ring showed up unwanted when focus returned here after closing
+   a case study with Esc — so no visible outline. */
+.circular-gallery:focus,
 .circular-gallery:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 4px;
+  outline: none;
 }

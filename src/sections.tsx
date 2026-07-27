@@ -19,13 +19,34 @@ import soonCardGreen from "./assets/soon-card-green.svg"
 import soonCardPink from "./assets/soon-card-pink.svg"
 import soonTileGreen from "./assets/soon-tile-green.svg"
 import soonTilePink from "./assets/soon-tile-pink.svg"
-// Certification badge logos, shown as the papers inside the Folder on the
-// Certifications tab. The Pega badges have had their version number removed.
-import certAdministrator from "./assets/Administrator.svg"
-import certBusinessArchitect from "./assets/BA.svg"
-import certSystemArchitect from "./assets/SA.svg"
-// @ts-expect-error - JS component (React Bits), no type declaration
-import Folder from "./Folder"
+// Official brand logos (in each company's own colour) for the Technical & tools
+// skills. Only the tools with an available logo render as a badge; the rest
+// fall back to a text chip.
+import { BRAND_LOGOS } from "./assets/brand-logos"
+// Multicolour brand logos that ship as full SVG art (rendered via <img>).
+import twilioLogo from "./assets/logos/twilio.svg"
+import sendgridLogo from "./assets/logos/sendgrid.svg"
+import excelLogo from "./assets/logos/excel.svg"
+import githubLogo from "./assets/logos/github.svg"
+import vercelLogo from "./assets/logos/vercel.svg"
+import javaLogo from "./assets/logos/java.svg"
+import supabaseLogo from "./assets/logos/supabase.svg"
+import vscodeLogo from "./assets/logos/vscode.svg"
+import slackLogo from "./assets/logos/slack.svg"
+import sqlLogo from "./assets/logos/sql.svg"
+
+const IMG_LOGOS: Record<string, { src: string; title: string }> = {
+  Twilio: { src: twilioLogo, title: "Twilio" },
+  SendGrid: { src: sendgridLogo, title: "SendGrid" },
+  "Microsoft Excel": { src: excelLogo, title: "Microsoft Excel" },
+  GitHub: { src: githubLogo, title: "GitHub" },
+  Vercel: { src: vercelLogo, title: "Vercel" },
+  SQL: { src: sqlLogo, title: "SQL" },
+  Java: { src: javaLogo, title: "Java" },
+  Supabase: { src: supabaseLogo, title: "Supabase" },
+  "VS Code": { src: vscodeLogo, title: "Visual Studio Code" },
+  Slack: { src: slackLogo, title: "Slack" },
+}
 
 // Reads the current theme off <html data-theme> and re-renders when it flips.
 function useThemeName(): "dark" | "light" {
@@ -46,6 +67,23 @@ function useThemeName(): "dark" | "light" {
 /* Section content. Copy is ported verbatim from the static site; the bracketed
    text and the {/* TODO *​/} notes mark what Jay still needs to fill in. No em
    dashes anywhere, per house style. */
+
+// Certifications, shown as linked tags in the About aside (each opens its
+// verification certificate in a new tab).
+const CERT_TAGS: { label: string; url: string }[] = [
+  {
+    label: "Salesforce Administrator",
+    url: "https://drive.google.com/file/d/1WVVU-VpT7sWHzP9OFwQ54xmHf99xEPI2/view",
+  },
+  {
+    label: "Pega System Architect",
+    url: "https://drive.google.com/file/d/12JBSuowHIw9UP8M_LhVqcKdovTqa9nqN/view",
+  },
+  {
+    label: "Pega Business Architect",
+    url: "https://drive.google.com/file/d/1T7oTZqtkUDIn-s90PQe4k7zEkd0Vlz8u/view",
+  },
+]
 
 export function About() {
   return (
@@ -74,10 +112,26 @@ export function About() {
             I&apos;m looking for an APM or new-grad product role where the problems
             are real enough that I can&apos;t fake my way through them.
           </p>
-          <p style={{ marginBottom: 0 }}>
+          <p>
             Outside of work I garden, cook, sing, and watch more anime than
             I&apos;ll admit to in an interview.
           </p>
+          <div className="about-certs">
+            <span className="about-certs-label">Certified</span>
+            <div className="about-certs-tags">
+              {CERT_TAGS.map((c) => (
+                <a
+                  key={c.label}
+                  className="chip"
+                  href={c.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {c.label}
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -240,9 +294,6 @@ const SKILLS: { group: string; items: string[] }[] = [
   {
     group: "Technical & tools",
     items: [
-      "API contracts",
-      "Risk-model integration",
-      "Change API",
       "GA4",
       "Jira",
       "Asana",
@@ -250,13 +301,41 @@ const SKILLS: { group: string; items: string[] }[] = [
       "Figma",
       "Twilio",
       "SendGrid",
-      "Customer.io",
       "Claude Code",
       "Notion",
       "Microsoft Excel",
+      "GitHub",
+      "Vercel",
+      "SQL",
+      "Java",
+      "Supabase",
+      "VS Code",
+      "Slack",
     ],
   },
 ]
+
+// A single skill: brands with an official logo render as a colour badge; every
+// other skill keeps the plain text chip.
+function SkillItem({ name }: { name: string }) {
+  const img = IMG_LOGOS[name]
+  if (img) {
+    return (
+      <span className="logo-chip" title={img.title}>
+        <img src={img.src} alt={name} />
+      </span>
+    )
+  }
+  const logo = BRAND_LOGOS[name]
+  if (!logo) return <span>{name}</span>
+  return (
+    <span className="logo-chip" title={logo.title}>
+      <svg viewBox="0 0 24 24" width="20" height="20" role="img" aria-label={name}>
+        <path d={logo.path} fill={logo.hex} />
+      </svg>
+    </span>
+  )
+}
 
 export function Skills() {
   return (
@@ -267,7 +346,7 @@ export function Skills() {
             <span className="k">{s.group}</span>
             <div className="meta">
               {s.items.map((i) => (
-                <span key={i}>{i}</span>
+                <SkillItem key={i} name={i} />
               ))}
             </div>
           </div>
@@ -277,64 +356,11 @@ export function Skills() {
   )
 }
 
-// Each cert becomes a "paper" inside the Folder; clicking a paper opens the
-// verification link in a new tab. Order here is the paper order in the folder.
-const CERTS: { name: string; logo: string; url: string }[] = [
-  {
-    name: "Salesforce Certified Administrator",
-    logo: certAdministrator,
-    url: "https://drive.google.com/file/d/1zJwCtzYG59lxit3OlVjd1OXvdC8DSHO5/view?usp=drive_link",
-  },
-  {
-    name: "Pega Certified Business Architect",
-    logo: certBusinessArchitect,
-    url: "https://drive.google.com/file/d/12JBSuowHIw9UP8M_LhVqcKdovTqa9nqN/view?usp=drive_link",
-  },
-  {
-    name: "Pega Certified System Architect",
-    logo: certSystemArchitect,
-    url: "https://drive.google.com/file/d/1WVVU-VpT7sWHzP9OFwQ54xmHf99xEPI2/view?usp=drive_link",
-  },
-]
-
-export function Certifications() {
-  const theme = useThemeName()
-  // Fold the folder in the theme's ink colour so it reads against the paper.
-  const folderColor = theme === "dark" ? "#ffccfd" : "#00663a"
-
-  const papers = CERTS.map((c) => (
-    <a
-      key={c.name}
-      className="cert-paper"
-      href={c.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      title={c.name}
-      aria-label={`${c.name} — open certificate in a new tab`}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <img src={c.logo} alt={c.name} />
-    </a>
-  ))
-
-  return (
-    <section className="block">
-      <div className="cert-stage">
-        <Folder color={folderColor} size={2.6} items={papers} className="cert-folder" />
-        <p className="cert-hint">Open the folder, then click a badge to verify.</p>
-      </div>
-    </section>
-  )
-}
-
 export function Contact() {
   return (
-    <section className="block">
+    <section className="block contact-block">
       <div className="contact-grid">
         <div>
-          <div className="eyebrow">
-            <b>Get in touch</b>
-          </div>
           <h2 className="sec">Let&apos;s talk about your product.</h2>
           <p>
             I&apos;m looking for early-career product roles. If you&apos;re hiring,
@@ -378,11 +404,8 @@ export function Contact() {
 
 export function Resume() {
   return (
-    <section className="block">
+    <section className="block resume-block">
       <div className="block-head">
-        <div className="eyebrow">
-          <b>One page</b>
-        </div>
         <h2 className="sec">Résumé</h2>
         <p>
           The short version: my experience, the tools I reach for, and my
@@ -391,9 +414,10 @@ export function Resume() {
         </p>
       </div>
       <ul className="channels" style={{ maxWidth: "40ch" }}>
-        {/* TODO: drop resume.pdf in docs/ and point this at it */}
+        {/* jayanth-resume.pdf lives in public/ (copied into docs/ on build);
+            BASE_URL keeps the link correct under the /Portfolio/ Pages subpath. */}
         <li>
-          <a href="#" download>
+          <a href={`${import.meta.env.BASE_URL}jayanth-resume.pdf`} download="jayanth-resume.pdf">
             <span className="lab">PDF</span>
             <span className="val">Download résumé</span>
             <span className="arw">↓</span>
@@ -407,9 +431,6 @@ export function Resume() {
           </a>
         </li>
       </ul>
-      <p className="placeholder-note" style={{ marginTop: "1.6rem" }}>
-        Drop your resume.pdf into docs/ and point the download link at it.
-      </p>
     </section>
   )
 }

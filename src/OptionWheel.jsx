@@ -19,6 +19,7 @@ const DEFAULT_ITEMS = [
 const OptionWheel = ({
   items = DEFAULT_ITEMS,
   defaultSelected = 3,
+  selected = null,
   onChange,
   textColor = '#a6a6a6',
   activeColor = '#ffffff',
@@ -153,7 +154,7 @@ const OptionWheel = ({
   }, []);
 
   const applyTarget = useCallback(
-    (value, snap) => {
+    (value, snap, silent = false) => {
       const cfg = cfgRef.current;
       let v = value;
       if (!cfg.loop) v = Math.min(Math.max(v, 0), Math.max(cfg.count - 1, 0));
@@ -164,7 +165,7 @@ const OptionWheel = ({
         selectedRef.current = idx;
         setSelectedIndex(idx);
         onChangeRef.current?.(idx, cfg.items[idx]);
-        playTick();
+        if (!silent) playTick();
       }
       startLoop();
     },
@@ -253,6 +254,15 @@ const OptionWheel = ({
   useEffect(() => {
     applyTarget(targetRef.current, false);
   }, [items, fontSize, spacing, curve, tilt, blur, fade, minOpacity, side, loop, smoothing, applyTarget]);
+
+  // Follow externally-driven selection (e.g. clicking the site's wordmark to go
+  // home). Guarded so it's a no-op when the change originated from the wheel
+  // itself (applyTarget already updated selectedRef), avoiding a feedback loop.
+  useEffect(() => {
+    if (selected == null) return;
+    if (selected === selectedRef.current) return;
+    applyTarget(selected, true, true);
+  }, [selected, applyTarget]);
 
   useEffect(
     () => () => {
