@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Local env
+*.local
+.env
+.env.*
+
+# Editor / OS cruft
+.DS_Store
+*.log
+
+# Vite cache
+.vite/
+
+# NOTE: docs/ is the built site GitHub Pages serves — it IS committed.

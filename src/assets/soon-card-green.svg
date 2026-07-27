@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <!-- Placeholder card for the case-studies gallery, light-theme variant (pink
+       paper, green ink). Kept deliberately quieter than a real cover: dashed
+       rule, no data, no headline, so it reads as an empty slot rather than a
+       case study whose text failed to load. The pink-ink twin is
+       soon-card-pink.svg and must stay geometrically identical. Web fonts do
+       not load inside an SVG rasterised as an <img>, so system families only. -->
+  <defs>
+    <pattern id="halftone-soon-g" width="6" height="6" patternUnits="userSpaceOnUse">
+      <circle cx="1.2" cy="1.2" r="1" fill="#00663a" />
+    </pattern>
+  </defs>
+
+  <rect width="800" height="1000" fill="#ffccfd" />
+  <rect width="800" height="1000" fill="url(#halftone-soon-g)" opacity=".13" />
+  <rect x="38" y="38" width="724" height="924" fill="none" stroke="#00663a"
+        stroke-opacity=".34" stroke-dasharray="10 8" />
+
+  <g fill="#00663a" font-family="'Courier New',Courier,monospace" font-size="23" letter-spacing="2.6" opacity=".72">
+    <text x="76" y="112">CASE STUDY</text>
+  </g>
+  <line x1="76" y1="136" x2="724" y2="136" stroke="#00663a" stroke-opacity=".3" />
+
+  <g fill="#00663a" font-family="'Helvetica Neue',Helvetica,Arial,sans-serif" font-weight="700" font-size="70" letter-spacing="-2.6" opacity=".62">
+    <text x="74" y="500">Coming</text>
+    <text x="74" y="570">soon</text>
+  </g>
+
+  <line x1="76" y1="874" x2="724" y2="874" stroke="#00663a" stroke-opacity=".3" />
+  <g fill="#00663a" font-family="'Courier New',Courier,monospace" font-size="18" letter-spacing="1.2" opacity=".62">
+    <text x="76" y="912">WRITE-UP IN PROGRESS</text>
+  </g>
+</svg>

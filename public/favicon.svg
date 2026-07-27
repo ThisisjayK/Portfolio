@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#00663a"/>
+  <!-- two passes, slightly out of register, which is the whole idea -->
+  <g fill="#ffccfd">
+    <rect x="14" y="16" width="36" height="9" opacity=".45"/>
+    <rect x="17" y="18" width="36" height="9"/>
+    <rect x="14" y="39" width="22" height="9" opacity=".45"/>
+    <rect x="17" y="41" width="22" height="9"/>
+  </g>
+</svg>
