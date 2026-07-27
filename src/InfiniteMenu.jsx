@@ -729,7 +729,7 @@ class InfiniteGridMenu {
     // Seed with a single transparent pixel so the texture is "complete" from the
     // first frame. Otherwise, while the logo image is still loading (which happens
     // on every theme toggle, since that swaps the logo and rebuilds the sketch),
-    // the shader samples an incomplete texture — WebGL returns opaque black for
+    // the shader samples an incomplete texture, WebGL returns opaque black for
     // that, flashing a black disc around the logo until the image arrives.
     gl.bindTexture(gl.TEXTURE_2D, this.tex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 0]));

@@ -21,7 +21,7 @@
 
 /* The gallery is a drag/click (mouse/touch) surface with no keyboard operation,
    and the focus ring showed up unwanted when focus returned here after closing
-   a case study with Esc — so no visible outline. */
+   a case study with Esc, so no visible outline. */
 .circular-gallery:focus,
 .circular-gallery:focus-visible {
   outline: none;

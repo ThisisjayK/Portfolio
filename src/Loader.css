@@ -1,0 +1,62 @@
+/* Boot intro overlay. Sits on the theme's paper ground with ink type, matching
+   the static #boot flash-guard underneath it so the handoff is invisible. The
+   word is centred in the viewport and stays put (one word at a time, no layout
+   animation), and the counter is a fixed overlay on the right edge, so the two
+   never fight for the same space. */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
+  color: var(--ink);
+  opacity: 1;
+  transition: opacity 0.45s cubic-bezier(0.22, 0.68, 0.24, 1);
+  overflow: hidden;
+}
+.loader--leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The rotating "perseverance" word, large and bold, centred in the viewport.
+   The font size is capped so even the 12-letter English word stays clear of the
+   counter on the right. Saint Regus carries the Latin words; each non-Latin
+   script falls through to its Noto face. */
+.loader__word {
+  display: flex;
+  justify-content: center;
+  max-width: 100%;
+  font-family: "Saint Regus", "Noto Sans Telugu", "Noto Sans Devanagari",
+    "Noto Sans JP", "Noto Sans SC", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.7rem, 6.5vw, 4rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-align: center;
+}
+.loader__rotate {
+  justify-content: center;
+}
+
+/* Count 0 -> 100, vertically centred on the right edge of the viewport. */
+.loader__count {
+  position: fixed;
+  right: clamp(16px, 5vw, 56px);
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: "Saint Regus", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.4rem, 4.5vw, 3.2rem);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader {
+    transition: none;
+  }
+}

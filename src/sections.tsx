@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from "react"
+import { motion } from "motion/react"
 // InfiniteMenu is authored in JS (React Bits); no type declaration ships with
 // it, and we do not run tsc in the build.
 // @ts-expect-error - JS component, no type declaration
 import InfiniteMenu from "./InfiniteMenu"
 // @ts-expect-error - JS component, no type declaration
 import CircularGallery from "./CircularGallery"
+// @ts-expect-error - JS component (React Bits), no type declaration
+import FlowingMenu from "./FlowingMenu"
 // Two logo tiles (transparent background) in each theme's ink colour, so the
 // wordmark stays legible over the page's pink (light) / green (dark) paper.
 import kickGreen from "./assets/kick-green.svg"
@@ -432,6 +435,149 @@ export function Resume() {
         </li>
       </ul>
     </section>
+  )
+}
+
+export type VolunteerItem = {
+  id: string
+  short: string
+  role: string
+  org: string
+  meta: string
+  url: string
+  image?: string
+  did: string[]
+}
+
+export const VOLUNTEER_ITEMS: VolunteerItem[] = [
+  {
+    id: "fifa-world-cup-2026",
+    short: "FIFA World Cup 2026",
+    role: "Fan Operations Volunteer",
+    org: "FIFA World Cup 2026, Boston Host City",
+    meta: "Gillette Stadium, Foxborough · Jun–Jul 2026",
+    url: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/boston-host-seven-matches-stadium",
+    // Drop the Boston host-city banner into public/ as this filename.
+    image: "boston-worldcup.png",
+    did: [
+      "Worked fan operations across all seven Boston matches, the biggest international soccer event in the world, with around 65,000 fans a match.",
+      "Handed out FIFA Fan IDs to fans on each match day.",
+      "Guided fans and answered wayfinding questions around the stadium.",
+    ],
+  },
+  {
+    id: "the-period-society",
+    short: "The Period Society",
+    role: "Graphic Designer",
+    org: "The Period Society, Hyderabad, India",
+    meta: "Youth-run menstrual-equity nonprofit",
+    url: "https://www.instagram.com/periodsociety/",
+    did: [
+      "Designed social-media posts for a youth-run nonprofit working to end the stigma around menstruation.",
+      "Supported campaigns widening access to menstrual-health and sex education.",
+    ],
+  },
+  {
+    id: "muskurahat-foundation",
+    short: "Muskurahat Foundation",
+    role: "Fundraiser",
+    org: "Muskurahat Foundation, Mumbai, India",
+    meta: "Education NGO for children in need",
+    url: "https://www.muskurahat.org.in/",
+    did: [
+      "Raised roughly $1,000 over nine months for the foundation.",
+      "Supported an NGO that provides free education to children in Mumbai's slums, orphanages, and shelter homes.",
+    ],
+  },
+]
+
+export function Volunteer({ onOpen }: { onOpen?: (id: string) => void } = {}) {
+  return (
+    <section className="block volunteer-block">
+      <div className="vol-menu">
+        <FlowingMenu
+          items={VOLUNTEER_ITEMS.map((v) => ({
+            link: `#volunteer/${v.id}`,
+            text: v.short,
+            marqueeText: v.role,
+            image: v.image
+              ? `${import.meta.env.BASE_URL}${v.image}`
+              : undefined,
+            onSelect: () => onOpen?.(v.id),
+          }))}
+          speed={18}
+          bgColor="transparent"
+          textColor="var(--ink)"
+          marqueeBgColor="var(--ink)"
+          marqueeTextColor="var(--paper)"
+          borderColor="var(--ink-28)"
+        />
+      </div>
+    </section>
+  )
+}
+
+// A volunteering role opens as an in-site page (reusing the teardown/case-study
+// chrome) explaining what Jay did, with a link out to the organisation.
+export function VolunteerDetail({
+  id,
+  onClose,
+}: {
+  id: string
+  onClose: () => void
+}) {
+  const item = VOLUNTEER_ITEMS.find((v) => v.id === id)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose()
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [onClose])
+
+  if (!item) return null
+
+  return (
+    <motion.div
+      className="teardown-page vol-page"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${item.short} volunteering`}
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 12 }}
+      transition={{ duration: 0.4, ease: [0.22, 0.68, 0.24, 1] }}
+    >
+      <button
+        className="teardown-close"
+        type="button"
+        onClick={onClose}
+        aria-label="Close (Escape)"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+        <span>Esc</span>
+      </button>
+
+      <div className="teardown-page__inner">
+        <h1>{item.org}</h1>
+        <p className="lede">{item.meta}</p>
+        <ul className="vol-detail-list">
+          {item.did.map((d) => (
+            <li key={d}>{d}</li>
+          ))}
+        </ul>
+        <a
+          className="inline"
+          href={item.url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Visit {item.short} ↗
+        </a>
+      </div>
+    </motion.div>
   )
 }
 
