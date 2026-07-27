@@ -9,17 +9,19 @@ import OptionWheel from "./OptionWheel"
 import clickSoft from "./assets/click-soft.mp3"
 // @ts-expect-error - JS component (React Bits), no type declaration
 import PixelTrail from "./PixelTrail"
-import { About, Work, Teardowns, Skills, Resume, Contact, Footer } from "./sections"
+import { About, Work, Teardowns, Skills, Volunteer, VolunteerDetail, VOLUNTEER_ITEMS, Resume, Contact, Footer } from "./sections"
 import type { CaseId } from "./sections"
 import KickTeardown from "./KickTeardown"
 import StageZeroHealth from "./StageZeroHealth"
 import { IconSun, IconMoon } from "./icons"
+import Loader from "./Loader"
 
 type TabId =
   | "about"
   | "work"
   | "teardowns"
   | "skills"
+  | "volunteer"
   | "resume"
   | "contact"
 
@@ -28,6 +30,7 @@ const WHEEL: { id: TabId; label: string }[] = [
   { id: "work", label: "Case Studies" },
   { id: "teardowns", label: "Teardowns" },
   { id: "skills", label: "Skills" },
+  { id: "volunteer", label: "Volunteer" },
   { id: "resume", label: "Resume" },
   { id: "contact", label: "Contact" },
 ]
@@ -38,6 +41,7 @@ const SECTIONS: Record<TabId, () => ReactNode> = {
   work: Work,
   teardowns: Teardowns,
   skills: Skills,
+  volunteer: Volunteer,
   resume: Resume,
   contact: Contact,
 }
@@ -45,29 +49,37 @@ const SECTIONS: Record<TabId, () => ReactNode> = {
 const isTab = (v: string): v is TabId =>
   WHEEL.some((w) => w.id === v)
 
-// In-site pages (the Kick teardown, each case study) layer over a base tab but
-// get their own URL so they can be deep-linked and shown in the address bar.
-type Overlay = "kick" | "stage-zero" | null
+// In-site pages (the Kick teardown, each case study, each volunteering role)
+// layer over a base tab but carry their own URL so they can be deep-linked and
+// shown in the address bar.
+type Overlay =
+  | { kind: "kick" }
+  | { kind: "case"; id: CaseId }
+  | { kind: "volunteer"; id: string }
+  | null
 type Route = { tab: TabId; overlay: Overlay }
 
-const OVERLAY_ROUTES: Record<
-  Exclude<Overlay, null>,
-  { tab: TabId; hash: string }
-> = {
-  kick: { tab: "teardowns", hash: "teardowns/kick" },
-  "stage-zero": { tab: "work", hash: "work/stage-zero-health" },
-}
-
 function routeToHash(r: Route): string {
-  return r.overlay ? OVERLAY_ROUTES[r.overlay].hash : r.tab
+  if (!r.overlay) return r.tab
+  switch (r.overlay.kind) {
+    case "kick":
+      return "teardowns/kick"
+    case "case":
+      return "work/stage-zero-health"
+    case "volunteer":
+      return `volunteer/${r.overlay.id}`
+  }
 }
 
 function parseHash(): Route {
   const h = window.location.hash.replace(/^#/, "")
-  for (const key of Object.keys(OVERLAY_ROUTES) as Exclude<Overlay, null>[]) {
-    if (OVERLAY_ROUTES[key].hash === h) {
-      return { tab: OVERLAY_ROUTES[key].tab, overlay: key }
-    }
+  if (h === "teardowns/kick") return { tab: "teardowns", overlay: { kind: "kick" } }
+  if (h === "work/stage-zero-health") {
+    return { tab: "work", overlay: { kind: "case", id: "stage-zero" } }
+  }
+  const vm = h.match(/^volunteer\/(.+)$/)
+  if (vm && VOLUNTEER_ITEMS.some((v) => v.id === vm[1])) {
+    return { tab: "volunteer", overlay: { kind: "volunteer", id: vm[1] } }
   }
   return { tab: isTab(h) ? h : "about", overlay: null }
 }
@@ -254,13 +266,18 @@ export default function App() {
   const mobile = useIsMobile()
   useClickSound(clickSoft)
   const [initial] = useState(indexFromHash)
+  // Boot intro: the rotating-word + counter loader covers the app until it
+  // finishes (or is skipped for reduced-motion visitors), then reveals the site.
+  const [booted, setBooted] = useState(false)
   // The Kick teardown and each case study open as in-site scrollable pages
   // layered over the app; each carries its own URL (see parseHash/routeToHash).
   const [route, setRoute] = useState<Route>(parseHash)
   const active = route.tab
-  const kickOpen = route.overlay === "kick"
-  const caseOpen: "stage-zero" | null =
-    route.overlay === "stage-zero" ? "stage-zero" : null
+  const kickOpen = route.overlay?.kind === "kick"
+  const caseOpen: CaseId | null =
+    route.overlay?.kind === "case" ? route.overlay.id : null
+  const volunteerOpen: string | null =
+    route.overlay?.kind === "volunteer" ? route.overlay.id : null
 
   // One place that moves both the app state and the address bar. Tab switches
   // replace the history entry; opening an overlay pushes one, so the browser
@@ -274,8 +291,11 @@ export default function App() {
   }
 
   const select = (id: TabId) => go({ tab: id, overlay: null })
-  const openKick = () => go({ tab: "teardowns", overlay: "kick" }, true)
-  const openCase = (id: CaseId) => go({ tab: "work", overlay: id }, true)
+  const openKick = () => go({ tab: "teardowns", overlay: { kind: "kick" } }, true)
+  const openCase = (id: CaseId) =>
+    go({ tab: "work", overlay: { kind: "case", id } }, true)
+  const openVolunteer = (id: string) =>
+    go({ tab: "volunteer", overlay: { kind: "volunteer", id } }, true)
   const closeOverlay = () => go({ tab: route.tab, overlay: null })
 
   // Keep state in sync with the browser Back/Forward buttons.
@@ -294,6 +314,10 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
+      {/* Boot intro overlay. Renders above everything until the count reaches
+          100; the app mounts underneath meanwhile, so the WebGL background is
+          ready by the time the loader fades. */}
+      {!booted && <Loader onDone={() => setBooted(true)} />}
       {/* Site-wide interactive background: a pixel trail in the theme's brand
           ink (pink in dark, green in light), fixed behind all content. */}
       <PixelTrail
@@ -341,6 +365,8 @@ export default function App() {
                 <Teardowns onOpenKick={openKick} />
               ) : active === "work" ? (
                 <Work onOpenCase={openCase} />
+              ) : active === "volunteer" ? (
+                <Volunteer onOpen={openVolunteer} />
               ) : (
                 <Section />
               )}
@@ -355,6 +381,16 @@ export default function App() {
         <AnimatePresence>
           {caseOpen === "stage-zero" && (
             <StageZeroHealth key="stage-zero" onClose={closeOverlay} />
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {volunteerOpen && (
+            <VolunteerDetail
+              key={volunteerOpen}
+              id={volunteerOpen}
+              onClose={closeOverlay}
+            />
           )}
         </AnimatePresence>
 

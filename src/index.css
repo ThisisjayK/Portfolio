@@ -2,12 +2,22 @@
    Two inks, nothing else. The whole page is a two-colour print
    job, so every tone below is a mix of exactly these two.
    ============================================================ */
-/* Display face for the Teardowns "Open!" hover label. Single .otf source —
+/* Display face for the Teardowns "Open!" hover label. Single .otf source, 
    no legacy formats, since the site targets modern browsers only. */
 @font-face{
   font-family:"Saint Regus";
   src:url("./assets/fonts/SaintRegus-Expanded.otf") format("opentype");
   font-weight:600;
+  font-style:normal;
+  font-display:swap;
+}
+/* Bold weight of the same family, used large in the boot loader's rotating word.
+   SemiBold is the heaviest Saint Regus cut we have, mapped to 700 so
+   font-weight:700 selects it. */
+@font-face{
+  font-family:"Saint Regus";
+  src:url("./assets/fonts/Sonar Hubermann - SaintRegus-SemiBold.otf") format("opentype");
+  font-weight:700;
   font-style:normal;
   font-display:swap;
 }
@@ -241,16 +251,18 @@ h1 em{font-style:normal;color:var(--ink-55);text-shadow:none}
 
 /* ============================ SECTION SHELL ============================ */
 .block{padding:clamp(1.2vh,2.2vh,3vh) var(--gut)}
-/* Résumé fits the fixed viewport — no page scroll — with its content left-
+/* Résumé fits the fixed viewport, no page scroll, with its content left-
    aligned and vertically centred. At larger reader sizes the stage normally
    switches to scrolling and top-alignment; :has scopes an override to this tab
    so it clips and centres instead, and the html:not(...) prefix carries enough
    specificity to beat those scroll rules. (Content stays short here, so nothing
    is lost to the clip.) */
 html:not([data-text="sm"]) main.stage:has(.resume-block),
-html:not([data-text="sm"]) main.stage:has(.contact-block){overflow:hidden}
+html:not([data-text="sm"]) main.stage:has(.contact-block),
+html:not([data-text="sm"]) main.stage:has(.volunteer-block){overflow:hidden}
 html:not([data-text="sm"]) main.stage:has(.resume-block) > div,
-html:not([data-text="sm"]) main.stage:has(.contact-block) > div{
+html:not([data-text="sm"]) main.stage:has(.contact-block) > div,
+html:not([data-text="sm"]) main.stage:has(.volunteer-block) > div{
   flex:1 1 auto;min-height:0;overflow:hidden;justify-content:center;
 }
 .block-head{max-width:62ch;margin-bottom:clamp(0.8rem,1.8vh,1.4rem)}
@@ -324,6 +336,24 @@ a.chip:hover{border-color:var(--ink);color:var(--ink)}
   color:var(--ink-55);margin-bottom:.6rem;
 }
 .about-certs-tags{display:flex;flex-wrap:wrap;gap:.45em}
+
+/* ============================ VOLUNTEERING ============================ */
+/* The roles are a React-Bits FlowingMenu: full-width bars that reveal a
+   scrolling marquee on hover and open the org on click. It needs a sized,
+   positioned box to fill; a top rule ties it to the intro above. */
+.vol-menu{
+  position:relative;
+  width:100%;
+  height:min(66vh,600px);
+}
+/* The volunteering detail page (opened on click) reuses the .teardown-page
+   chrome; these just style its banner image and the "what I did" list. */
+.vol-detail-img{
+  display:block;width:auto;max-width:100%;max-height:min(40vh,360px);
+  border-radius:8px;margin:1.5rem 0;
+}
+.vol-detail-list{margin:1.4rem 0 0;padding-left:1.2em;display:grid;gap:.6rem;max-width:64ch}
+.vol-detail-list li{font-size:.98rem;line-height:1.55;color:var(--ink-80)}
 
 /* ============================ 404 PAGE ============================ */
 .notfound{
@@ -447,7 +477,7 @@ a.chip:hover{border-color:var(--ink);color:var(--ink)}
   margin:0;
 }
 
-/* Case-studies CircularGallery: same footprint rules as the sphere — fills the
+/* Case-studies CircularGallery: same footprint rules as the sphere, fills the
    centred stage and stays inside the content column, clear of the wheel rail. */
 .case-gallery{
   position:relative;
@@ -504,6 +534,13 @@ a.chip:hover{border-color:var(--ink);color:var(--ink)}
 .teardown-page__inner{
   max-width:820px;margin:0 auto;
   padding:clamp(3rem,7vh,5rem) var(--gut) 6rem;
+}
+/* The volunteering detail pages hold only a little content, so centre it in the
+   viewport rather than pinning it to the top. margin:auto in a flex container
+   centres both axes yet still lets the page scroll if it ever overflows. */
+.teardown-page.vol-page{display:flex}
+.teardown-page.vol-page .teardown-page__inner{
+  margin:auto;padding-top:clamp(2rem,6vh,4rem);padding-bottom:clamp(2rem,6vh,4rem);
 }
 .teardown-close{
   position:fixed;top:1.1rem;right:1.1rem;z-index:210;

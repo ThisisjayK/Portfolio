@@ -286,7 +286,7 @@ class Media {
 
           // Stay transparent until the cover has uploaded, so a theme flip
           // (which rebuilds the gallery) shows the page background for the
-          // frame or two before the image is ready — never a black card.
+          // frame or two before the image is ready, never a black card.
           gl_FragColor = vec4(color.rgb, alpha * uLoaded);
         }
       `,

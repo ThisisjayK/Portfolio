@@ -333,7 +333,7 @@ export default function KickTeardown({ onClose }: { onClose: () => void }) {
         </p>
         <h3>What changed afterwards: nothing</h3>
         <p>
-          The top of the recommendation shelf, sampled three times — logged out at 23:27, logged out
+          The top of the recommendation shelf, sampled three times, logged out at 23:27, logged out
           at 23:46, and post-onboarding at 23:59:
         </p>
         <table className="td-table">
@@ -362,7 +362,7 @@ export default function KickTeardown({ onClose }: { onClose: () => void }) {
           The same ten channels as twelve minutes earlier, reordered within positions four to eight.{" "}
           <strong>Not one new channel entered after Kick learned my gender and country.</strong> The
           two that did turn over changed at 23:46, while I was still logged out, and both
-          replacements were also Slots &amp; Casino — a shelf rotating on a timer, not a system
+          replacements were also Slots &amp; Casino, a shelf rotating on a timer, not a system
           responding. Eight minutes after signup the home page still showed the same promo banner,
           the same featured stream and the same category order as the logged-out page, with the
           sidebar reading <em>&quot;You are not following any channel yet.&quot;</em>
@@ -419,7 +419,7 @@ export default function KickTeardown({ onClose }: { onClose: () => void }) {
           </tbody>
         </table>
         <p>
-          The block was live throughout — the profile Options sheet read <strong>Unblock</strong> the
+          The block was live throughout, the profile Options sheet read <strong>Unblock</strong> the
           whole time. On mobile home the creator was gone; in mobile search he was the first result,
           marked LIVE; tapping it played the stream. That last row is the strangest one: same
           account, same login, on web, after a hard refresh, DeenTheGreat is still sitting in
@@ -478,13 +478,13 @@ export default function KickTeardown({ onClose }: { onClose: () => void }) {
           <div className="verdict">Held on 3 of 6 surfaces tested</div>
         </div>
         <p>
-          The control is three toggles on one screen — pools &amp; hot tubs, Slots &amp; Casino, VR
+          The control is three toggles on one screen, pools &amp; hot tubs, Slots &amp; Casino, VR
           chat. Nothing in the label &quot;Preferences&quot; says gambling controls live here. I&apos;ve
           used Kick daily for years and didn&apos;t know until I went looking.
         </p>
         <h3>With the toggle on, I searched &quot;slots&quot;</h3>
         <p>
-          Behind the dropdown, Browse is correctly scrubbed of gambling — the filter works. Inside
+          Behind the dropdown, Browse is correctly scrubbed of gambling, the filter works. Inside
           the dropdown: three gambling <strong>channels</strong>, three gambling{" "}
           <strong>categories</strong>, and livestreams including &quot;24/7 Live Slots | 18+&quot;
           and &quot;Stake/ Suggest slots.&quot;
@@ -504,7 +504,7 @@ export default function KickTeardown({ onClose }: { onClose: () => void }) {
           Subscribe buttons, a casino promo link pinned in chat. Nothing on the page acknowledges the
           setting. <strong>Then this:</strong> Hide Slots &amp; Casino is still switched on, and the
           stream is still running in the mini player, bottom left, on the settings page that claims
-          to hide it — the toggle is green while the slot machine is spinning. Setting and violation
+          to hide it, the toggle is green while the slot machine is spinning. Setting and violation
           in one screenshot, 38 seconds after the stream opened. The same frame also shows
           DeenTheGreat at 17.7K, still recommended after the mobile block.
         </p>
@@ -571,7 +571,7 @@ export default function KickTeardown({ onClose }: { onClose: () => void }) {
           Separate features. Different surfaces, different data models, almost certainly different
           teams. If these were two unrelated bugs they would fail in different places. They fail in
           the same place. Anything that reaches content by being <em>served</em> it respects the
-          user&apos;s choices. Anything that reaches content by <em>naming</em> it does not — search,
+          user&apos;s choices. Anything that reaches content by <em>naming</em> it does not: search,
           a direct URL, a shared link, a second client each bypass every control the user has.
         </p>
         <p>
@@ -613,7 +613,7 @@ export default function KickTeardown({ onClose }: { onClose: () => void }) {
           Kick is owned by Easygo Entertainment; reporting puts Bijan Tehrani at roughly two-thirds
           and Ed Craven&apos;s Ashwood Holdings at roughly one-third, and the same two people founded{" "}
           <a className="inline" href="https://www.streamscheme.com/who-owns-kick-streaming/" target="_blank" rel="noopener noreferrer">Stake.com</a>. Kick
-          is not owned by Stake — they share founders and a parent group. One livestream that leaked
+          is not owned by Stake, they share founders and a parent group. One livestream that leaked
           past the filter in Finding 03 was titled &quot;Stake/ Suggest slots.&quot;
         </p>
         <div className="td-callout">
