@@ -2,6 +2,24 @@
    Two inks, nothing else. The whole page is a two-colour print
    job, so every tone below is a mix of exactly these two.
    ============================================================ */
+/* Display face for the Teardowns "Open!" hover label. Single .otf source —
+   no legacy formats, since the site targets modern browsers only. */
+@font-face{
+  font-family:"Saint Regus";
+  src:url("./assets/fonts/SaintRegus-Expanded.otf") format("opentype");
+  font-weight:600;
+  font-style:normal;
+  font-display:swap;
+}
+/* The blocky "KICK" typeface, used for the 404 page's fuzzy "404". */
+@font-face{
+  font-family:"Kick Font";
+  src:url("./assets/fonts/kick-font.ttf") format("truetype");
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+
 :root{
   --a:#00663a;   /* the green ink  */
   --b:#ffccfd;   /* the pink ink   */
@@ -73,13 +91,6 @@ body{
 }
 ::selection{background:var(--ink);color:var(--paper)}
 
-/* halftone: the dot screen a riso press lays down */
-body::before{
-  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:radial-gradient(var(--ink) .8px, transparent .9px);
-  background-size:5px 5px;opacity:.11;
-  transition:opacity .5s var(--ease);
-}
 /* the paper itself, very slightly uneven */
 body::after{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.35;
@@ -101,9 +112,13 @@ body::after{
   backdrop-filter:blur(9px) saturate(1.3);
 }
 .mark{
-  font-family:"Press Start 2P","Courier Prime",monospace;font-size:15px;font-weight:400;
+  font-family:"Press Start 2P","Courier Prime",monospace;font-size:20px;font-weight:400;
   letter-spacing:.06em;text-transform:uppercase;line-height:1;
+  /* Reset the button chrome so it still reads as the wordmark, just clickable. */
+  background:none;border:none;padding:0;margin:0;color:inherit;cursor:pointer;
 }
+.mark:hover{opacity:.75}
+.mark:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:3px}
 .mark span{font-weight:400;opacity:.6}
 .bar .sp{flex:1}
 
@@ -226,6 +241,18 @@ h1 em{font-style:normal;color:var(--ink-55);text-shadow:none}
 
 /* ============================ SECTION SHELL ============================ */
 .block{padding:clamp(1.2vh,2.2vh,3vh) var(--gut)}
+/* Résumé fits the fixed viewport — no page scroll — with its content left-
+   aligned and vertically centred. At larger reader sizes the stage normally
+   switches to scrolling and top-alignment; :has scopes an override to this tab
+   so it clips and centres instead, and the html:not(...) prefix carries enough
+   specificity to beat those scroll rules. (Content stays short here, so nothing
+   is lost to the clip.) */
+html:not([data-text="sm"]) main.stage:has(.resume-block),
+html:not([data-text="sm"]) main.stage:has(.contact-block){overflow:hidden}
+html:not([data-text="sm"]) main.stage:has(.resume-block) > div,
+html:not([data-text="sm"]) main.stage:has(.contact-block) > div{
+  flex:1 1 auto;min-height:0;overflow:hidden;justify-content:center;
+}
 .block-head{max-width:62ch;margin-bottom:clamp(0.8rem,1.8vh,1.4rem)}
 .block-head p{font-size:.94rem;line-height:1.42}
 /* The stage fills the space under the bar; its single child section is centred
@@ -280,24 +307,6 @@ html:not([data-text="sm"]) main.stage > div{
   font-family:"Geist",system-ui,sans-serif;font-weight:700;font-size:clamp(1.6rem,3vw,2.3rem);
   letter-spacing:-.03em;line-height:1;color:var(--ink);display:block;margin-bottom:.4rem;
 }
-/* ===== CERTIFICATIONS ===== A single React-Bits Folder centred in the tab;
-   its three papers are the certificate badges, each a link to the credential. */
-.cert-stage{
-  min-height:min(78vh,680px);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  /* Push the folder down so the papers have room to fan up when it opens
-     without escaping past the header. */
-  padding-top:clamp(9rem,22vh,15rem);
-  /* size={} scales the folder visually but not its layout box, so the gap has
-     to first clear that overflow before it reads as space to the hint. */
-  gap:clamp(6rem,13vh,8.5rem);
-}
-.cert-hint{
-  font-family:"Archivo",system-ui,sans-serif;font-size:var(--label-size);
-  font-weight:600;letter-spacing:var(--label-track);text-transform:uppercase;
-  color:var(--ink-55);text-align:center;margin:0;
-}
-
 .artifacts{margin-top:.9rem;padding-top:.8rem;border-top:1px solid var(--ink-28);display:flex;flex-wrap:wrap;gap:.5em}
 .artifacts .lab{font-family:"Archivo",system-ui,sans-serif;font-size:var(--label-size);font-weight:600;letter-spacing:var(--label-track);text-transform:uppercase;color:var(--ink-80);align-self:center;margin-right:.3em}
 .chip{
@@ -307,6 +316,35 @@ html:not([data-text="sm"]) main.stage > div{
   text-decoration:none;transition:.3s var(--ease);
 }
 a.chip:hover{border-color:var(--ink);color:var(--ink)}
+/* Certifications shown as linked tags in the About aside. */
+.about-certs{margin-top:1.5rem}
+.about-certs-label{
+  display:block;font-family:"Archivo",system-ui,sans-serif;font-size:var(--label-size);
+  font-weight:700;letter-spacing:var(--label-track);text-transform:uppercase;
+  color:var(--ink-55);margin-bottom:.6rem;
+}
+.about-certs-tags{display:flex;flex-wrap:wrap;gap:.45em}
+
+/* ============================ 404 PAGE ============================ */
+.notfound{
+  min-height:100dvh;background:var(--paper);color:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  padding:var(--gut);position:relative;overflow:hidden;
+}
+.notfound-stack{
+  display:flex;flex-direction:column;align-items:center;
+  gap:clamp(.6rem,2.5vh,1.6rem);text-align:center;max-width:100%;
+}
+.notfound-stack canvas{display:block;max-width:100%}
+.notfound-home{
+  margin-top:clamp(1.6rem,4vh,3rem);
+  font-family:"Archivo",system-ui,sans-serif;font-size:var(--label-size);
+  font-weight:600;letter-spacing:var(--label-track);text-transform:uppercase;
+  color:var(--ink-80);text-decoration:none;border-bottom:1px solid var(--ink-28);
+  padding-bottom:2px;transition:.3s var(--ease);
+}
+.notfound-home:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.notfound-toggle{position:fixed;top:1.15rem;right:var(--gut);z-index:2}
 .placeholder-note{
   font-family:"Archivo",system-ui,sans-serif;font-size:var(--label-size);letter-spacing:.02em;
   color:var(--ink-80);border:1px dashed var(--ink-28);border-radius:2px;
@@ -340,6 +378,17 @@ a.chip:hover{border-color:var(--ink);color:var(--ink)}
   color:var(--ink-80);border:1px solid var(--ink-28);border-radius:1px;padding:.34em .62em;transition:.3s var(--ease);
 }
 .entry:hover .meta span{border-color:var(--ink-55);color:var(--ink-80)}
+/* Brand-logo skills: the company logo in its own colour, on a neutral tile so
+   it reads against the page ink. Overrides the text-chip look above. */
+.meta .logo-chip{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:2.6em;height:2.6em;padding:.5em;box-sizing:border-box;
+  background:#fff;border:1px solid var(--ink-28);border-radius:6px;
+  text-transform:none;letter-spacing:0;transition:.3s var(--ease);
+}
+.meta .logo-chip:hover{border-color:var(--ink-55)}
+.meta .logo-chip svg,
+.meta .logo-chip img{display:block;width:100%;height:100%;object-fit:contain}
 .stamp{
   border:1px solid var(--ink-28);border-radius:2px;aspect-ratio:16/10;
   display:flex;align-items:center;justify-content:center;padding:14%;transition:.4s var(--ease);
@@ -369,11 +418,16 @@ a.chip:hover{border-color:var(--ink);color:var(--ink)}
 /* ============================ FOOT ============================ */
 .foot{
   padding:clamp(4vh,6vh,8vh) var(--gut) clamp(4vh,6vh,8vh);border-top:1px solid var(--ink-28);
-  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1.4rem 3vw;align-items:end;
+  text-align:center;
 }
-.foot p{font-size:.94rem;color:var(--ink-80);max-width:56ch;margin:0}
+.foot p{font-size:.94rem;color:var(--ink-80);max-width:56ch;margin:0 auto}
 .foot a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ink-28);transition:border-color .25s}
 .foot a:hover{border-bottom-color:var(--ink)}
+/* Centre the footer on the whole screen, not the content column: drop the
+   wheel-rail padding (added by .has-rail for the other sections) so the centred
+   text sits in the true viewport middle regardless of the wheel. Higher
+   specificity than the rail rules, so it wins at every breakpoint. */
+.shell.has-rail .foot{padding-left:var(--gut);padding-right:var(--gut)}
 /* Stays typewriter because it is naming the typefaces, but off --ink-28: as the
    only place that token set type it was effectively invisible on the paper. */
 .colophon{font-family:"Courier Prime",monospace;font-size:var(--label-size);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-55);text-align:right;white-space:nowrap}
@@ -410,6 +464,32 @@ a.chip:hover{border-color:var(--ink);color:var(--ink)}
 }
 .teardown-sphere .action-button-icon{
   color:var(--paper);
+}
+
+/* Hover affordance: while the pointer is over the central logo of a settled
+   face, "OPEN!" fades in below the logo with a smaller "long press to change"
+   instruction under it. No button animation. */
+.teardown-sphere .open-hint{
+  position:absolute;
+  left:50%;top:50%;
+  /* Centred horizontally on the sphere/arrow axis, nudged down so it sits
+     between the logo and the arrow button. */
+  transform:translate(-50%,-50%) translate(0,135px);
+  margin:0;white-space:nowrap;user-select:none;pointer-events:none;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:.4rem;
+  opacity:0;transition:opacity .25s ease;
+}
+.teardown-sphere .open-hint.active{opacity:1}
+.teardown-sphere .open-hint.inactive{opacity:0}
+.teardown-sphere .open-hint-main{
+  font-family:"Saint Regus";
+  font-size:clamp(1.6rem,3vw,2.4rem);font-weight:600;
+  line-height:1;letter-spacing:.01em;color:var(--ink);
+}
+.teardown-sphere .open-hint-sub{
+  font-family:"Archivo",system-ui,sans-serif;font-weight:600;
+  font-size:calc(var(--label-size) * 1.25);letter-spacing:.02em;
+  line-height:1;color:var(--ink-55);
 }
 
 /* ==================== IN-SITE TEARDOWN PAGE (Kick) ==================== */

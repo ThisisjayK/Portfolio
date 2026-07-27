@@ -259,6 +259,7 @@ class Media {
         uniform vec2 uPlaneSizes;
         uniform sampler2D tMap;
         uniform float uBorderRadius;
+        uniform float uLoaded;
         varying vec2 vUv;
 
         float roundedBoxSDF(vec2 p, vec2 b, float r) {
@@ -283,7 +284,10 @@ class Media {
           float edgeSmooth = 0.002;
           float alpha = 1.0 - smoothstep(-edgeSmooth, edgeSmooth, d);
 
-          gl_FragColor = vec4(color.rgb, alpha);
+          // Stay transparent until the cover has uploaded, so a theme flip
+          // (which rebuilds the gallery) shows the page background for the
+          // frame or two before the image is ready — never a black card.
+          gl_FragColor = vec4(color.rgb, alpha * uLoaded);
         }
       `,
       uniforms: {
@@ -292,7 +296,8 @@ class Media {
         uImageSizes: { value: [0, 0] },
         uSpeed: { value: 0 },
         uTime: { value: 100 * Math.random() },
-        uBorderRadius: { value: this.borderRadius }
+        uBorderRadius: { value: this.borderRadius },
+        uLoaded: { value: 0 }
       },
       transparent: true
     });
@@ -302,6 +307,7 @@ class Media {
     img.onload = () => {
       texture.image = img;
       this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
+      this.program.uniforms.uLoaded.value = 1;
     };
   }
   createMesh() {

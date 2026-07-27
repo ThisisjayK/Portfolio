@@ -7,7 +7,10 @@ import OptionWheel from "./OptionWheel"
 // Imported (not a public/ path) so Vite rewrites the URL for the GitHub Pages
 // subpath build; a bare "/assets/..." would 404 under /product-teardowns/.
 import clickSoft from "./assets/click-soft.mp3"
-import { About, Work, Teardowns, Skills, Certifications, Resume, Contact, Footer } from "./sections"
+// @ts-expect-error - JS component (React Bits), no type declaration
+import PixelTrail from "./PixelTrail"
+import { About, Work, Teardowns, Skills, Resume, Contact, Footer } from "./sections"
+import type { CaseId } from "./sections"
 import KickTeardown from "./KickTeardown"
 import StageZeroHealth from "./StageZeroHealth"
 import { IconSun, IconMoon } from "./icons"
@@ -17,7 +20,6 @@ type TabId =
   | "work"
   | "teardowns"
   | "skills"
-  | "certifications"
   | "resume"
   | "contact"
 
@@ -26,7 +28,6 @@ const WHEEL: { id: TabId; label: string }[] = [
   { id: "work", label: "Case Studies" },
   { id: "teardowns", label: "Teardowns" },
   { id: "skills", label: "Skills" },
-  { id: "certifications", label: "Certifications" },
   { id: "resume", label: "Resume" },
   { id: "contact", label: "Contact" },
 ]
@@ -37,7 +38,6 @@ const SECTIONS: Record<TabId, () => ReactNode> = {
   work: Work,
   teardowns: Teardowns,
   skills: Skills,
-  certifications: Certifications,
   resume: Resume,
   contact: Contact,
 }
@@ -45,9 +45,35 @@ const SECTIONS: Record<TabId, () => ReactNode> = {
 const isTab = (v: string): v is TabId =>
   WHEEL.some((w) => w.id === v)
 
-function indexFromHash(): number {
+// In-site pages (the Kick teardown, each case study) layer over a base tab but
+// get their own URL so they can be deep-linked and shown in the address bar.
+type Overlay = "kick" | "stage-zero" | null
+type Route = { tab: TabId; overlay: Overlay }
+
+const OVERLAY_ROUTES: Record<
+  Exclude<Overlay, null>,
+  { tab: TabId; hash: string }
+> = {
+  kick: { tab: "teardowns", hash: "teardowns/kick" },
+  "stage-zero": { tab: "work", hash: "work/stage-zero-health" },
+}
+
+function routeToHash(r: Route): string {
+  return r.overlay ? OVERLAY_ROUTES[r.overlay].hash : r.tab
+}
+
+function parseHash(): Route {
   const h = window.location.hash.replace(/^#/, "")
-  const i = WHEEL.findIndex((w) => w.id === h)
+  for (const key of Object.keys(OVERLAY_ROUTES) as Exclude<Overlay, null>[]) {
+    if (OVERLAY_ROUTES[key].hash === h) {
+      return { tab: OVERLAY_ROUTES[key].tab, overlay: key }
+    }
+  }
+  return { tab: isTab(h) ? h : "about", overlay: null }
+}
+
+function indexFromHash(): number {
+  const i = WHEEL.findIndex((w) => w.id === parseHash().tab)
   return i >= 0 ? i : 0
 }
 
@@ -190,6 +216,8 @@ function useClickSound(src: string, volume = 0.65) {
     const onDown = (e: PointerEvent) => {
       const el = e.target as Element | null
       if (el?.closest?.(".wheel-nav")) return
+      // The wordmark (home) is intentionally silent.
+      if (el?.closest?.(".mark")) return
       const a = pool[next++ % pool.length]
       try {
         a.currentTime = 0
@@ -226,17 +254,36 @@ export default function App() {
   const mobile = useIsMobile()
   useClickSound(clickSoft)
   const [initial] = useState(indexFromHash)
-  const [active, setActive] = useState<TabId>(WHEEL[initial].id)
   // The Kick teardown and each case study open as in-site scrollable pages
-  // layered over the app rather than as separate routes.
-  const [kickOpen, setKickOpen] = useState(false)
-  const [caseOpen, setCaseOpen] = useState<"stage-zero" | null>(null)
+  // layered over the app; each carries its own URL (see parseHash/routeToHash).
+  const [route, setRoute] = useState<Route>(parseHash)
+  const active = route.tab
+  const kickOpen = route.overlay === "kick"
+  const caseOpen: "stage-zero" | null =
+    route.overlay === "stage-zero" ? "stage-zero" : null
 
-  const select = (id: TabId) => {
-    setActive(id)
-    history.replaceState(null, "", "#" + id)
+  // One place that moves both the app state and the address bar. Tab switches
+  // replace the history entry; opening an overlay pushes one, so the browser
+  // Back button (and the page's own close button) returns to the base tab.
+  const go = (next: Route, push = false) => {
+    setRoute(next)
+    const hash = "#" + routeToHash(next)
+    if (push) history.pushState(null, "", hash)
+    else history.replaceState(null, "", hash)
     window.scrollTo({ top: 0, left: 0, behavior: "auto" }) // open at the top
   }
+
+  const select = (id: TabId) => go({ tab: id, overlay: null })
+  const openKick = () => go({ tab: "teardowns", overlay: "kick" }, true)
+  const openCase = (id: CaseId) => go({ tab: "work", overlay: id }, true)
+  const closeOverlay = () => go({ tab: route.tab, overlay: null })
+
+  // Keep state in sync with the browser Back/Forward buttons.
+  useEffect(() => {
+    const onPop = () => setRoute(parseHash())
+    window.addEventListener("popstate", onPop)
+    return () => window.removeEventListener("popstate", onPop)
+  }, [])
 
   const onWheelChange = (index: number) => {
     const id = WHEEL[index]?.id
@@ -247,9 +294,26 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
+      {/* Site-wide interactive background: a pixel trail in the theme's brand
+          ink (pink in dark, green in light), fixed behind all content. */}
+      <PixelTrail
+        gridSize={60}
+        trailSize={0.06}
+        maxAge={300}
+        interpolate={5}
+        color={theme === "dark" ? "#ffccfd" : "#00663a"}
+        gooeyFilter={{ id: "brand-goo-filter", strength: 4 }}
+      />
       <div className="shell has-rail">
         <header className="bar">
-          <div className="mark">JK</div>
+          <button
+            className="mark"
+            type="button"
+            onClick={() => select("about")}
+            aria-label="Home"
+          >
+            JK
+          </button>
           <div className="sp" />
           <TextSizeControl />
           <button
@@ -274,9 +338,9 @@ export default function App() {
               transition={{ duration: 0.42, ease: [0.22, 0.68, 0.24, 1] }}
             >
               {active === "teardowns" ? (
-                <Teardowns onOpenKick={() => setKickOpen(true)} />
+                <Teardowns onOpenKick={openKick} />
               ) : active === "work" ? (
-                <Work onOpenCase={(id) => setCaseOpen(id)} />
+                <Work onOpenCase={openCase} />
               ) : (
                 <Section />
               )}
@@ -285,12 +349,12 @@ export default function App() {
         </main>
 
         <AnimatePresence>
-          {kickOpen && <KickTeardown key="kick" onClose={() => setKickOpen(false)} />}
+          {kickOpen && <KickTeardown key="kick" onClose={closeOverlay} />}
         </AnimatePresence>
 
         <AnimatePresence>
           {caseOpen === "stage-zero" && (
-            <StageZeroHealth key="stage-zero" onClose={() => setCaseOpen(null)} />
+            <StageZeroHealth key="stage-zero" onClose={closeOverlay} />
           )}
         </AnimatePresence>
 
@@ -300,6 +364,7 @@ export default function App() {
           <OptionWheel
             items={LABELS}
             defaultSelected={initial}
+            selected={WHEEL.findIndex((w) => w.id === active)}
             onChange={onWheelChange}
             textColor={theme === "dark" ? "#ffccfd" : "#00502e"}
             activeColor={theme === "dark" ? "#f3d0f1" : "#00663a"}

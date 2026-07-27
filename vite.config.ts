@@ -96,5 +96,13 @@ export default defineConfig(({ command }) => ({
     outDir: "docs",
     emptyOutDir: false,
     assetsDir: "assets",
+    rollupOptions: {
+      // Two HTML entries: the SPA (index.html) and a standalone 404 page that
+      // GitHub Pages serves for unknown paths (docs/404.html).
+      input: {
+        main: path.resolve(rootDir, "index.html"),
+        notFound: path.resolve(rootDir, "404.html"),
+      },
+    },
   },
 }))

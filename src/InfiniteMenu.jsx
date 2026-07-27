@@ -958,6 +958,9 @@ export default function InfiniteMenu({ items = [], scale = 1.0, onItemClick }) {
   const canvasRef = useRef(null);
   const [activeItem, setActiveItem] = useState(null);
   const [isMoving, setIsMoving] = useState(false);
+  // Added: whether the pointer is currently over the sphere, so we can surface
+  // an "Open!" affordance (and pulse the action button) on hover.
+  const [isHovering, setIsHovering] = useState(false);
   // Added: track the pointer-down origin so a tap on the sphere navigates while
   // a drag (used to rotate it) does not.
   const pointerDownRef = useRef(null);
@@ -1043,6 +1046,22 @@ export default function InfiniteMenu({ items = [], scale = 1.0, onItemClick }) {
     if (moved < 6) activate(activeItem);
   };
 
+  // The front logo sits in the centre of the canvas; only treat a central box
+  // roughly its footprint as "over the logo", so the label never shows over the
+  // empty sphere background above or below it.
+  const HOVER_HALF_W = 0.26;
+  const HOVER_HALF_H = 0.16;
+  const handleCanvasHover = e => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const nx = (e.clientX - rect.left) / rect.width - 0.5;
+    const ny = (e.clientY - rect.top) / rect.height - 0.5;
+    setIsHovering(Math.abs(nx) < HOVER_HALF_W && Math.abs(ny) < HOVER_HALF_H);
+  };
+
+  // "OPEN!" shows on every face while the pointer is over the settled logo and
+  // the sphere isn't being dragged.
+  const showOpen = isHovering && !isMoving;
+
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <canvas
@@ -1050,6 +1069,8 @@ export default function InfiniteMenu({ items = [], scale = 1.0, onItemClick }) {
         ref={canvasRef}
         onPointerDown={handleCanvasPointerDown}
         onPointerUp={handleCanvasPointerUp}
+        onPointerMove={handleCanvasHover}
+        onPointerLeave={() => setIsHovering(false)}
       />
 
       {activeItem && (
@@ -1058,7 +1079,15 @@ export default function InfiniteMenu({ items = [], scale = 1.0, onItemClick }) {
 
           <p className={`face-description ${isMoving ? 'inactive' : 'active'}`}> {activeItem.description}</p>
 
-          <div onClick={handleButtonClick} className={`action-button ${isMoving ? 'inactive' : 'active'}`}>
+          <span className={`open-hint ${showOpen ? 'active' : 'inactive'}`}>
+            <span className="open-hint-main">CLICK TO OPEN!</span>
+            <span className="open-hint-sub">Drag to Change</span>
+          </span>
+
+          <div
+            onClick={handleButtonClick}
+            className={`action-button ${isMoving ? 'inactive' : 'active'}`}
+          >
             <p className="action-button-icon">&#x2197;</p>
           </div>
         </>
