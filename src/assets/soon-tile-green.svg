@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Placeholder tile for the teardown sphere, green-ink variant. Transparent
+       background like the Kick wordmarks, since the sphere composites the tile
+       straight onto its faces. The pink-ink twin is soon-tile-pink.svg. -->
+  <g fill="#00663a" font-family="'Helvetica Neue',Helvetica,Arial,sans-serif"
+     font-weight="700" text-anchor="middle" letter-spacing="-2">
+    <text x="256" y="238" font-size="74">COMING</text>
+    <text x="256" y="318" font-size="74">SOON</text>
+  </g>
+  <rect x="150" y="352" width="212" height="3" fill="#00663a" opacity=".55" />
+</svg>

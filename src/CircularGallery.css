@@ -1,0 +1,27 @@
+.circular-gallery {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.circular-gallery:active {
+  cursor: grabbing;
+}
+
+/* Cards open a case study, so the idle cursor advertises that rather than the
+   drag affordance. Dragging still works and still shows the grabbing cursor. */
+.circular-gallery.is-clickable {
+  cursor: pointer;
+}
+
+.circular-gallery.is-clickable:active {
+  cursor: grabbing;
+}
+
+/* Was a hardcoded #fff, which sat almost invisibly on the light theme's pink
+   paper. --ink flips with the theme, so the ring stays legible on both. */
+.circular-gallery:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
