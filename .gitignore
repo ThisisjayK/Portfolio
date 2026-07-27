@@ -13,4 +13,6 @@ node_modules/
 # Vite cache
 .vite/
 
-# NOTE: docs/ is the built site GitHub Pages serves — it IS committed.
+# Built site — GitHub Actions rebuilds and deploys this on every push, so it
+# is not committed. Run `npm run build` locally to regenerate it.
+docs/
