@@ -21,9 +21,19 @@
   </g>
   <line x1="76" y1="136" x2="724" y2="136" stroke="#ffccfd" stroke-opacity=".3" />
 
-  <g fill="#ffccfd" font-family="'Helvetica Neue',Helvetica,Arial,sans-serif" font-weight="700" font-size="70" letter-spacing="-2.6" opacity=".62">
-    <text x="74" y="500">Coming</text>
-    <text x="74" y="570">soon</text>
+  <!-- One frozen frame of the site's pixel-frog mascot (sleeping pose, frame 0
+       of sleeping_sheet_transparent.png) - a napping frog for a slot with
+       nothing to show yet. Native 28x32, kept in its own colours rather than
+       remapped to the card's ink, matching how the mascot looks everywhere
+       else on the site. Centred above the "Coming soon" line as one group. -->
+  <image
+    x="300" y="286" width="200" height="229"
+    style="image-rendering: pixelated"
+    href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAgCAYAAAABtRhCAAAAxUlEQVR4nO2UUQ6EIAxEW+NZ5Uw9LcYEFJDdKRVMdsP8CJT2UVokmppqFFNf+RcYTfD3YTwoOI8EmuH/UbOfqaEHPsjeBPQkyczd/JC9SUew4/T+HKfz2pqc46pWsijNqFFrN4DyEAuwc6iJXi74GYF5Q2gkwc8AvGDaLB2G6muogQrewt2vFNRR9/CjvsHzG2Br01zOKFPRJbGAMPHvcTdslZ6QxMcA/Fi/CKtCQZfiKy2fRtmt5bo87dJ8r0++mvUpGq4dSp9IlYzdIkMAAAAASUVORK5CYII="
+  />
+  <g fill="#ffccfd" font-family="'Helvetica Neue',Helvetica,Arial,sans-serif" font-weight="700" font-size="70" letter-spacing="-2.6" opacity=".62" text-anchor="middle">
+    <text x="400" y="618">Coming</text>
+    <text x="400" y="688">soon</text>
   </g>
 
   <line x1="76" y1="874" x2="724" y2="874" stroke="#ffccfd" stroke-opacity=".3" />
