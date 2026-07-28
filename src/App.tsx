@@ -249,48 +249,30 @@ function useClickSound(src: string, volume = 0.65) {
   }, [src, volume])
 }
 
-// Drives the mascot: a directional hop whenever the section changes - down
-// onto whichever option comes later in WHEEL, up onto whichever comes
-// earlier - and a nap after 25s of no pointer/keyboard activity (waking back
-// to idle on the next interaction). The hop is state-driven rather than a
-// remount, so a rapid tab-switch just retriggers the same pose.
-const SLEEP_AFTER_MS = 25_000
-const JUMPING_POSES: ReadonlySet<FrogPose> = new Set(["jumping-down", "jumping-up"])
+// Drives the mascot: left idle long enough, the frog notices flies drifting
+// by, watches them for a while, then snaps one up before settling back to
+// idle. No sleeping pose here - this one's in the header, so it should
+// always read as awake, not napping.
+const IDLE_TO_FLIES_MS = 2 * 60_000
+const FLIES_TO_CATCHING_MS = 60_000
 
-function useFrogPose(active: TabId): { pose: FrogPose; onJumpDone: () => void } {
+function useFrogPose(): { pose: FrogPose; onCatchDone: () => void } {
   const [pose, setPose] = useState<FrogPose>("idle")
-  const sleepTimer = useRef<number | undefined>(undefined)
-  const lastIndex = useRef(WHEEL.findIndex((w) => w.id === active))
-
-  const armSleepTimer = () => {
-    window.clearTimeout(sleepTimer.current)
-    sleepTimer.current = window.setTimeout(() => setPose("sleeping"), SLEEP_AFTER_MS)
-  }
 
   useEffect(() => {
-    armSleepTimer()
-    const wake = () => {
-      setPose((p) => (JUMPING_POSES.has(p) || p === "catching" ? p : "idle"))
-      armSleepTimer()
+    if (pose === "idle") {
+      const t = window.setTimeout(() => setPose("flies"), IDLE_TO_FLIES_MS)
+      return () => window.clearTimeout(t)
     }
-    window.addEventListener("pointerdown", wake)
-    window.addEventListener("keydown", wake)
-    return () => {
-      window.removeEventListener("pointerdown", wake)
-      window.removeEventListener("keydown", wake)
-      window.clearTimeout(sleepTimer.current)
+    if (pose === "flies") {
+      const t = window.setTimeout(() => setPose("catching"), FLIES_TO_CATCHING_MS)
+      return () => window.clearTimeout(t)
     }
-  }, [])
+  }, [pose])
 
-  useEffect(() => {
-    const index = WHEEL.findIndex((w) => w.id === active)
-    setPose(index >= lastIndex.current ? "jumping-down" : "jumping-up")
-    lastIndex.current = index
-  }, [active])
+  const onCatchDone = () => setPose("idle")
 
-  const onJumpDone = () => setPose("idle")
-
-  return { pose, onJumpDone }
+  return { pose, onCatchDone }
 }
 
 function useIsMobile() {
@@ -318,7 +300,7 @@ export default function App() {
   // layered over the app; each carries its own URL (see parseHash/routeToHash).
   const [route, setRoute] = useState<Route>(parseHash)
   const active = route.tab
-  const { pose, onJumpDone } = useFrogPose(active)
+  const { pose, onCatchDone } = useFrogPose()
   const kickOpen = route.overlay?.kind === "kick"
   const caseOpen: CaseId | null =
     route.overlay?.kind === "case" ? route.overlay.id : null
@@ -382,7 +364,7 @@ export default function App() {
             onClick={() => select("about")}
             aria-label="Home"
           >
-            JK
+            <FrogMascot pose={pose} className="mark-frog" onDone={onCatchDone} />
           </button>
           <div className="sp" />
           <TextSizeControl />
@@ -443,7 +425,6 @@ export default function App() {
         <Footer />
 
         <nav className="wheel-nav" aria-label="Sections">
-          <FrogMascot pose={pose} className="wheel-frog" onDone={onJumpDone} />
           <OptionWheel
             items={LABELS}
             defaultSelected={initial}
