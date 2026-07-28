@@ -639,20 +639,14 @@ export function VolunteerDetail({
 
 export function Footer() {
   return (
-    <footer className="foot">
-      <p>
-        The evidence file, the original captures and my raw session notes for
-        each teardown are in the{" "}
-        <a
-          href="https://github.com/ThisisjayK/Portfolio"
-          target="_blank"
-          rel="noopener"
-        >
-          repository
-        </a>
-        , including the parts that didn&apos;t make the write-up. No affiliation
-        with any product named here.
-      </p>
+    <footer className="foot" aria-hidden="true">
+      <svg
+        className="foot-wave"
+        viewBox="0 0 1200 40"
+        preserveAspectRatio="none"
+      >
+        <path d="M0,20 C150,40 150,0 300,20 C450,40 450,0 600,20 C750,40 750,0 900,20 C1050,40 1050,0 1200,20 L1200,40 L0,40 Z" />
+      </svg>
     </footer>
   );
 }
