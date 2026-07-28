@@ -15,42 +15,6 @@ const base: SVGProps<SVGSVGElement> = {
   strokeLinejoin: "round",
 }
 
-export function IconUser() {
-  return (
-    <svg {...base} strokeWidth={1.6}>
-      <circle cx="12" cy="8" r="4" />
-      <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7" />
-    </svg>
-  )
-}
-
-export function IconFile() {
-  return (
-    <svg {...base} strokeWidth={1.6}>
-      <rect x="5" y="3" width="14" height="18" rx="2" />
-      <path d="M9 8h6M9 12h6M9 16h4" />
-    </svg>
-  )
-}
-
-export function IconSearch() {
-  return (
-    <svg {...base} strokeWidth={1.6}>
-      <circle cx="10.5" cy="10.5" r="6.5" />
-      <path d="M15.5 15.5L21 21" />
-    </svg>
-  )
-}
-
-export function IconMail() {
-  return (
-    <svg {...base} strokeWidth={1.6}>
-      <rect x="3" y="5" width="18" height="14" rx="2" />
-      <path d="M3.5 6.5L12 13l8.5-6.5" />
-    </svg>
-  )
-}
-
 export function IconSun() {
   return (
     <svg {...base} strokeWidth={1.7}>

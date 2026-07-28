@@ -1,42 +1,42 @@
-import { useEffect, useMemo, useState } from "react"
-import { motion } from "motion/react"
+import { useEffect, useMemo, useState } from "react";
+import { motion } from "motion/react";
 // InfiniteMenu is authored in JS (React Bits); no type declaration ships with
 // it, and we do not run tsc in the build.
 // @ts-expect-error - JS component, no type declaration
-import InfiniteMenu from "./InfiniteMenu"
+import InfiniteMenu from "./InfiniteMenu";
 // @ts-expect-error - JS component, no type declaration
-import CircularGallery from "./CircularGallery"
+import CircularGallery from "./CircularGallery";
 // @ts-expect-error - JS component (React Bits), no type declaration
-import FlowingMenu from "./FlowingMenu"
+import FlowingMenu from "./FlowingMenu";
 // Two logo tiles (transparent background) in each theme's ink colour, so the
 // wordmark stays legible over the page's pink (light) / green (dark) paper.
-import kickGreen from "./assets/kick-green.svg"
-import kickPink from "./assets/kick-pink.svg"
+import kickGreen from "./assets/kick-green.svg";
+import kickPink from "./assets/kick-pink.svg";
 // Case-study cover art lives with its source documents under case-studies/,
 // not in src/assets, so the write-up and its artwork stay in one folder.
-import stageZeroGreen from "../case-studies/stage-zero-health/assets/cover-green.svg"
-import stageZeroPink from "../case-studies/stage-zero-health/assets/cover-pink.svg"
+import stageZeroGreen from "../case-studies/stage-zero-health/assets/cover-green.svg";
+import stageZeroPink from "../case-studies/stage-zero-health/assets/cover-pink.svg";
 // Shared placeholders for the slots that have no write-up yet. They live in
 // src/assets rather than a case-study folder because they belong to no project.
-import soonCardGreen from "./assets/soon-card-green.svg"
-import soonCardPink from "./assets/soon-card-pink.svg"
-import soonTileGreen from "./assets/soon-tile-green.svg"
-import soonTilePink from "./assets/soon-tile-pink.svg"
+import soonCardGreen from "./assets/soon-card-green.svg";
+import soonCardPink from "./assets/soon-card-pink.svg";
+import soonTileGreen from "./assets/soon-tile-green.svg";
+import soonTilePink from "./assets/soon-tile-pink.svg";
 // Official brand logos (in each company's own colour) for the Technical & tools
 // skills. Only the tools with an available logo render as a badge; the rest
 // fall back to a text chip.
-import { BRAND_LOGOS } from "./assets/brand-logos"
+import { BRAND_LOGOS } from "./assets/brand-logos";
 // Multicolour brand logos that ship as full SVG art (rendered via <img>).
-import twilioLogo from "./assets/logos/twilio.svg"
-import sendgridLogo from "./assets/logos/sendgrid.svg"
-import excelLogo from "./assets/logos/excel.svg"
-import githubLogo from "./assets/logos/github.svg"
-import vercelLogo from "./assets/logos/vercel.svg"
-import javaLogo from "./assets/logos/java.svg"
-import supabaseLogo from "./assets/logos/supabase.svg"
-import vscodeLogo from "./assets/logos/vscode.svg"
-import slackLogo from "./assets/logos/slack.svg"
-import sqlLogo from "./assets/logos/sql.svg"
+import twilioLogo from "./assets/logos/twilio.svg";
+import sendgridLogo from "./assets/logos/sendgrid.svg";
+import excelLogo from "./assets/logos/excel.svg";
+import githubLogo from "./assets/logos/github.svg";
+import vercelLogo from "./assets/logos/vercel.svg";
+import javaLogo from "./assets/logos/java.svg";
+import supabaseLogo from "./assets/logos/supabase.svg";
+import vscodeLogo from "./assets/logos/vscode.svg";
+import slackLogo from "./assets/logos/slack.svg";
+import sqlLogo from "./assets/logos/sql.svg";
 
 const IMG_LOGOS: Record<string, { src: string; title: string }> = {
   Twilio: { src: twilioLogo, title: "Twilio" },
@@ -49,22 +49,24 @@ const IMG_LOGOS: Record<string, { src: string; title: string }> = {
   Supabase: { src: supabaseLogo, title: "Supabase" },
   "VS Code": { src: vscodeLogo, title: "Visual Studio Code" },
   Slack: { src: slackLogo, title: "Slack" },
-}
+};
 
 // Reads the current theme off <html data-theme> and re-renders when it flips.
 function useThemeName(): "dark" | "light" {
   const [theme, setTheme] = useState<"dark" | "light">(() =>
-    document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark",
-  )
+    document.documentElement.getAttribute("data-theme") === "light"
+      ? "light"
+      : "dark",
+  );
   useEffect(() => {
-    const el = document.documentElement
+    const el = document.documentElement;
     const obs = new MutationObserver(() =>
       setTheme(el.getAttribute("data-theme") === "light" ? "light" : "dark"),
-    )
-    obs.observe(el, { attributes: true, attributeFilter: ["data-theme"] })
-    return () => obs.disconnect()
-  }, [])
-  return theme
+    );
+    obs.observe(el, { attributes: true, attributeFilter: ["data-theme"] });
+    return () => obs.disconnect();
+  }, []);
+  return theme;
 }
 
 /* Section content. Copy is ported verbatim from the static site; the bracketed
@@ -86,7 +88,7 @@ const CERT_TAGS: { label: string; url: string }[] = [
     label: "Pega Business Architect",
     url: "https://drive.google.com/file/d/1T7oTZqtkUDIn-s90PQe4k7zEkd0Vlz8u/view",
   },
-]
+];
 
 export function About() {
   return (
@@ -95,25 +97,25 @@ export function About() {
       <div className="cols">
         <div>
           <p className="lede">
-            An early-career product manager who spent five months as a
-            technical PM intern at a pre-seed B2B startup near MIT building early
-            cancer detection tech. Small team, real stakes, no room to hide behind
+            An early-career product manager who spent five months as a technical
+            PM intern at a pre-seed B2B startup near MIT building early cancer
+            detection tech. Small team, real stakes, no room to hide behind
             process for its own sake.
           </p>
           <p>
-            What that actually meant day to day: writing PRDs that engineers could
-            work from without guessing, running sprint planning and backlog
-            grooming, and sitting in on bug triage when something customer-facing
-            broke. I got comfortable using frameworks like RICE and Kano to decide
-            what actually mattered this sprint versus what just felt urgent, and I
-            ran user interviews trying hard not to lead the witness toward the
-            answer I wanted to hear.
+            What that actually meant day to day: writing PRDs that engineers
+            could work from without guessing, running sprint planning and
+            backlog grooming, and sitting in on bug triage when something
+            customer-facing broke. I got comfortable using frameworks like RICE
+            and Kano to decide what actually mattered this sprint versus what
+            just felt urgent, and I ran user interviews trying hard not to lead
+            the witness toward the answer I wanted to hear.
           </p>
         </div>
         <div className="aside">
           <p>
-            I&apos;m looking for an APM or new-grad product role where the problems
-            are real enough that I can&apos;t fake my way through them.
+            I&apos;m looking for an APM or new-grad product role where the
+            problems are real enough that I can&apos;t fake my way through them.
           </p>
           <p>
             Outside of work I garden, cook, sing, and watch more anime than
@@ -138,36 +140,40 @@ export function About() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 // One card per case study. `id` is what Work hands back on click so App knows
 // which page to open; the remaining cards are still placeholders and open
 // nothing until their write-ups exist.
-export type CaseId = "stage-zero"
+export type CaseId = "stage-zero";
 
 const CASE_CARDS: { id: CaseId | null; green: string; pink: string }[] = [
   { id: "stage-zero", green: stageZeroGreen, pink: stageZeroPink },
-]
+];
 
 // Empty slots, drawn in the same two inks rather than borrowed stock photos, so
 // the carousel reads as "one study written, more on the way" instead of showing
 // artwork for pieces that do not exist. They carry no id and so open nothing.
-const PLACEHOLDER_COUNT = 3
+const PLACEHOLDER_COUNT = 3;
 
 // The props default to {} so the component still satisfies the prop-less
 // signature the SECTIONS map in App.tsx is typed against.
-export function Work({ onOpenCase }: { onOpenCase?: (id: CaseId) => void } = {}) {
-  const theme = useThemeName()
+export function Work({
+  onOpenCase,
+}: { onOpenCase?: (id: CaseId) => void } = {}) {
+  const theme = useThemeName();
 
   // Preload both ink variants so flipping the theme swaps the cover from cache
   // rather than leaving the card blank while the new file decodes.
   useEffect(() => {
-    ;[stageZeroGreen, stageZeroPink, soonCardGreen, soonCardPink].forEach((src) => {
-      const img = new Image()
-      img.src = src
-    })
-  }, [])
+    [stageZeroGreen, stageZeroPink, soonCardGreen, soonCardPink].forEach(
+      (src) => {
+        const img = new Image();
+        img.src = src;
+      },
+    );
+  }, []);
 
   // Memoised so the gallery only rebuilds its WebGL context when the theme
   // (and therefore the artwork) actually changes.
@@ -190,7 +196,7 @@ export function Work({ onOpenCase }: { onOpenCase?: (id: CaseId) => void } = {})
       })),
     ],
     [theme],
-  )
+  );
 
   return (
     <section className="block">
@@ -203,28 +209,28 @@ export function Work({ onOpenCase }: { onOpenCase?: (id: CaseId) => void } = {})
           scrollSpeed={6.5}
           font="bold 28px Geist"
           onItemClick={(_i: number, item: { id: CaseId | null }) => {
-            if (item?.id) onOpenCase?.(item.id)
+            if (item?.id) onOpenCase?.(item.id);
           }}
         />
       </div>
     </section>
-  )
+  );
 }
 
 // Props default to {} for the same reason as Work above: the SECTIONS map in
 // App.tsx is typed against a prop-less signature.
 export function Teardowns({ onOpenKick }: { onOpenKick?: () => void } = {}) {
-  const theme = useThemeName()
+  const theme = useThemeName();
 
   // Preload both theme variants once so a theme flip swaps the logo from cache
   // instead of triggering a fresh network/decode, which is what left the sphere
   // briefly blank while the new logo loaded.
   useEffect(() => {
-    ;[kickGreen, kickPink, soonTileGreen, soonTilePink].forEach((src) => {
-      const img = new Image()
-      img.src = src
-    })
-  }, [])
+    [kickGreen, kickPink, soonTileGreen, soonTilePink].forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
 
   // One entry per product torn down, plus a placeholder face so the sphere has
   // something to rotate between while there is only one teardown written. No
@@ -249,7 +255,7 @@ export function Teardowns({ onOpenKick }: { onOpenKick?: () => void } = {}) {
       },
     ],
     [theme],
-  )
+  );
 
   return (
     <section className="block">
@@ -257,12 +263,12 @@ export function Teardowns({ onOpenKick }: { onOpenKick?: () => void } = {}) {
         <InfiniteMenu
           items={items}
           onItemClick={(item: { id?: string }) => {
-            if (item?.id === "kick") onOpenKick?.()
+            if (item?.id === "kick") onOpenKick?.();
           }}
         />
       </div>
     </section>
-  )
+  );
 }
 
 /* Three groups so the existing .par grid (three equal columns) holds them
@@ -316,28 +322,34 @@ const SKILLS: { group: string; items: string[] }[] = [
       "Slack",
     ],
   },
-]
+];
 
 // A single skill: brands with an official logo render as a colour badge; every
 // other skill keeps the plain text chip.
 function SkillItem({ name }: { name: string }) {
-  const img = IMG_LOGOS[name]
+  const img = IMG_LOGOS[name];
   if (img) {
     return (
       <span className="logo-chip" title={img.title}>
         <img src={img.src} alt={name} />
       </span>
-    )
+    );
   }
-  const logo = BRAND_LOGOS[name]
-  if (!logo) return <span>{name}</span>
+  const logo = BRAND_LOGOS[name];
+  if (!logo) return <span>{name}</span>;
   return (
     <span className="logo-chip" title={logo.title}>
-      <svg viewBox="0 0 24 24" width="20" height="20" role="img" aria-label={name}>
+      <svg
+        viewBox="0 0 24 24"
+        width="20"
+        height="20"
+        role="img"
+        aria-label={name}
+      >
         <path d={logo.path} fill={logo.hex} />
       </svg>
     </span>
-  )
+  );
 }
 
 export function Skills() {
@@ -356,7 +368,7 @@ export function Skills() {
         ))}
       </div>
     </section>
-  )
+  );
 }
 
 export function Contact() {
@@ -366,9 +378,9 @@ export function Contact() {
         <div>
           <h2 className="sec">Let&apos;s talk about your product.</h2>
           <p>
-            I&apos;m looking for early-career product roles. If you&apos;re hiring,
-            or you just want the raw evidence behind any piece here, the fastest
-            way to reach me is email.
+            I&apos;m looking for early-career product roles. If you&apos;re
+            hiring, or you just want the raw evidence behind any piece here, the
+            fastest way to reach me is email.
           </p>
         </div>
         <div>
@@ -387,12 +399,18 @@ export function Contact() {
                 rel="noopener"
               >
                 <span className="lab">LinkedIn</span>
-                <span className="val">linkedin.com/in/jayanth-kappagantula</span>
+                <span className="val">
+                  linkedin.com/in/jayanth-kappagantula
+                </span>
                 <span className="arw">↗</span>
               </a>
             </li>
             <li>
-              <a href="https://github.com/ThisisjayK" target="_blank" rel="noopener">
+              <a
+                href="https://github.com/ThisisjayK"
+                target="_blank"
+                rel="noopener"
+              >
                 <span className="lab">GitHub</span>
                 <span className="val">ThisisjayK</span>
                 <span className="arw">↗</span>
@@ -402,7 +420,7 @@ export function Contact() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 export function Resume() {
@@ -412,15 +430,18 @@ export function Resume() {
         <h2 className="sec">Résumé</h2>
         <p>
           The short version: my experience, the tools I reach for, and my
-          education, all on a single page. Grab the PDF, or ask and I&apos;ll send
-          a copy tailored to the role.
+          education, all on a single page. Grab the PDF, or ask and I&apos;ll
+          send a copy tailored to the role.
         </p>
       </div>
       <ul className="channels" style={{ maxWidth: "40ch" }}>
         {/* jayanth-resume.pdf lives in public/ (copied into docs/ on build);
             BASE_URL keeps the link correct under the /Portfolio/ Pages subpath. */}
         <li>
-          <a href={`${import.meta.env.BASE_URL}jayanth-resume.pdf`} download="jayanth-resume.pdf">
+          <a
+            href={`${import.meta.env.BASE_URL}jayanth-resume.pdf`}
+            download="jayanth-resume.pdf"
+          >
             <span className="lab">PDF</span>
             <span className="val">Download résumé</span>
             <span className="arw">↓</span>
@@ -435,19 +456,23 @@ export function Resume() {
         </li>
       </ul>
     </section>
-  )
+  );
 }
 
 export type VolunteerItem = {
-  id: string
-  short: string
-  role: string
-  org: string
-  meta: string
-  url: string
-  image?: string
-  did: string[]
-}
+  id: string;
+  short: string;
+  role: string;
+  org: string;
+  meta: string;
+  url: string;
+  image?: string;
+  // Optional portrait artwork shown beside the copy on the detail page. Lives in
+  // public/ (referenced through BASE_URL so it resolves under the /Portfolio/ base).
+  photo?: string;
+  photoAlt?: string;
+  did: string[];
+};
 
 export const VOLUNTEER_ITEMS: VolunteerItem[] = [
   {
@@ -457,8 +482,12 @@ export const VOLUNTEER_ITEMS: VolunteerItem[] = [
     org: "FIFA World Cup 2026, Boston Host City",
     meta: "Gillette Stadium, Foxborough · Jun–Jul 2026",
     url: "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/boston-host-seven-matches-stadium",
-    // Drop the Boston host-city banner into public/ as this filename.
-    image: "boston-worldcup.png",
+    // Hover preview in the volunteer marquee and the detail-page artwork are the
+    // same poster; the marquee crops it to a pill via background-size:cover.
+    image: "bos.jpg",
+    photo: "bos.jpg",
+    photoAlt:
+      "Official FIFA World Cup 26 Boston host-city poster: an illustrated Charles River scene with lobsters, swan boats and the Boston skyline.",
     did: [
       "Worked fan operations across all seven Boston matches, the biggest international soccer event in the world, with around 65,000 fans a match.",
       "Handed out FIFA Fan IDs to fans on each match day.",
@@ -489,7 +518,7 @@ export const VOLUNTEER_ITEMS: VolunteerItem[] = [
       "Supported an NGO that provides free education to children in Mumbai's slums, orphanages, and shelter homes.",
     ],
   },
-]
+];
 
 export function Volunteer({ onOpen }: { onOpen?: (id: string) => void } = {}) {
   return (
@@ -514,7 +543,7 @@ export function Volunteer({ onOpen }: { onOpen?: (id: string) => void } = {}) {
         />
       </div>
     </section>
-  )
+  );
 }
 
 // A volunteering role opens as an in-site page (reusing the teardown/case-study
@@ -523,23 +552,45 @@ export function VolunteerDetail({
   id,
   onClose,
 }: {
-  id: string
-  onClose: () => void
+  id: string;
+  onClose: () => void;
 }) {
-  const item = VOLUNTEER_ITEMS.find((v) => v.id === id)
+  const item = VOLUNTEER_ITEMS.find((v) => v.id === id);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose()
-    }
-    window.addEventListener("keydown", onKey)
-    return () => window.removeEventListener("keydown", onKey)
-  }, [onClose])
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
 
-  if (!item) return null
+  if (!item) return null;
+
+  // Shared by both layouts: with a photo it sits in the right-hand column, without
+  // one it stays the single centred column the other roles use.
+  const copy = (
+    <>
+      <h1>{item.org}</h1>
+      <p className="lede">{item.meta}</p>
+      <ul className="vol-detail-list">
+        {item.did.map((d) => (
+          <li key={d}>{d}</li>
+        ))}
+      </ul>
+      <a
+        className="inline"
+        href={item.url}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Visit {item.short} ↗
+      </a>
+    </>
+  );
 
   return (
     <motion.div
-      className="teardown-page vol-page"
+      className={`teardown-page vol-page${item.photo ? " vol-page--media" : ""}`}
       role="dialog"
       aria-modal="true"
       aria-label={`${item.short} volunteering`}
@@ -555,38 +606,43 @@ export function VolunteerDetail({
         aria-label="Close (Escape)"
       >
         <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <path
+            d="M6 6L18 18M18 6L6 18"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
         </svg>
         <span>Esc</span>
       </button>
 
       <div className="teardown-page__inner">
-        <h1>{item.org}</h1>
-        <p className="lede">{item.meta}</p>
-        <ul className="vol-detail-list">
-          {item.did.map((d) => (
-            <li key={d}>{d}</li>
-          ))}
-        </ul>
-        <a
-          className="inline"
-          href={item.url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Visit {item.short} ↗
-        </a>
+        {item.photo ? (
+          <div className="vol-split">
+            <figure className="vol-split__media">
+              <img
+                src={`${import.meta.env.BASE_URL}${item.photo}`}
+                alt={item.photoAlt ?? ""}
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+            <div className="vol-split__body">{copy}</div>
+          </div>
+        ) : (
+          copy
+        )}
       </div>
     </motion.div>
-  )
+  );
 }
 
 export function Footer() {
   return (
     <footer className="foot">
       <p>
-        The evidence file, the original captures and my raw session notes for each
-        teardown are in the{" "}
+        The evidence file, the original captures and my raw session notes for
+        each teardown are in the{" "}
         <a
           href="https://github.com/ThisisjayK/Portfolio"
           target="_blank"
@@ -594,10 +650,9 @@ export function Footer() {
         >
           repository
         </a>
-        ,
-        including the parts that didn&apos;t make the write-up. No affiliation with
-        any product named here.
+        , including the parts that didn&apos;t make the write-up. No affiliation
+        with any product named here.
       </p>
     </footer>
-  )
+  );
 }
