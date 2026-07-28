@@ -97,25 +97,28 @@ export function About() {
       <div className="cols">
         <div>
           <p className="lede">
-            An early-career product manager who spent five months as a technical
-            PM intern at a pre-seed B2B startup near MIT building early cancer
-            detection tech. Small team, real stakes, no room to hide behind
-            process for its own sake.
+            An early-career product manager who spent five months as a
+            technical PM intern at a pre-seed B2B startup in the MIT
+            Incubator program, building early cancer detection tech. Small
+            team, a huge learning curve, and enough ambiguity that I had to
+            figure out my own footing fast.
           </p>
           <p>
             What that actually meant day to day: writing PRDs that engineers
             could work from without guessing, running sprint planning and
             backlog grooming, and sitting in on bug triage when something
-            customer-facing broke. I got comfortable using frameworks like RICE
-            and Kano to decide what actually mattered this sprint versus what
-            just felt urgent, and I ran user interviews trying hard not to lead
-            the witness toward the answer I wanted to hear.
+            customer-facing broke. I got comfortable using RICE to decide what
+            actually mattered this sprint versus what just felt urgent, and I
+            spent a lot of time synthesizing user interviews the team had
+            already run, pulling out the patterns that should actually shape
+            the roadmap.
           </p>
         </div>
         <div className="aside">
           <p>
-            I&apos;m looking for an APM or new-grad product role where the
-            problems are real enough that I can&apos;t fake my way through them.
+            I&apos;m looking for an APM or new-grad product role where I get
+            to work with people who are good at what they do, on something
+            that actually matters.
           </p>
           <p>
             Outside of work I garden, cook, sing, and watch more anime than
