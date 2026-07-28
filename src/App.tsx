@@ -15,6 +15,7 @@ import KickTeardown from "./KickTeardown"
 import StageZeroHealth from "./StageZeroHealth"
 import { IconSun, IconMoon } from "./icons"
 import Loader from "./Loader"
+import FrogMascot, { type FrogPose } from "./FrogMascot"
 
 type TabId =
   | "about"
@@ -248,6 +249,50 @@ function useClickSound(src: string, volume = 0.65) {
   }, [src, volume])
 }
 
+// Drives the mascot: a directional hop whenever the section changes - down
+// onto whichever option comes later in WHEEL, up onto whichever comes
+// earlier - and a nap after 25s of no pointer/keyboard activity (waking back
+// to idle on the next interaction). The hop is state-driven rather than a
+// remount, so a rapid tab-switch just retriggers the same pose.
+const SLEEP_AFTER_MS = 25_000
+const JUMPING_POSES: ReadonlySet<FrogPose> = new Set(["jumping-down", "jumping-up"])
+
+function useFrogPose(active: TabId): { pose: FrogPose; onJumpDone: () => void } {
+  const [pose, setPose] = useState<FrogPose>("idle")
+  const sleepTimer = useRef<number | undefined>(undefined)
+  const lastIndex = useRef(WHEEL.findIndex((w) => w.id === active))
+
+  const armSleepTimer = () => {
+    window.clearTimeout(sleepTimer.current)
+    sleepTimer.current = window.setTimeout(() => setPose("sleeping"), SLEEP_AFTER_MS)
+  }
+
+  useEffect(() => {
+    armSleepTimer()
+    const wake = () => {
+      setPose((p) => (JUMPING_POSES.has(p) || p === "catching" ? p : "idle"))
+      armSleepTimer()
+    }
+    window.addEventListener("pointerdown", wake)
+    window.addEventListener("keydown", wake)
+    return () => {
+      window.removeEventListener("pointerdown", wake)
+      window.removeEventListener("keydown", wake)
+      window.clearTimeout(sleepTimer.current)
+    }
+  }, [])
+
+  useEffect(() => {
+    const index = WHEEL.findIndex((w) => w.id === active)
+    setPose(index >= lastIndex.current ? "jumping-down" : "jumping-up")
+    lastIndex.current = index
+  }, [active])
+
+  const onJumpDone = () => setPose("idle")
+
+  return { pose, onJumpDone }
+}
+
 function useIsMobile() {
   const [mobile, setMobile] = useState(
     () => window.matchMedia("(max-width:900px)").matches,
@@ -273,6 +318,7 @@ export default function App() {
   // layered over the app; each carries its own URL (see parseHash/routeToHash).
   const [route, setRoute] = useState<Route>(parseHash)
   const active = route.tab
+  const { pose, onJumpDone } = useFrogPose(active)
   const kickOpen = route.overlay?.kind === "kick"
   const caseOpen: CaseId | null =
     route.overlay?.kind === "case" ? route.overlay.id : null
@@ -394,9 +440,10 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        {active === "contact" && <Footer />}
+        <Footer />
 
         <nav className="wheel-nav" aria-label="Sections">
+          <FrogMascot pose={pose} className="wheel-frog" onDone={onJumpDone} />
           <OptionWheel
             items={LABELS}
             defaultSelected={initial}
