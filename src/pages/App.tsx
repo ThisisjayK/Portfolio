@@ -249,23 +249,20 @@ function useClickSound(src: string, volume = 0.65) {
   }, [src, volume])
 }
 
-// Drives the mascot: left idle long enough, the frog notices flies drifting
-// by, watches them for a while, then snaps one up before settling back to
-// idle. No sleeping pose here - this one's in the header, so it should
-// always read as awake, not napping.
-const IDLE_TO_FLIES_MS = 2 * 60_000
-const FLIES_TO_CATCHING_MS = 60_000
+// Drives the mascot: left idle long enough, the frog snaps at something before
+// settling back to idle. There used to be a "flies" stage in between - idle,
+// then watching flies drift by, then the catch - but that sheet is gone, so the
+// two waits are folded into one and the rhythm is unchanged: a tongue flick
+// every three minutes. No sleeping pose here - this one's in the header, so it
+// should always read as awake, not napping.
+const IDLE_TO_CATCHING_MS = 3 * 60_000
 
 function useFrogPose(): { pose: FrogPose; onCatchDone: () => void } {
   const [pose, setPose] = useState<FrogPose>("idle")
 
   useEffect(() => {
     if (pose === "idle") {
-      const t = window.setTimeout(() => setPose("flies"), IDLE_TO_FLIES_MS)
-      return () => window.clearTimeout(t)
-    }
-    if (pose === "flies") {
-      const t = window.setTimeout(() => setPose("catching"), FLIES_TO_CATCHING_MS)
+      const t = window.setTimeout(() => setPose("catching"), IDLE_TO_CATCHING_MS)
       return () => window.clearTimeout(t)
     }
   }, [pose])

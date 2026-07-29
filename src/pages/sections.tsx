@@ -13,9 +13,11 @@ import FlowingMenu from "../components/FlowingMenu";
 import kickGreen from "../assets/kick-green.svg";
 import kickPink from "../assets/kick-pink.svg";
 // Case-study cover art lives with its source documents under case-studies/,
-// not in src/assets, so the write-up and its artwork stay in one folder.
-import stageZeroGreen from "../../case-studies/stage-zero-health/assets/cover-green.svg";
-import stageZeroPink from "../../case-studies/stage-zero-health/assets/cover-pink.svg";
+// not in src/assets, so the write-up and its artwork stay in one folder. These
+// brand-mark cards replaced a charted cover (cover-green/pink.svg), which was
+// deleted - git history is the only copy now.
+import stageZeroGreen from "../../case-studies/stage-zero-health/assets/logo-card-green.svg";
+import stageZeroPink from "../../case-studies/stage-zero-health/assets/logo-card-pink.svg";
 // Shared placeholders for the slots that have no write-up yet. They live in
 // src/assets rather than a case-study folder because they belong to no project.
 import soonCardGreen from "../assets/soon-card-green.svg";
