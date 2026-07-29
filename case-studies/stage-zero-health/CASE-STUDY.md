@@ -5,13 +5,29 @@ Problem → Solution → Impact
 
 ---
 
+## Summary
+
 A 32-year-old whose mother had breast cancer at 45 is at elevated risk and will
 not be offered a mammogram. Screening guidelines in the US start at 40. The risk
 model most clinics run to decide who counts as an exception looks at six things
 and never once looks at a gene.
 
-I owned the product journey that tried to close that gap, from a cold signup
-through to a booked screening.
+I was the technical PM intern at Stage Zero Health, a pre-seed startup, for five
+months. I owned the product journey that tried to close that gap, from a cold
+signup through to a booked screening.
+
+I inherited a login and a questionnaire that collected data and returned
+nothing. What I built was a milestone-based journey running two staged risk
+models, one free and immediate, one paid and genetic, backed by two integrations
+(Epic FHIR and Change API) pointed at a funnel of 45 to 60 questions.
+
+I left before the cohort was large enough to say anything meaningful, so what
+follows leads with what shipped and what I would have measured. There are no
+user numbers in it.
+
+---
+
+## Problem
 
 | | |
 |---|---|
@@ -21,10 +37,6 @@ through to a booked screening.
 | **Team** | Founder, ML team, engineering, one UX designer, product marketing |
 | **Surface** | Web, optimized for mobile browsers |
 | **Inherited** | A login page and a questionnaire that collected data and returned nothing |
-
----
-
-## Problem
 
 ### Three gaps, stacked on each other
 
@@ -44,8 +56,8 @@ is scheduled to happen.
 
 **The model gap.** When a clinic does assess risk, it usually runs the Gail
 model. Six factors: current age, age at first period, age at first live birth,
-number of first-degree relatives with breast cancer, previous biopsies, and
-race or ethnicity.
+number of first-degree relatives with breast cancer, previous biopsies, and race
+or ethnicity.
 
 Look at what that list does not contain. Paternal family history. The age
 relatives were diagnosed. Ovarian cancer in the family. Any genetic result at
@@ -57,8 +69,8 @@ The failure is quiet, which is what makes it a product problem. Nobody is told
 "this model did not look at your father's side." They are handed a number, and
 the number reads as an answer.
 
-**The cost gap.** Supplemental screening past a mammogram, MRI or ultrasound,
-is expensive. Whether insurance covers it depends on the plan and on how the
+**The cost gap.** Supplemental screening past a mammogram, MRI or ultrasound, is
+expensive. Whether insurance covers it depends on the plan and on how the
 referral is coded, and most people find out after the fact. Faced with an
 unknown bill, a lot of them simply do not book.
 
@@ -69,8 +81,6 @@ number: we identified X women at elevated risk, and Y of them got screened. Not
 "users engaged with the assessment." If the journey could not carry someone from
 a cold signup to an appointment, the risk models were an interesting academic
 exercise and nothing else.
-
----
 
 ## Solution
 
@@ -114,12 +124,12 @@ then specced it.
 
 ### The decision I would defend hardest: two models, staged
 
-|  | Gail, the basic score | BOADICEA, the advanced score |
+| | Gail, the basic score | BOADICEA, the advanced score |
 |---|---|---|
-| Fires at | milestones 1 to 3 | once genetic data exists |
-| Reads | 6 personal and family factors | BRCA1/2, PALB2, CHEK2 and ATM variants, a 313-SNP polygenic score, family pedigree, lifestyle and hormonal factors, mammographic density |
-| Costs the user | nothing | paid |
-| Why it sits there | a real number early, off questions anyone can answer | accuracy, once there is enough data to be accurate with |
+| **Fires at** | milestones 1 to 3 | once genetic data exists |
+| **Reads** | 6 personal and family factors | BRCA1/2, PALB2, CHEK2 and ATM variants, a 313-SNP polygenic score, family pedigree, lifestyle and hormonal factors, mammographic density |
+| **Costs the user** | nothing | paid |
+| **Why it sits there** | a real number early, off questions anyone can answer | accuracy, once there is enough data to be accurate with |
 
 Everything Gail needs was collected in the first two or three milestones, so a
 user gets a real score early instead of grinding through an hour of questions on
@@ -128,10 +138,9 @@ anything and it is the one that earns the word accurate.
 
 The ensemble was the actual architecture. Whichever models the user's data could
 support would fire, and they would re-fire as more data arrived, so a score
-never sat stale behind information the user had already given us. I owned the
-API contracts, what data went into each model, and which milestones triggered
-which. The intent was to extend the same pattern past breast cancer to other
-cancer types.
+never sat stale behind information the user had already given us. I specced
+which data fed each model and which milestone triggered which model firing;
+engineering owned the contract implementation against that spec.
 
 The uncomfortable part: putting the more accurate score behind a payment, in a
 health product, is a real tension and I do not think there is a clean answer to
@@ -159,21 +168,19 @@ behalf is a question they cannot abandon on.
 
 ### The rest of what I owned
 
-- **Insights tab.** The risk score plus what to do about it: guideline-based
+- Insights tab. The risk score plus what to do about it: guideline-based
   recommendations and insurance context, which I researched per risk tier. I
   designed and prototyped it, and the prototype is what got built.
-- **SDOH assessment.** Researched it, prototyped the questionnaire, shipped it.
-- **A learning section** covering breast cancer in language that does not need a
+- SDOH assessment. Researched it, prototyped the questionnaire, shipped it.
+- A learning section covering breast cancer in language that does not need a
   clinician standing next to you to translate it.
-- **Personalized journeys and messaging** per persona, over email and SMS,
-  through Twilio, SendGrid and Customer.io.
-- **Gamified milestones**, because on a 60-question health journey the thing
-  that loses people is not confusion, it is fatigue.
-- **Product positioning** on the marketing site, with the product marketing
-  manager.
-- **The operating cadence.** Backlog, triage and two-week sprints in Jira and
-  later Asana. GA4 for activation, DAU and MAU. Minor UI fixes and redesigns I
-  shipped myself throughout.
+- Personalized journeys and messaging per persona, over email and SMS, through
+  Twilio, SendGrid and Customer.io.
+- Gamified milestones, because a 60-question health journey wears people down
+  long before it confuses them.
+- Product positioning on the marketing site, with the product marketing manager.
+- The operating cadence. Backlog, triage and two-week sprints in Jira and later
+  Asana. Minor UI fixes and redesigns I shipped myself throughout.
 
 ### Where my ownership stopped
 
@@ -186,16 +193,14 @@ Website-first was inherited rather than chosen. We optimized for mobile browsers
 rather than building an app, which I think was right for a pre-seed team but was
 not a decision I made.
 
----
-
 ## Impact
 
 ### What I can claim, and what I can't
 
-I do not have the numbers. Pre-seed volume, and I left before the cohort was
-large enough to say anything meaningful with, and I have no access to what
-happened after. Rather than dress up something directional, here is what shipped
-and what I would have instrumented.
+I do not have the numbers. Pre-seed volume, I left before the cohort was big
+enough to say anything meaningful, and I have no access to what happened after.
+Rather than dress up something directional, here is what shipped and what I
+would have instrumented.
 
 **What shipped**
 
@@ -232,27 +237,25 @@ The company raised $50K about a week or two after I left, and $400K after that.
 I am putting it here as context rather than as a result. I was not in those
 rooms and I cannot tell you what moved them.
 
----
-
 ## Reflection
 
-**I built the journey before I could watch anyone move through it.** GA4 and the
-activation metrics came later than they should have. On a 45 to 60 question
-journey, where people drop off is the single most valuable fact available, and I
-spent months not knowing it. If I ran this again the instrumentation would go in
-alongside the first milestone, not after the seventh.
+I built the journey before I could watch anyone move through it. On a journey of
+45 to 60 questions, where people drop off is the single most valuable fact
+available, and I did not have that instrumentation while I was there. If I ran
+this again, activation and completion tracking would go in alongside the first
+milestone rather than after the fact.
 
-**The paywall placement is the thing I am least settled on.** I can defend it.
+The paywall placement is the thing I am least settled on. I can defend it.
 BOADICEA genuinely needs data the free tier does not collect, and someone has to
 pay for genetic processing. I still would not call it solved.
 
-**Personas built from someone else's interviews are exactly that.** I compiled
-the data carefully and the patterns were real. I never sat in front of a user
-myself and asked the follow-up question I would have wanted to ask, and for the
+Personas built from someone else's interviews are exactly that. I compiled the
+data carefully and the patterns were real. I never sat in front of a user myself
+and asked the follow-up question I would have wanted to ask, and for the
 avoidant persona in particular, the one whose behavior the whole journey is
 shaped around, that is a real hole.
 
-**Limits worth holding while reading this**
+### Limits worth holding while reading this
 
 - Five months, pre-seed, small team, decisions made fast and with incomplete
   information.
