@@ -8,11 +8,13 @@ import kickPink from "../assets/kick-pink.svg";
 import soonTileGreen from "../assets/soon-tile-green.svg";
 import soonTilePink from "../assets/soon-tile-pink.svg";
 import { useThemeName } from "../hooks/useThemeName";
+import { useIsMobile } from "../hooks/useIsMobile";
 
 // Props default to {} for the same reason as Work above: the SECTIONS map in
 // App.tsx is typed against a prop-less signature.
 export function Teardowns({ onOpenKick }: { onOpenKick?: () => void } = {}) {
   const theme = useThemeName();
+  const mobile = useIsMobile();
 
   // Preload both theme variants once so a theme flip swaps the logo from cache
   // instead of triggering a fresh network/decode, which is what left the sphere
@@ -54,6 +56,7 @@ export function Teardowns({ onOpenKick }: { onOpenKick?: () => void } = {}) {
       <div className="teardown-sphere">
         <InfiniteMenu
           items={items}
+          scale={mobile ? 0.72 : 1}
           onItemClick={(item: { id?: string }) => {
             if (item?.id === "kick") onOpenKick?.();
           }}

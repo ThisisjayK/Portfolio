@@ -31,3 +31,19 @@ export function IconMoon() {
     </svg>
   )
 }
+
+export function IconMenu() {
+  return (
+    <svg {...base} strokeWidth={1.9}>
+      <path d="M3.5 6.5h17M3.5 12h17M3.5 17.5h17" />
+    </svg>
+  )
+}
+
+export function IconClose() {
+  return (
+    <svg {...base} strokeWidth={1.9}>
+      <path d="M5 5l14 14M19 5L5 19" />
+    </svg>
+  )
+}

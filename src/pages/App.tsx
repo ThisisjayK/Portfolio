@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react"
-import { AnimatePresence, motion, MotionConfig } from "motion/react"
+import { AnimatePresence, MotionConfig } from "motion/react"
 // OptionWheel is authored in JS (React Bits); the TS editor may not resolve its
 // types, but Vite/esbuild bundles it fine and we do not run tsc in the build.
 // @ts-expect-error - JS component, no type declaration
@@ -14,6 +14,9 @@ import StageZeroHealth from "./StageZeroHealth"
 import { IconSun, IconMoon } from "../components/icons"
 import Loader from "../components/Loader"
 import FrogMascot, { type FrogPose } from "../components/FrogMascot"
+import { AnimatedPage } from "../components/AnimatedPage"
+import { MobileMenu } from "../components/MobileMenu"
+import { useIsMobile } from "../hooks/useIsMobile"
 
 type TabId =
   | "about"
@@ -270,19 +273,6 @@ function useFrogPose(): { pose: FrogPose; onCatchDone: () => void } {
   return { pose, onCatchDone }
 }
 
-function useIsMobile() {
-  const [mobile, setMobile] = useState(
-    () => window.matchMedia("(max-width:900px)").matches,
-  )
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width:900px)")
-    const on = () => setMobile(mq.matches)
-    mq.addEventListener("change", on)
-    return () => mq.removeEventListener("change", on)
-  }, [])
-  return mobile
-}
-
 export default function App() {
   const { theme, toggle } = useTheme()
   const mobile = useIsMobile()
@@ -290,7 +280,9 @@ export default function App() {
   const [initial] = useState(indexFromHash)
   // Boot intro: the rotating-word + counter loader covers the app until it
   // finishes (or is skipped for reduced-motion visitors), then reveals the site.
-  const [booted, setBooted] = useState(false)
+  // Mobile drops all chrome animation, including this one, so it starts
+  // already-booted there instead of playing the intro and then hiding it.
+  const [booted, setBooted] = useState(mobile)
   // The Kick teardown and each case study open as in-site scrollable pages
   // layered over the app; each carries its own URL (see parseHash/routeToHash).
   const [route, setRoute] = useState<Route>(parseHash)
@@ -332,14 +324,51 @@ export default function App() {
     const id = WHEEL[index]?.id
     if (id && isTab(id)) select(id)
   }
+  const onMobileSelect = (id: string) => {
+    if (isTab(id)) select(id)
+  }
 
   const Section = SECTIONS[active]
+
+  // Built once and either dropped straight in (mobile - instant mount/unmount,
+  // no chrome animation) or handed to AnimatePresence (desktop - unchanged).
+  // AnimatedPage itself already collapses to a plain div on mobile; the
+  // AnimatePresence wrapper is skipped there too rather than relying on a
+  // plain div (which never signals "safe to remove") to unmount correctly
+  // inside it.
+  const sectionContent = (
+    <AnimatedPage
+      key={active}
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.42, ease: [0.22, 0.68, 0.24, 1] }}
+    >
+      {active === "teardowns" ? (
+        <Teardowns onOpenKick={openKick} />
+      ) : active === "work" ? (
+        <Work onOpenCase={openCase} />
+      ) : active === "volunteer" ? (
+        <Volunteer onOpen={openVolunteer} />
+      ) : (
+        <Section />
+      )}
+    </AnimatedPage>
+  )
+  const kickOverlay = kickOpen && <KickTeardown key="kick" onClose={closeOverlay} />
+  const caseOverlay = caseOpen === "stage-zero" && (
+    <StageZeroHealth key="stage-zero" onClose={closeOverlay} />
+  )
+  const volunteerOverlay = volunteerOpen && (
+    <VolunteerDetail key={volunteerOpen} id={volunteerOpen} onClose={closeOverlay} />
+  )
 
   return (
     <MotionConfig reducedMotion="user">
       {/* Boot intro overlay. Renders above everything until the count reaches
           100; the app mounts underneath meanwhile, so the WebGL background is
-          ready by the time the loader fades. */}
+          ready by the time the loader fades. Skipped outright on mobile (see
+          the `booted` initializer above). */}
       {!booted && <Loader onDone={() => setBooted(true)} />}
       <div className="shell has-rail">
         <header className="bar">
@@ -349,7 +378,16 @@ export default function App() {
             onClick={() => select("about")}
             aria-label="Home"
           >
-            <FrogMascot pose={pose} className="mark-frog" onDone={onCatchDone} />
+            {mobile ? (
+              // Pixel-art mascot dropped on mobile along with every other
+              // pixel-art decoration; falls back to the plain wordmark it
+              // originally stood in for.
+              <span className="mark-text" aria-hidden="true">
+                JK
+              </span>
+            ) : (
+              <FrogMascot pose={pose} className="mark-frog" onDone={onCatchDone} />
+            )}
           </button>
           <div className="sp" />
           <TextSizeControl />
@@ -363,76 +401,57 @@ export default function App() {
           >
             {theme === "dark" ? <IconSun /> : <IconMoon />}
           </button>
+          {mobile && (
+            <MobileMenu
+              items={WHEEL}
+              activeId={active}
+              onSelect={onMobileSelect}
+            />
+          )}
         </header>
 
         <main className="stage">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={active}
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.42, ease: [0.22, 0.68, 0.24, 1] }}
-            >
-              {active === "teardowns" ? (
-                <Teardowns onOpenKick={openKick} />
-              ) : active === "work" ? (
-                <Work onOpenCase={openCase} />
-              ) : active === "volunteer" ? (
-                <Volunteer onOpen={openVolunteer} />
-              ) : (
-                <Section />
-              )}
-            </motion.div>
-          </AnimatePresence>
+          {mobile ? sectionContent : (
+            <AnimatePresence mode="wait">{sectionContent}</AnimatePresence>
+          )}
         </main>
 
-        <AnimatePresence>
-          {kickOpen && <KickTeardown key="kick" onClose={closeOverlay} />}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {caseOpen === "stage-zero" && (
-            <StageZeroHealth key="stage-zero" onClose={closeOverlay} />
-          )}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {volunteerOpen && (
-            <VolunteerDetail
-              key={volunteerOpen}
-              id={volunteerOpen}
-              onClose={closeOverlay}
-            />
-          )}
-        </AnimatePresence>
+        {mobile ? kickOverlay : <AnimatePresence>{kickOverlay}</AnimatePresence>}
+        {mobile ? caseOverlay : <AnimatePresence>{caseOverlay}</AnimatePresence>}
+        {mobile ? (
+          volunteerOverlay
+        ) : (
+          <AnimatePresence>{volunteerOverlay}</AnimatePresence>
+        )}
 
         <Footer />
 
-        <nav className="wheel-nav" aria-label="Sections">
-          <OptionWheel
-            items={LABELS}
-            defaultSelected={initial}
-            selected={WHEEL.findIndex((w) => w.id === active)}
-            onChange={onWheelChange}
-            textColor={theme === "dark" ? "#ffccfd" : "#00502e"}
-            activeColor={theme === "dark" ? "#f3d0f1" : "#00663a"}
-            side="right"
-            soundUrl={clickSoft}
-            soundVolume={0.9}
-            fontSize={mobile ? 1.25 : 2.2}
-            spacing={1.5}
-            curve={1}
-            tilt={7}
-            blur={2}
-            fade={0.28}
-            minOpacity={0.08}
-            smoothing={200}
-            inset={mobile ? 16 : 48}
-            loop={false}
-            draggable
-          />
-        </nav>
+        {!mobile && (
+          <nav className="wheel-nav" aria-label="Sections">
+            <OptionWheel
+              items={LABELS}
+              defaultSelected={initial}
+              selected={WHEEL.findIndex((w) => w.id === active)}
+              onChange={onWheelChange}
+              textColor={theme === "dark" ? "#ffccfd" : "#00502e"}
+              activeColor={theme === "dark" ? "#f3d0f1" : "#00663a"}
+              side="right"
+              soundUrl={clickSoft}
+              soundVolume={0.9}
+              fontSize={2.2}
+              spacing={1.5}
+              curve={1}
+              tilt={7}
+              blur={2}
+              fade={0.28}
+              minOpacity={0.08}
+              smoothing={200}
+              inset={48}
+              loop={false}
+              draggable
+            />
+          </nav>
+        )}
       </div>
     </MotionConfig>
   )

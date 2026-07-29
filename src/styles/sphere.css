@@ -12,6 +12,16 @@
   height: min(78vh, 760px);
   margin: 0;
 }
+@media (max-width: 900px) {
+  /* Scaled down to fit a phone screen: no side rail to clear and the sphere
+     itself renders smaller (see the `scale` prop passed in Teardowns.tsx).
+     A bit taller than a flat 48vh so the logo, the action button and the
+     open-hint text below it (always-on on mobile, see InfiniteMenu.jsx) have
+     room to sit clear of each other instead of stacking on top of one another. */
+  .teardown-sphere {
+    height: min(56vh, 440px);
+  }
+}
 
 /* Case-studies CircularGallery: same footprint rules as the sphere, fills the
    centred stage and stays inside the content column, clear of the wheel rail. */
@@ -20,6 +30,12 @@
   width: 100%;
   height: min(78vh, 760px);
   margin: 0;
+}
+@media (max-width: 900px) {
+  /* Scaled down to fit a phone screen, matching the sphere's mobile height. */
+  .case-gallery {
+    height: min(48vh, 380px);
+  }
 }
 /* Recolour the InfiniteMenu action button off its vendor purple onto the
    page's single ink: pink in dark mode, green in light. --ink already flips
@@ -75,4 +91,21 @@
   letter-spacing: 0.02em;
   line-height: 1;
   color: var(--ink-55);
+}
+
+@media (max-width: 900px) {
+  /* No hover on touch, so the hint is shown permanently on mobile (see the
+     `mobile` branch of `showOpen` in InfiniteMenu.jsx) instead of appearing on
+     hover - pinned to the bottom of the sphere, centred. The action button is
+     pushed up a bit further (below) so there's a clear gap between it and
+     this text instead of the two crowding each other. */
+  .teardown-sphere .open-hint {
+    left: 50%;
+    top: auto;
+    bottom: 0.6rem;
+    transform: translateX(-50%);
+  }
+  .teardown-sphere .action-button.active {
+    bottom: 5.6em;
+  }
 }

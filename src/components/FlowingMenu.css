@@ -49,6 +49,20 @@
   color: inherit;
 }
 
+@media (max-width: 900px) {
+  /* The vh-based clamp sized titles off the item's height, not the viewport's
+     width, so a long title like "FIFA World Cup 2026" ran off the edge of a
+     narrow phone screen instead of shrinking to fit. Scale off width instead,
+     and let a title wrap onto a second line rather than clip. */
+  .menu__item-link {
+    font-size: clamp(1.1rem, 6.2vw, 1.6rem);
+    white-space: normal;
+    text-align: center;
+    line-height: 1.15;
+    padding: 0 1rem;
+  }
+}
+
 .marquee {
   position: absolute;
   top: 0;

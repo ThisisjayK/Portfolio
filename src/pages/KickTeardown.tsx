@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react"
-import { AnimatePresence, motion } from "motion/react"
+import { AnimatePresence } from "motion/react"
+import { AnimatedPage } from "../components/AnimatedPage"
+import { useIsMobile } from "../hooks/useIsMobile"
 
 /* In-site version of the Kick teardown: same colour system and fonts as the
    rest of the site, rendered as a scrollable long-form page instead of the
@@ -63,6 +65,7 @@ function Prototype({
 }
 
 export default function KickTeardown({ onClose }: { onClose: () => void }) {
+  const mobile = useIsMobile()
   const [proto, setProto] = useState<Proto | null>(null)
   // Read live state inside the stable listener so one Escape only ever closes
   // one layer (prototype viewer first, then the page).
@@ -112,9 +115,55 @@ export default function KickTeardown({ onClose }: { onClose: () => void }) {
     return () => window.removeEventListener("blur", reclaim)
   }, [proto])
 
+  // AnimatedPage collapses to a plain div on mobile, but a plain div dropped
+  // straight into AnimatePresence never signals it's safe to remove (that
+  // requires a motion child), so the wrapper itself is skipped on mobile too
+  // rather than relying on that.
+  const protoModal = proto && (
+    <AnimatedPage
+      ref={modalRef}
+      tabIndex={-1}
+      className="td-protomodal"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Prototype: ${proto.title}`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2, ease: [0.22, 0.68, 0.24, 1] }}
+    >
+      <div className="td-protomodal__bar">
+        <span className="t">{proto.title}</span>
+        <span className="s">{proto.sub}</span>
+        <span className="sp" />
+        <a href={protoURL(proto.node, "www.figma.com")} target="_blank" rel="noopener noreferrer">
+          Open in Figma ↗
+        </a>
+        <button
+          className="td-protomodal__close"
+          type="button"
+          onClick={() => setProto(null)}
+          aria-label="Close prototype (Escape)"
+        >
+          <span aria-hidden="true">✕</span>
+          <span>Esc</span>
+        </button>
+      </div>
+      <div className="td-protomodal__frame">
+        <iframe
+          ref={iframeRef}
+          key={proto.node}
+          src={protoURL(proto.node, "embed.figma.com")}
+          title={proto.title}
+          allowFullScreen
+        />
+      </div>
+    </AnimatedPage>
+  )
+
   return (
     <ProtoContext.Provider value={setProto}>
-    <motion.div
+    <AnimatedPage
       className="teardown-page"
       role="dialog"
       aria-modal="true"
@@ -842,51 +891,9 @@ export default function KickTeardown({ onClose }: { onClose: () => void }) {
           ← Back to teardowns
         </button>
       </div>
-    </motion.div>
+    </AnimatedPage>
 
-    <AnimatePresence>
-      {proto && (
-        <motion.div
-          ref={modalRef}
-          tabIndex={-1}
-          className="td-protomodal"
-          role="dialog"
-          aria-modal="true"
-          aria-label={`Prototype: ${proto.title}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2, ease: [0.22, 0.68, 0.24, 1] }}
-        >
-          <div className="td-protomodal__bar">
-            <span className="t">{proto.title}</span>
-            <span className="s">{proto.sub}</span>
-            <span className="sp" />
-            <a href={protoURL(proto.node, "www.figma.com")} target="_blank" rel="noopener noreferrer">
-              Open in Figma ↗
-            </a>
-            <button
-              className="td-protomodal__close"
-              type="button"
-              onClick={() => setProto(null)}
-              aria-label="Close prototype (Escape)"
-            >
-              <span aria-hidden="true">✕</span>
-              <span>Esc</span>
-            </button>
-          </div>
-          <div className="td-protomodal__frame">
-            <iframe
-              ref={iframeRef}
-              key={proto.node}
-              src={protoURL(proto.node, "embed.figma.com")}
-              title={proto.title}
-              allowFullScreen
-            />
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    {mobile ? protoModal : <AnimatePresence>{protoModal}</AnimatePresence>}
     </ProtoContext.Provider>
   )
 }

@@ -23,18 +23,44 @@
   p {
     max-width: none;
   }
-  /* narrower wheel rail on the right, less reserved width for content */
-  :root {
-    --rail: 150px;
+  /* The option wheel doesn't render on mobile at all (replaced by the
+     hamburger menu in the header), so there is no rail to reserve width for -
+     content runs the full viewport width, same as .foot already does. */
+
+  /* Type scale comes down a notch with everything else on mobile - the desktop
+     clamp() floors below were tuned for a rail-width column and read oversized
+     on a full-width phone screen. */
+  h1 {
+    font-size: clamp(1.8rem, 8vw, 3rem);
   }
-  .wheel-nav {
-    top: 3.8rem;
-    width: 150px;
+  .about-name {
+    font-size: clamp(1.3rem, 6vw, 2rem);
   }
-  .hero,
-  .block,
-  .foot {
-    padding-right: calc(var(--gut) + 130px);
+  .lede {
+    font-size: clamp(1.05rem, 4.2vw, 1.3rem);
+  }
+  h2.sec,
+  .par .step .k {
+    font-size: clamp(1.5rem, 6.5vw, 2.2rem);
+  }
+
+  /* The Work and Teardowns tabs are fixed-height WebGL canvases (they never
+     grow with the reader's text size), but without a guard here they still
+     fall into the "large text" stage-scroll rule in section-shell.css, which
+     top-aligns instead of centring. Shrinking these canvases for mobile made
+     that top-alignment obvious - a tall gap under a canvas stuck to the
+     header. Matches the same centring guard that rule already carries for
+     the resume/contact/volunteer tabs. */
+  html:not([data-text="sm"]) main.stage:has(.case-gallery),
+  html:not([data-text="sm"]) main.stage:has(.teardown-sphere) {
+    overflow: hidden;
+  }
+  html:not([data-text="sm"]) main.stage:has(.case-gallery) > div,
+  html:not([data-text="sm"]) main.stage:has(.teardown-sphere) > div {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    justify-content: center;
   }
 }
 

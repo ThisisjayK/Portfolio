@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 import './FlowingMenu.css';
 
@@ -48,6 +49,7 @@ function MenuItem({
   const marqueeInnerRef = useRef(null);
   const animationRef = useRef(null);
   const [repetitions, setRepetitions] = useState(4);
+  const mobile = useIsMobile();
 
   // The scrolling label defaults to the item text, but can differ (e.g. show the
   // role on hover while the static bar shows the organisation).
@@ -90,6 +92,11 @@ function MenuItem({
   }, [marqueeLabel, image]);
 
   useEffect(() => {
+    // Mobile has no hover, so the marquee never becomes visible there anyway;
+    // skipping its setup avoids running a continuous GSAP ticker in the
+    // background, consistent with the site-wide no-animation rule for mobile.
+    if (mobile) return;
+
     const setupMarquee = () => {
       if (!marqueeInnerRef.current) return;
 
@@ -119,10 +126,10 @@ function MenuItem({
         animationRef.current.kill();
       }
     };
-  }, [marqueeLabel, image, repetitions, speed]);
+  }, [marqueeLabel, image, repetitions, speed, mobile]);
 
   const handleMouseEnter = ev => {
-    if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
+    if (mobile || !itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
     const rect = itemRef.current.getBoundingClientRect();
     const x = ev.clientX - rect.left;
     const y = ev.clientY - rect.top;
@@ -136,7 +143,7 @@ function MenuItem({
   };
 
   const handleMouseLeave = ev => {
-    if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
+    if (mobile || !itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
     const rect = itemRef.current.getBoundingClientRect();
     const x = ev.clientX - rect.left;
     const y = ev.clientY - rect.top;

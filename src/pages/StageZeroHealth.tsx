@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion } from "motion/react";
+import { AnimatedPage } from "../components/AnimatedPage";
 
 /* The Stage Zero Health case study, rendered as a scrollable long-form page
    over the app. Deliberately reuses the .teardown-page / .td-* styling built
@@ -27,7 +27,7 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
   }, [onClose]);
 
   return (
-    <motion.div
+    <AnimatedPage
       className="teardown-page"
       role="dialog"
       aria-modal="true"
@@ -148,7 +148,7 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
         </button>
 
         {expanded && (
-          <motion.div
+          <AnimatedPage
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.34, ease: [0.22, 0.68, 0.24, 1] }}
@@ -742,13 +742,13 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
               repository. Everything about my own work is written from memory.
               No affiliation with Epic, Change Healthcare, or any party named.
             </p>
-          </motion.div>
+          </AnimatedPage>
         )}
 
         <button className="teardown-back" type="button" onClick={onClose}>
           ← Back to case studies
         </button>
       </div>
-    </motion.div>
+    </AnimatedPage>
   );
 }

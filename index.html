@@ -9,7 +9,13 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&family=Archivo:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
+<!-- Geist gets its own request with display=optional rather than swap: the
+     case study heading measures the monkey's grip off Geist's specific
+     x-height/baseline, so a mid-session swap to the fallback font's metrics
+     would jerk the hook off the letter. optional keeps whichever font wins
+     the very first race for the rest of the load instead of swapping later. -->
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&display=optional" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
 <!-- Bold script faces for the boot loader's rotating "perseverance" word. Saint
      Regus is Latin-only, so each non-Latin script falls through to its Noto face.
      Each request is subset (text=) to just the word shown, so the download is a
