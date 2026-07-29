@@ -177,16 +177,16 @@
   background-size: 6000px 320px;
   image-rendering: pixelated;
   /* Both keyframes carry their own timing function; this base is never used. */
-  animation: foot-whale-breach 240s linear infinite;
+  animation: foot-whale-breach 30s linear infinite;
 }
-/* One breach every four minutes. The sprite holds on the blank frame for the
-   whole wait, then steps the leap out over the last 2s of the 240s cycle -
-   hence the hold running to 99.1667% (= 100 - 2/240). jump-none lands each
+/* One breach every 30 seconds. The sprite holds on the blank frame for the
+   whole wait, then steps the leap out over the last 2s of the 30s cycle -
+   hence the hold running to 93.3333% (= 100 - 2/30). jump-none lands each
    step exactly on a frame boundary: 15 values from 0 to -5600px, -400px
    apart. */
 @keyframes foot-whale-breach {
   0%,
-  99.1667% {
+  93.3333% {
     background-position-x: 0;
     animation-timing-function: steps(15, jump-none);
   }

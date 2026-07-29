@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 // Hand-traced from the reference pixel-art wave: a 37x20 grid ('.' background,
 // 'N' the navy body, 'L' the light-blue wake beneath and behind it), sampled
 // cell-by-cell off the actual artwork rather than generated from a formula.
@@ -75,7 +77,35 @@ const PIXEL_WAVE_NAVY = buildTilePath("N");
 const PIXEL_WAVE_FOAM =
   buildTilePath("L") + ` M0,${WATERLINE_Y} H${WAVE_WIDTH} V${WAVE_HEIGHT} H0 Z`;
 
+// Keeps the 400px-wide whale sprite mostly on screen (a little overflow past
+// the right edge is fine - .foot-whale-clip already clips it, and body's own
+// overflow:hidden means it's cropped rather than adding a scrollbar).
+const WHALE_LEFT_MIN = 5;
+const WHALE_LEFT_MAX = 75;
+type WhaleSpot = { left: number; mirrored: boolean };
+
+// The sprite is only ever drawn facing one way, so a spot on the right half
+// of its range gets mirrored (scaleX(-1), same trick the shark fin's swim
+// animation already uses) - otherwise every breach on that side would look
+// like it was launched backwards.
+function randomWhaleSpot(): WhaleSpot {
+  const left = WHALE_LEFT_MIN + Math.random() * (WHALE_LEFT_MAX - WHALE_LEFT_MIN);
+  const mid = (WHALE_LEFT_MIN + WHALE_LEFT_MAX) / 2;
+  return { left, mirrored: left > mid };
+}
+
 export function Footer() {
+  // Re-rolled once per breach cycle so the whale doesn't always leap from the
+  // same spot facing the same way. foot-whale-breach (footer.css) holds on a
+  // blank frame for nearly the whole 30s cycle, so re-rolling here - whenever
+  // it happens to land within that window - is invisible; only the ~2s leap
+  // itself shows the new spot.
+  const [whaleSpot, setWhaleSpot] = useState(randomWhaleSpot);
+  useEffect(() => {
+    const id = window.setInterval(() => setWhaleSpot(randomWhaleSpot()), 30_000);
+    return () => window.clearInterval(id);
+  }, []);
+
   return (
     <footer className="foot" aria-hidden="true">
       <div className="foot-wave-clip">
@@ -108,12 +138,15 @@ export function Footer() {
       </div>
       {/* Breaching whale. The wrapper's bottom edge sits on the waterline and
           clips, so the sprite's lower rows are simply hidden and the whale
-          reads as launching out of the water and diving back under it. */}
-      <div className="foot-whale-clip">
+          reads as launching out of the water and diving back under it.
+          Position and facing are re-rolled every cycle (see randomWhaleSpot
+          above) so it doesn't always breach from the same spot the same way. */}
+      <div className="foot-whale-clip" style={{ left: `${whaleSpot.left}%` }}>
         <span
           className="foot-whale"
           style={{
             backgroundImage: `url(${import.meta.env.BASE_URL}whale-breach-sheet.png)`,
+            transform: whaleSpot.mirrored ? "scaleX(-1)" : undefined,
           }}
         />
       </div>
