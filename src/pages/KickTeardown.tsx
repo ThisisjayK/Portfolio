@@ -142,6 +142,7 @@ export default function KickTeardown({ onClose }: { onClose: () => void }) {
           an explicit instruction, holds it on every shelf, and breaks it the moment you type a
           name into search. The product never closes the loop on what a viewer tells it.
         </p>
+        <div className="td-meta-wrap">
         <dl className="td-meta">
           <div>
             <dt>Subject</dt>
@@ -170,6 +171,15 @@ export default function KickTeardown({ onClose }: { onClose: () => void }) {
             </span>
           </div>
         </dl>
+        {/* Outside the <dl>: it clips to its rounded corners, which cut the
+            monkey's legs off. The wrapper is the unclipped box it sits on. */}
+        <span
+          className="monkey monkey--snack"
+          style={{
+            backgroundImage: `url(${import.meta.env.BASE_URL}monkey-snack-sheet.png)`,
+          }}
+        />
+        </div>
 
         {/* 02 CONTEXT */}
         <h2>What Kick is, and what I set out to answer</h2>

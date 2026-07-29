@@ -1,0 +1,81 @@
+/* ============================ MONKEY ============================ */
+/* Two loops off one sprite rig (scripts/monkey-sprite.py):
+     hang  - hangs by its tail from a letter and waves hello
+     snack - sits on a box edge, legs swinging, eating a banana
+   Both sheets are drawn at 1x and shown at exactly 2x, so every source pixel
+   stays a clean 2x2 block. */
+/* Sits above everything around it: the heading text it hangs off, and the
+   meta box's hatch (::before), corner brackets (::after) and stamp, all of
+   which would otherwise paint over it. */
+.monkey {
+  position: absolute;
+  z-index: 5;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* --- hanging off a letter --------------------------------------------- */
+/* The span wraps a single glyph, so the monkey travels with that letter when
+   the heading rewraps instead of drifting off it. */
+/* The perch needs its own stacking context above the rest of the heading,
+   otherwise the letters after it paint over the monkey. */
+.monkey-perch {
+  position: relative;
+  z-index: 5;
+}
+/* 8 frames of 32x56 -> 64x112 each, 512px of sheet.
+   The sprite's grip (the tail hook, at 16,4 -> 32,8 at 2x) has to land on top
+   of the glyph: centred horizontally, and pulled up by that 8px. The `top`
+   nudge drops it from the line box's top down to the x-height, where a
+   lowercase letter's stroke actually starts - that is the one value to tune
+   if the hook floats above the letter or bites into it. */
+.monkey--hang {
+  /* In front of the glyph (inherits .monkey's z-index: 5). The hook curls
+     around the middle of the letter, so it has to paint over it - behind, the
+     grip is hidden by the letter and the tail just looks cut off. */
+  left: 50%;
+  /* Measured, not guessed. In this font the glyph's x-height top is 0.45em
+     below the line box top and its baseline is 0.96em; the tail hook curls
+     around the midpoint of the two, so it grips through the middle of the
+     letter rather than perching on top of it. */
+  top: 0.71em;
+  width: 64px;
+  height: 112px;
+  margin-left: -32px;
+  margin-top: -8px;
+  background-size: 512px 112px;
+  animation: monkey-hang 1.2s steps(8) infinite;
+}
+@keyframes monkey-hang {
+  to {
+    background-position-x: -512px;
+  }
+}
+
+/* --- sitting on the field-study box ----------------------------------- */
+/* 8 frames of 34x40 -> 68x80 each, 544px of sheet.
+   The sprite's seat row (18 of 40 -> 36 at 2x) sits on the box's bottom edge,
+   so the element hangs 80 - 36 = 44px below it and the legs dangle over the
+   side. */
+.monkey--snack {
+  right: 8%;
+  bottom: -44px;
+  width: 68px;
+  height: 80px;
+  background-size: 544px 80px;
+  animation: monkey-snack 1.4s steps(8) infinite;
+}
+@keyframes monkey-snack {
+  to {
+    background-position-x: -544px;
+  }
+}
+
+/* The global reduced-motion rule collapses animations to 0.01ms, which would
+   freeze both monkeys on an arbitrary frame. Hide them instead. */
+@media (prefers-reduced-motion: reduce) {
+  .monkey {
+    display: none;
+  }
+}
