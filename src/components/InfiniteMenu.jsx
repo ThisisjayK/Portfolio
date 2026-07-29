@@ -1065,6 +1065,10 @@ export default function InfiniteMenu({ items = [], scale = 1.0, onItemClick }) {
   // mobile it stays up permanently instead (whenever the sphere is settled) -
   // otherwise the tap/drag affordance would never surface at all.
   const showOpen = (isHovering || mobile) && !isMoving;
+  // The placeholder faces (e.g. "coming soon") carry no link, so there's
+  // nothing for a click to open - only the drag affordance applies to them,
+  // on both mobile and desktop.
+  const canOpenActiveItem = Boolean(activeItem?.link);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
@@ -1084,7 +1088,7 @@ export default function InfiniteMenu({ items = [], scale = 1.0, onItemClick }) {
           <p className={`face-description ${isMoving ? 'inactive' : 'active'}`}> {activeItem.description}</p>
 
           <span className={`open-hint ${showOpen ? 'active' : 'inactive'}`}>
-            <span className="open-hint-main">CLICK TO OPEN!</span>
+            {canOpenActiveItem && <span className="open-hint-main">CLICK TO OPEN!</span>}
             <span className="open-hint-sub">Drag to Change</span>
           </span>
 

@@ -710,6 +710,24 @@
     display: none;
   }
 }
+@media (max-width: 900px) {
+  /* No physical Escape key on a phone, so the close button is the only way
+     out of the fullscreen viewer - it has to stay on screen no matter how
+     long the title or "Open in Figma" link get. Drop the link and cap the
+     title's width so .sp's flex:1 always has room to push the button into
+     view instead of letting nowrap siblings shove it off the right edge. */
+  .td-protomodal__bar a {
+    display: none;
+  }
+  .td-protomodal__bar .t {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 45vw;
+  }
+  .td-protomodal__close {
+    flex-shrink: 0;
+  }
+}
 body.td-modal-open {
   overflow: hidden;
 }

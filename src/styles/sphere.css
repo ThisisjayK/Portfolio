@@ -15,9 +15,9 @@
 @media (max-width: 900px) {
   /* Scaled down to fit a phone screen: no side rail to clear and the sphere
      itself renders smaller (see the `scale` prop passed in Teardowns.tsx).
-     A bit taller than a flat 48vh so the logo, the action button and the
-     open-hint text below it (always-on on mobile, see InfiniteMenu.jsx) have
-     room to sit clear of each other instead of stacking on top of one another. */
+     A bit taller than a flat 48vh so the logo and the open-hint text below it
+     (always-on on mobile, see InfiniteMenu.jsx) have room to sit clear of
+     each other instead of stacking on top of one another. */
   .teardown-sphere {
     height: min(56vh, 440px);
   }
@@ -96,16 +96,18 @@
 @media (max-width: 900px) {
   /* No hover on touch, so the hint is shown permanently on mobile (see the
      `mobile` branch of `showOpen` in InfiniteMenu.jsx) instead of appearing on
-     hover - pinned to the bottom of the sphere, centred. The action button is
-     pushed up a bit further (below) so there's a clear gap between it and
-     this text instead of the two crowding each other. */
+     hover - pinned to the bottom of the sphere, centred. */
   .teardown-sphere .open-hint {
     left: 50%;
     top: auto;
-    bottom: 0.6rem;
+    bottom: 0.9rem;
     transform: translateX(-50%);
   }
-  .teardown-sphere .action-button.active {
-    bottom: 5.6em;
+  /* The arrow button is redundant on mobile: the open-hint text above already
+     says "Click to open!", and tapping the sphere itself activates the front
+     item (see handleCanvasPointerUp in InfiniteMenu.jsx), so hiding the
+     button loses no functionality. */
+  .teardown-sphere .action-button {
+    display: none;
   }
 }
