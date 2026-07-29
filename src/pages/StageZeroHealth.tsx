@@ -7,10 +7,13 @@ import { motion } from "motion/react"
    rule of its own is .td-more, the control that discloses the body.
 
    The page opens as a summary and reveals the rest on request, so a visitor can
-   decide from ~150 words whether to spend ten minutes here. Source of record for
-   the copy is case-studies/stage-zero-health/CASE-STUDY.md, which carries the
-   same summary as its first section, and every external claim is cited in the
-   EVIDENCE.md next to it. */
+   decide from ~150 words whether to spend ten minutes here.
+
+   This file is the source of record for the copy. A CASE-STUDY.md used to hold
+   the same prose alongside the citations, but nothing read it at build time, so
+   the two drifted and only this one reached visitors. Prose edits belong here.
+   Every external claim is still cited in
+   case-studies/stage-zero-health/EVIDENCE.md. */
 
 export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
   const [expanded, setExpanded] = useState(false)

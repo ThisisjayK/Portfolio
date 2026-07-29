@@ -1,0 +1,62 @@
+/* ============================ CASE STUDIES ============================ */
+.par {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 1.8vw, 22px);
+  margin-top: 0.9rem;
+}
+.par .step .k {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.8rem, 3.6vw, 2.8rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-transform: none;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 0.35rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--ink-28);
+}
+.par .step p {
+  font-size: 0.86rem;
+  line-height: 1.42;
+  margin: 0;
+  max-width: none;
+}
+.chip {
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  font-weight: 600;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-80);
+  border: 1px solid var(--ink-28);
+  border-radius: 1px;
+  padding: 0.36em 0.64em;
+  text-decoration: none;
+  transition: 0.3s var(--ease);
+}
+a.chip:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+/* Certifications shown as linked tags in the About aside. */
+.about-certs {
+  margin-top: 1.5rem;
+}
+.about-certs-label {
+  display: block;
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  font-weight: 700;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-55);
+  margin-bottom: 0.6rem;
+}
+.about-certs-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45em;
+}

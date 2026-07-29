@@ -1,0 +1,59 @@
+/* ============================ VOLUNTEERING ============================ */
+/* The roles are a React-Bits FlowingMenu: full-width bars that reveal a
+   scrolling marquee on hover and open the org on click. It needs a sized,
+   positioned box to fill; a top rule ties it to the intro above. */
+.vol-menu {
+  position: relative;
+  width: 100%;
+  height: min(66vh, 600px);
+}
+/* The volunteering detail page (opened on click) reuses the .teardown-page
+   chrome; these just style its "what I did" list and the poster beside it. */
+.vol-detail-list {
+  margin: 1.4rem 0 0;
+  padding-left: 1.2em;
+  display: grid;
+  gap: 0.6rem;
+  max-width: 64ch;
+}
+.vol-detail-list li {
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--ink-80);
+}
+/* Roles carrying a portrait photo run it down the left at full height with the
+   copy beside it. The media column is sized by the image itself (auto), so the
+   text takes whatever is left instead of the two fighting over a fixed split. */
+.vol-split {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(1.6rem, 4vw, 3.4rem);
+  align-items: center;
+}
+.vol-split__media {
+  margin: 0;
+}
+.vol-split__media img {
+  display: block;
+  height: min(74vh, 660px);
+  width: auto;
+  max-width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--ink-28);
+}
+.vol-split__body > h1 {
+  margin-top: 0;
+}
+/* Too narrow for two columns: stack, and let the photo size on width instead of
+   height so it does not eat the whole screen above the copy. */
+@media (max-width: 900px) {
+  .vol-split {
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
+  }
+  .vol-split__media img {
+    height: auto;
+    width: 100%;
+    max-width: 340px;
+  }
+}

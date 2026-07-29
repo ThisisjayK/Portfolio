@@ -1,0 +1,141 @@
+/* ============================ FOOT ============================ */
+/* Shows on every section now (not just Contact): a plain decorative wave
+   strip, no text, pinned thin at the bottom. It never competes with the
+   fixed-viewport sections above it: .stage is flex:1 in the same flex
+   column, so it just shrinks to give this its (tiny) share, same as before. */
+.foot {
+  position: relative;
+  z-index: 2;
+  height: clamp(34px, 3.8vh, 46px);
+  flex: none;
+  display: flex;
+  align-items: flex-end;
+}
+/* Clips the tiled wave art only - kept off .foot itself so the shark fin
+   (a sibling, absolutely positioned against .foot) can poke past the
+   strip's edge instead of getting flattened by this same clip. */
+.foot-wave-clip {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.foot-wave {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+/* Fixed navy/light-blue 8-bit water palette, matched to the reference wave
+   art - deliberately not the ink/paper theme vars, so the wave stays
+   legible over the pixel-trail background in both themes instead of
+   fading into it. */
+.foot-wave__navy {
+  fill: #205180;
+}
+.foot-wave__foam {
+  fill: #9fd5ec;
+}
+/* A lone fin cruising the water strip: parked at the waterline (the tile's
+   own wake starts around its centre), drifting the full width on a loop and
+   bobbing gently so it reads as swimming rather than sliding on rails. The
+   swim/bob animation lives on this wrapper (not the <img> itself) so the fin
+   and its ripples travel together as one unit. */
+.foot-shark-wrap {
+  position: absolute;
+  bottom: 22%;
+  left: 110%;
+  width: 44px;
+  height: auto;
+  pointer-events: none;
+  animation:
+    foot-shark-swim 170s linear infinite,
+    foot-shark-bob 400s ease-in-out infinite;
+}
+.foot-shark {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+/* One round trip: the first half crosses right-to-left at the fin's normal
+   orientation (its steep leading edge is on its left in the source art, so
+   that's the way it already faces), then it snaps to a mirrored orientation
+   - via the standalone `scale` property, so it doesn't fight the bob
+   animation's separate `transform` below - and crosses back left-to-right
+   for the second half, now facing the way it's actually travelling. The
+   ripple wake is a child of this same wrapper, so flipping it flips their
+   `right:` offsets to the fin's new trailing side for free. */
+@keyframes foot-shark-swim {
+  0% {
+    left: 110%;
+    scale: 1 1;
+  }
+  49.99% {
+    left: -10%;
+    scale: 1 1;
+  }
+  50% {
+    left: -10%;
+    scale: -1 1;
+  }
+  99.99% {
+    left: 110%;
+    scale: -1 1;
+  }
+  100% {
+    left: 110%;
+    scale: 1 1;
+  }
+}
+@keyframes foot-shark-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+/* A trailing wake: two small ripples parked at the fin's base, on its right
+   (the side it's leaving behind as it swims leftward). Real elements (not
+   ::before/::after, which browsers can refuse to generate on an <img>) so
+   they reliably stack above the fin - z-index 2 beats the fin's 1. Growth
+   steps through fixed sizes rather than scaling smoothly, so it reads as
+   pixel art popping outward instead of a soft blob. */
+.foot-shark-ripple {
+  position: absolute;
+  z-index: 2;
+  bottom: 3px;
+  width: 6px;
+  height: 6px;
+  background: #9fd5ec;
+  image-rendering: pixelated;
+  animation: foot-shark-ripple 1.8s steps(4, jump-none) infinite;
+}
+.foot-shark-ripple--a {
+  right: -6px;
+}
+.foot-shark-ripple--b {
+  right: -15px;
+  bottom: 1px;
+  animation-delay: 0.6s;
+}
+@keyframes foot-shark-ripple {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+/* Full-bleed under the wheel rail rather than padded to the content column,
+   so the wave spans the true viewport width. Higher specificity than the
+   rail rules below, so it wins at every breakpoint. */
+.shell.has-rail .foot {
+  padding-left: 0;
+  padding-right: 0;
+}

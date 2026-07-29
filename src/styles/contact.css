@@ -1,0 +1,59 @@
+/* ============================ CONTACT ============================ */
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: start;
+}
+/* 52ch rather than 44ch: the label column grew with the larger label face, and
+   at 44ch the LinkedIn and GitHub values wrapped onto a second line. */
+.channels {
+  list-style: none;
+  margin: 1.4rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.2rem;
+  max-width: 52ch;
+}
+.channels li {
+  border-bottom: 1px solid var(--ink-28);
+}
+.channels a {
+  display: flex;
+  align-items: baseline;
+  gap: 1em;
+  padding: 1rem 0;
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    padding-left 0.3s var(--ease),
+    color 0.3s var(--ease);
+}
+.channels a:hover {
+  padding-left: 0.6rem;
+}
+/* Widened from 6.5em because the label is a larger face now and RESUME/LINKEDIN
+   were wrapping into the value column. */
+.channels .lab {
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  font-weight: 600;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-80);
+  flex: none;
+  width: 7.6em;
+}
+.channels .val {
+  font-size: 1.08rem;
+  font-weight: 500;
+  flex: 1;
+}
+.channels .arw {
+  color: var(--ink-55);
+  transition: transform 0.3s var(--ease);
+}
+.channels a:hover .arw {
+  transform: translateX(4px);
+  color: var(--ink);
+}

@@ -1,0 +1,51 @@
+/* ============================ SHARED TYPE ============================ */
+.eyebrow {
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  font-weight: 600;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-80);
+  margin: 0 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  flex-wrap: wrap;
+}
+.eyebrow b {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.eyebrow::before {
+  content: "";
+  width: 34px;
+  height: 1px;
+  background: var(--ink-55);
+  flex: none;
+}
+h2.sec {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.8rem, 3.6vw, 2.8rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  margin: 0 0 0.9rem;
+  max-width: 18ch;
+}
+p {
+  margin: 0 0 1.1rem;
+  color: var(--ink-80);
+  max-width: 60ch;
+}
+p:last-child {
+  margin-bottom: 0;
+}
+a.inline {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--ink-28);
+  transition: border-color 0.25s;
+}
+a.inline:hover {
+  border-bottom-color: var(--ink);
+}

@@ -1,0 +1,711 @@
+/* ==================== IN-SITE TEARDOWN PAGE (Kick) ==================== */
+/* A scrollable long-form page rendered over the app in the same two-ink
+   system, opened from the teardown sphere. Own scroll (the app body is locked),
+   sits above the bar and wheel rail, closes on the X or Escape. */
+.teardown-page {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--paper);
+  color: var(--ink);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.teardown-page__inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: clamp(3rem, 7vh, 5rem) var(--gut) 6rem;
+}
+/* The volunteering detail pages hold only a little content, so centre it in the
+   viewport rather than pinning it to the top. margin:auto in a flex container
+   centres both axes yet still lets the page scroll if it ever overflows. */
+.teardown-page.vol-page {
+  display: flex;
+}
+.teardown-page.vol-page .teardown-page__inner {
+  margin: auto;
+  padding-top: clamp(2rem, 6vh, 4rem);
+  padding-bottom: clamp(2rem, 6vh, 4rem);
+}
+/* A photo plus copy side by side needs more room than the 820px reading column. */
+.teardown-page.vol-page--media .teardown-page__inner {
+  max-width: 1200px;
+  width: 100%;
+}
+.teardown-close {
+  position: fixed;
+  top: 1.1rem;
+  right: 1.1rem;
+  z-index: 210;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  padding: 0.5em 0.85em;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--paper) 78%, transparent);
+  border: 1px solid var(--ink-28);
+  color: var(--ink);
+  cursor: pointer;
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px) saturate(1.2);
+  transition:
+    border-color 0.25s var(--ease),
+    background 0.25s var(--ease);
+}
+.teardown-close:hover {
+  border-color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 8%, var(--paper));
+}
+.teardown-close:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+.teardown-close svg {
+  width: 13px;
+  height: 13px;
+  display: block;
+}
+.teardown-page h1 {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  margin: 0.6rem 0 1.2rem;
+  max-width: none;
+  text-shadow: none;
+}
+.teardown-page h2 {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.3rem, 2.6vw, 1.85rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin: 2.6rem 0 0.8rem;
+  max-width: none;
+}
+.teardown-page .lede {
+  font-size: clamp(1.05rem, 1.6vw, 1.32rem);
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--ink);
+  margin: 0 0 1.4rem;
+  max-width: 76ch;
+}
+.teardown-page p {
+  max-width: 88ch;
+  margin: 0 0 1.1rem;
+  color: var(--ink-80);
+}
+.teardown-page ol {
+  max-width: 88ch;
+  margin: 0 0 1.1rem;
+  padding-left: 1.3rem;
+  color: var(--ink-80);
+}
+.teardown-page li {
+  margin: 0 0 0.55rem;
+}
+.teardown-page blockquote {
+  margin: 1.6rem 0;
+  padding: 0.4rem 0 0.4rem 1.2rem;
+  border-left: 2px solid var(--ink);
+  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+  line-height: 1.45;
+  color: var(--ink);
+  max-width: 78ch;
+}
+.td-blockcite {
+  display: block;
+  margin-top: 0.9rem;
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+  color: var(--ink-55);
+  font-weight: 500;
+}
+.td-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.4rem 0;
+  font-size: 0.9rem;
+  max-width: none;
+}
+/* Cells are uniformly left-aligned and top-aligned, at every reader size: the
+   alignment is set once here rather than per-column so nothing can drift apart
+   as the type scales. */
+.td-table th,
+.td-table td {
+  border: 1px solid var(--ink-28);
+  padding: 0.55em 0.8em;
+  text-align: left;
+  vertical-align: top;
+  color: var(--ink-80);
+}
+.td-table thead th,
+.td-table tbody th {
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-80);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.td-table .bad {
+  color: var(--ink);
+  font-weight: 600;
+}
+/* nowrap headers set a floor on every column width, and with no scroll wrapper
+   the table pushes the whole page sideways on a phone: 550px of content in a
+   390px viewport at the default size, worse at XL. Letting the labels wrap on
+   narrow screens is what keeps the page from scrolling horizontally. */
+@media (max-width: 900px) {
+  .td-table thead th,
+  .td-table tbody th {
+    white-space: normal;
+  }
+  .td-table th,
+  .td-table td {
+    padding: 0.5em 0.6em;
+  }
+}
+/* Discloses the body of a long-form piece that opens as a summary. Reads as a
+   deliberate affordance rather than a text link, since it is the one thing a
+   visitor who has just read the summary is expected to press. */
+.td-more {
+  margin: 1.5rem 0 0;
+  /* Block (not inline-block) so it clears the table and never shares a line with
+     the "back to case studies" link that follows it once the body is collapsed.
+     fit-content keeps the box tight to the label rather than spanning the column. */
+  display: block;
+  width: fit-content;
+  cursor: pointer;
+  background: none;
+  border: 1px solid var(--ink-28);
+  border-radius: 2px;
+  padding: 0.72rem 1.2rem;
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  transition:
+    border-color 0.25s var(--ease),
+    background 0.25s var(--ease);
+}
+.td-more:hover {
+  border-color: var(--ink);
+  background: var(--ink-14);
+}
+
+.teardown-back {
+  margin-top: 2.6rem;
+  display: inline-block;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-80);
+  padding: 0;
+  transition: color 0.25s var(--ease);
+}
+.teardown-back:hover {
+  color: var(--ink);
+}
+
+/* Long-form teardown: supporting blocks (stats, meta, callouts, prototypes) */
+.teardown-page h3 {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 600;
+  font-size: clamp(1.05rem, 1.7vw, 1.28rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 1.8rem 0 0.6rem;
+  color: var(--ink);
+}
+.teardown-page ul {
+  max-width: 88ch;
+  margin: 0 0 1.1rem;
+  padding-left: 1.3rem;
+  color: var(--ink-80);
+}
+.teardown-page ul li {
+  margin: 0 0 0.55rem;
+}
+.teardown-page strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* The global .eyebrow now carries what this page used to override locally, so
+   only the top margin is left to reset. */
+.teardown-page .eyebrow {
+  margin-top: 0;
+}
+
+/* index/label above a finding */
+.td-finding {
+  display: block;
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-80);
+  font-weight: 600;
+  margin: 2.6rem 0 0.2rem;
+}
+
+.td-meta {
+  /* fixed 2-up / 4-up so the five facts + decorative cell always tile cleanly
+     and "By" lands in column 1 (the art cell fills the rest of its row) */
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--ink-28);
+  border: 1px solid var(--ink-28);
+  margin: 1.6rem 0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+@media (min-width: 640px) {
+  .td-meta {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.td-meta div {
+  background: var(--paper);
+  padding: 0.9rem 1rem;
+}
+
+/* decorative "evidence tag" filling the empty trailing cells of the last row */
+.td-meta__art {
+  grid-column: 2 / -1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 76px;
+}
+.td-meta__art::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.6;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent 0 9px,
+    color-mix(in srgb, var(--ink) 7%, transparent) 9px 10px
+  );
+}
+.td-meta__art::after {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  pointer-events: none;
+  opacity: 0.4;
+  background:
+    linear-gradient(var(--ink), var(--ink)) 0 0/13px 1px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 0 0/1px 13px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 100% 0/13px 1px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 100% 0/1px 13px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 0 100%/13px 1px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 0 100%/1px 13px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 100% 100%/13px 1px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 100% 100%/1px 13px no-repeat;
+}
+.td-meta__stamp {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-80);
+  line-height: 1.7;
+}
+.td-meta__stamp b {
+  display: block;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: calc(13px * var(--tscale));
+  letter-spacing: 0.03em;
+  margin-bottom: 0.35em;
+}
+.td-meta dt {
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-80);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.td-meta dd {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: var(--ink-80);
+}
+
+.td-stats {
+  /* The 140px floor scales with the type, or the numbers outgrow their column
+     at the larger reader sizes and the row stops tiling evenly. */
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(calc(140px * var(--tscale)), 1fr)
+  );
+  gap: 1px;
+  background: var(--ink-28);
+  border: 1px solid var(--ink-28);
+  margin: 1.6rem 0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.td-stats div {
+  background: var(--paper);
+  padding: 1.1rem 1rem;
+}
+.td-stats .n {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--ink);
+  font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+}
+.td-stats .n small {
+  font-size: 0.4em;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ink-55);
+}
+.td-stats .k {
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-80);
+  font-weight: 500;
+  margin-top: 0.6rem;
+  line-height: 1.45;
+}
+
+.td-callout {
+  border-left: 2px solid var(--ink);
+  padding: 0.2rem 0 0.2rem 1.2rem;
+  margin: 1.6rem 0;
+  max-width: 88ch;
+}
+.td-callout .h {
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  font-weight: 600;
+  margin-bottom: 0.7rem;
+}
+.td-callout p {
+  margin: 0 0 0.7rem;
+}
+.td-callout p:last-child {
+  margin-bottom: 0;
+}
+.td-callout.warn {
+  border-left-style: dashed;
+}
+
+.td-promise {
+  border-top: 1px solid var(--ink-28);
+  border-bottom: 1px solid var(--ink-28);
+  padding: 1.6rem 0;
+  margin: 1.8rem 0;
+}
+.td-promise .lab {
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-80);
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.td-promise q {
+  display: block;
+  quotes: none;
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  font-size: clamp(1.15rem, 2.2vw, 1.7rem);
+  max-width: 24ch;
+}
+.td-promise .verdict {
+  margin-top: 1.2rem;
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink);
+  font-weight: 600;
+  display: inline-block;
+  border: 1px solid var(--ink-28);
+  padding: 0.5em 0.85em;
+  border-radius: 2px;
+}
+
+/* Figma prototype, click to activate (a live cross-origin iframe swallows
+   wheel + keys, so it stays a poster until the reader opts in) */
+.td-proto {
+  margin: 1.8rem 0;
+}
+.td-proto__stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/10;
+  border: 1px solid var(--ink-28);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--ink-14);
+}
+.td-proto__stage iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+.td-proto__poster {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  color: inherit;
+  width: 100%;
+  text-align: center;
+  transition: background 0.3s var(--ease);
+}
+.td-proto__poster:hover {
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+}
+.td-proto__ring {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1;
+  padding-left: 3px;
+  background: var(--paper);
+  transition: 0.3s var(--ease);
+}
+.td-proto__poster:hover .td-proto__ring {
+  background: var(--ink);
+  color: var(--paper);
+  transform: scale(1.07);
+}
+.td-proto__lab {
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  font-weight: 600;
+  line-height: 1.6;
+  border: 1px solid var(--ink-28);
+  border-radius: 2px;
+  padding: 0.6em 0.9em;
+  background: var(--paper);
+}
+.td-proto__lab span {
+  display: block;
+  color: var(--ink-80);
+  letter-spacing: 0.02em;
+  text-transform: none;
+  font-weight: 500;
+  margin-top: 0.4em;
+  font-size: 0.92em;
+}
+.td-proto__foot {
+  display: flex;
+  align-items: baseline;
+  gap: 1em;
+  flex-wrap: wrap;
+  margin-top: 0.7rem;
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  letter-spacing: 0.02em;
+  color: var(--ink-80);
+  font-weight: 500;
+}
+.td-proto__foot a {
+  color: var(--ink-80);
+  border-bottom: 1px solid var(--ink-28);
+  text-decoration: none;
+  transition: color 0.25s;
+}
+.td-proto__foot a:hover {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+/* four smaller prototypes side by side */
+.td-protogrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.4rem;
+  margin: 1.6rem 0;
+}
+.td-protogrid .td-proto {
+  margin: 0;
+}
+.td-protogrid h4 {
+  margin: 0.7rem 0 0.3rem;
+  font-size: 0.98rem;
+  font-weight: 600;
+  font-family: "Geist", system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.td-protogrid p {
+  font-size: 0.86rem;
+  margin: 0;
+  max-width: none;
+}
+@media (max-width: 640px) {
+  .td-protogrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Fullscreen prototype viewer, opened over the whole teardown */
+.td-protomodal {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  background: color-mix(in srgb, var(--paper) 96%, var(--ink));
+}
+.td-protomodal__bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  height: 56px;
+  padding: 0 clamp(14px, 3vw, 28px);
+  border-bottom: 1px solid var(--ink-28);
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  letter-spacing: 0.04em;
+}
+.td-protomodal__bar .t {
+  color: var(--ink);
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.td-protomodal__bar .s {
+  color: var(--ink-55);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.td-protomodal__bar .sp {
+  flex: 1;
+}
+.td-protomodal__bar a {
+  color: var(--ink-80);
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--ink-28);
+  transition: color 0.25s;
+}
+.td-protomodal__bar a:hover {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+.td-protomodal__close {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  flex: none;
+  cursor: pointer;
+  background: none;
+  border: 1px solid var(--ink-28);
+  border-radius: 999px;
+  color: var(--ink);
+  padding: 0.45em 0.85em;
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  transition:
+    border-color 0.25s var(--ease),
+    background 0.25s var(--ease);
+}
+.td-protomodal__close:hover {
+  border-color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 8%, var(--paper));
+}
+.td-protomodal__close:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+.td-protomodal__frame {
+  flex: 1;
+  min-height: 0;
+  padding: clamp(12px, 2.4vh, 26px) clamp(14px, 3vw, 28px);
+}
+.td-protomodal__frame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--ink-28);
+  border-radius: 4px;
+  background: var(--paper);
+}
+@media (max-width: 640px) {
+  .td-protomodal__bar .s {
+    display: none;
+  }
+}
+body.td-modal-open {
+  overflow: hidden;
+}
+@media (max-width: 640px) {
+  .td-blockcite {
+    max-width: none;
+  }
+}

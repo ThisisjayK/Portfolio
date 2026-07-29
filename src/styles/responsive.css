@@ -1,0 +1,48 @@
+/* ============================ RESPONSIVE ============================ */
+@media (max-width: 900px) {
+  .cols {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+  .aside {
+    border-left: 0;
+    border-top: 1px solid var(--ink-28);
+    padding: 1.2rem 0 0;
+  }
+  .par {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .foot {
+    grid-template-columns: 1fr;
+  }
+  p {
+    max-width: none;
+  }
+  /* narrower wheel rail on the right, less reserved width for content */
+  :root {
+    --rail: 150px;
+  }
+  .wheel-nav {
+    top: 3.8rem;
+    width: 150px;
+  }
+  .hero,
+  .block,
+  .foot {
+    padding-right: calc(var(--gut) + 130px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

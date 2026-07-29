@@ -1,0 +1,47 @@
+/* ============================ 404 PAGE ============================ */
+.notfound {
+  min-height: 100dvh;
+  background: var(--paper);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gut);
+  position: relative;
+  overflow: hidden;
+}
+.notfound-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.6rem, 2.5vh, 1.6rem);
+  text-align: center;
+  max-width: 100%;
+}
+.notfound-stack canvas {
+  display: block;
+  max-width: 100%;
+}
+.notfound-home {
+  margin-top: clamp(1.6rem, 4vh, 3rem);
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  font-weight: 600;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-80);
+  text-decoration: none;
+  border-bottom: 1px solid var(--ink-28);
+  padding-bottom: 2px;
+  transition: 0.3s var(--ease);
+}
+.notfound-home:hover {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+.notfound-toggle {
+  position: fixed;
+  top: 1.15rem;
+  right: var(--gut);
+  z-index: 2;
+}
