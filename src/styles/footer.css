@@ -27,8 +27,7 @@
 }
 /* Fixed navy/light-blue 8-bit water palette, matched to the reference wave
    art - deliberately not the ink/paper theme vars, so the wave stays
-   legible over the pixel-trail background in both themes instead of
-   fading into it. */
+   legible in both themes instead of fading into the background. */
 .foot-wave__navy {
   fill: #205180;
 }
@@ -39,8 +38,11 @@
    own wake starts around its centre), drifting the full width on a loop and
    bobbing gently so it reads as swimming rather than sliding on rails. The
    swim/bob animation lives on this wrapper (not the <img> itself) so the fin
-   and its ripples travel together as one unit. */
+   and its ripples travel together as one unit.
+   Dark theme only - the light theme gets the breaching whale instead - so it
+   is hidden by default and switched on below. */
 .foot-shark-wrap {
+  display: none;
   position: absolute;
   bottom: 22%;
   left: 110%;
@@ -50,6 +52,9 @@
   animation:
     foot-shark-swim 170s linear infinite,
     foot-shark-bob 400s ease-in-out infinite;
+}
+[data-theme="dark"] .foot-shark-wrap {
+  display: block;
 }
 .foot-shark {
   position: relative;
@@ -130,6 +135,71 @@
   100% {
     transform: scale(2.4);
     opacity: 0;
+  }
+}
+/* A whale that breaches - launches clear of the water on a ballistic arc,
+   turns over at the apex and dives back in - once a cycle.
+   Unlike the shark fin this one IS clipped: the wrapper's bottom edge is
+   pinned to the waterline (WATERLINE_ROW 10 of the 20-row tile, i.e. half
+   the strip) and hides overflow, so the wave itself does the submerging and
+   the sprite never has to draw water of its own. The whole leap is baked into
+   the frames, so there is no transform to keep in sync with them. It sits a
+   layer behind the fin, which cruises past in front.
+   Light theme only, so it is hidden by default and switched on below. */
+.foot-whale-clip {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  bottom: 50%;
+  left: 14%;
+  /* Drawn 80x64 and shown at exactly 5x, so every source pixel stays a clean
+     5x5 block. body has overflow:hidden, so on a narrow viewport the leap is
+     cropped at the edge rather than causing a scrollbar. */
+  width: 400px;
+  /* 50 of the sprite's 64 rows sit above the waterline; the rest is clipped. */
+  height: 250px;
+  overflow: hidden;
+  pointer-events: none;
+}
+/* data-theme lives on <html>, set before first paint by the inline script in
+   index.html, so the whale is either on or off from the very first frame. */
+[data-theme="light"] .foot-whale-clip {
+  display: block;
+}
+/* 15 frames of 400px: one blank (the long pause between breaches) then the
+   fourteen of the leap itself. */
+.foot-whale {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 400px;
+  height: 320px;
+  background-repeat: no-repeat;
+  background-size: 6000px 320px;
+  image-rendering: pixelated;
+  /* Both keyframes carry their own timing function; this base is never used. */
+  animation: foot-whale-breach 240s linear infinite;
+}
+/* One breach every four minutes. The sprite holds on the blank frame for the
+   whole wait, then steps the leap out over the last 2s of the 240s cycle -
+   hence the hold running to 99.1667% (= 100 - 2/240). jump-none lands each
+   step exactly on a frame boundary: 15 values from 0 to -5600px, -400px
+   apart. */
+@keyframes foot-whale-breach {
+  0%,
+  99.1667% {
+    background-position-x: 0;
+    animation-timing-function: steps(15, jump-none);
+  }
+  100% {
+    background-position-x: -5600px;
+  }
+}
+/* The global reduced-motion rule collapses animations to 0.01ms, which would
+   leave the whale frozen mid-leap. Hide it outright instead. Matches the
+   light-theme selector's specificity so it still wins. */
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="light"] .foot-whale-clip {
+    display: none;
   }
 }
 /* Full-bleed under the wheel rail rather than padded to the content column,

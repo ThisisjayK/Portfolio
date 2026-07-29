@@ -106,6 +106,17 @@ export function Footer() {
         <span className="foot-shark-ripple foot-shark-ripple--a" />
         <span className="foot-shark-ripple foot-shark-ripple--b" />
       </div>
+      {/* Breaching whale. The wrapper's bottom edge sits on the waterline and
+          clips, so the sprite's lower rows are simply hidden and the whale
+          reads as launching out of the water and diving back under it. */}
+      <div className="foot-whale-clip">
+        <span
+          className="foot-whale"
+          style={{
+            backgroundImage: `url(${import.meta.env.BASE_URL}whale-breach-sheet.png)`,
+          }}
+        />
+      </div>
     </footer>
   );
 }
