@@ -1,0 +1,27 @@
+/* ============================ WHEEL NAV ============================ */
+/* Right-hand curved selector (React Bits OptionWheel) is the navigation. It
+   sits in a fixed rail below the top bar; the content reserves that width on
+   the right so nothing slides underneath it. */
+:root {
+  --rail: clamp(300px, 32vw, 440px);
+}
+.wheel-nav {
+  position: fixed;
+  top: 4.6rem;
+  right: 0;
+  bottom: 0;
+  z-index: 55;
+  width: var(--rail);
+  pointer-events: auto;
+}
+.wheel-nav .option-wheel__item {
+  font-family: "Geist", system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+@media (min-width: 901px) {
+  .has-rail .hero,
+  .has-rail .block,
+  .has-rail .foot {
+    padding-right: calc(var(--gut) + var(--rail));
+  }
+}

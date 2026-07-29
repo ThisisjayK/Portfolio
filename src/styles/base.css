@@ -1,0 +1,164 @@
+/* ============================================================
+   Two inks, nothing else. The whole page is a two-colour print
+   job, so every tone below is a mix of exactly these two.
+   ============================================================ */
+/* Display face for the Teardowns "Open!" hover label. Single .otf source, 
+   no legacy formats, since the site targets modern browsers only. */
+@font-face {
+  font-family: "Saint Regus";
+  src: url("../assets/fonts/SaintRegus-Expanded.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+/* Bold weight of the same family, used large in the boot loader's rotating word.
+   SemiBold is the heaviest Saint Regus cut we have, mapped to 700 so
+   font-weight:700 selects it. */
+@font-face {
+  font-family: "Saint Regus";
+  src: url("../assets/fonts/Sonar Hubermann - SaintRegus-SemiBold.otf")
+    format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+/* The blocky "KICK" typeface, used for the 404 page's fuzzy "404". */
+@font-face {
+  font-family: "Kick Font";
+  src: url("../assets/fonts/kick-font.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --a: #00663a; /* the green ink  */
+  --b: #ffccfd; /* the pink ink   */
+  --ease: cubic-bezier(0.22, 0.68, 0.24, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --gut: clamp(22px, 6vw, 90px);
+}
+html[data-theme="dark"] {
+  --paper: var(--a);
+  --ink: var(--b);
+}
+html[data-theme="light"] {
+  --paper: var(--b);
+  --ink: var(--a);
+}
+
+/* Tone steps between the ink and the paper. The names are the original mix
+   values and are kept as stable handles; the actual mixes below were lifted
+   once the two-ink palette went on screen, where the lighter steps turned out
+   too faint to read type in. --ink-28 is the exception and stays where it was:
+   it is almost entirely a hairline-border tone, and darkening it thickens every
+   rule on the page. The one place it set type (the colophon) now uses -55. */
+:root {
+  --ink-80: color-mix(in srgb, var(--ink) 88%, var(--paper));
+  --ink-55: color-mix(in srgb, var(--ink) 70%, var(--paper));
+  --ink-28: color-mix(in srgb, var(--ink) 28%, var(--paper));
+  --ink-14: color-mix(in srgb, var(--ink) 14%, var(--paper));
+}
+
+/* One scale for the small uppercase labels that index and caption things.
+   These moved to Archivo at 12px with the tracking pulled in: at 10px and .2em+
+   the typewriter face they used to be set in was breaking up on the coloured
+   ground. This mirrors the override the Kick teardown had already made locally
+   and now applies everywhere, so the teardown no longer needs its own copy.
+   No typewriter face is used anywhere on the site now - the card artwork that
+   was set in Courier New is Saint Regus Bold, embedded in each SVG. */
+:root {
+  --label-size: calc(12px * var(--tscale));
+  --label-track: 0.1em;
+}
+
+/* ---------------------------------------------------------------
+   Reader text size. One multiplier drives the whole page: the rem
+   base below, the body size, and --label-size, which between them
+   cover every piece of type on the site. It lives on <html> so it
+   applies to the tabs and to the long-form pages layered over them
+   alike. Set by the Aa control in the bar and remembered in
+   localStorage; an inline script in index.html stamps the attribute
+   before first paint so there is no jump on load.
+   Chrome is deliberately left out: the JK mark and the play glyph
+   are marks rather than text, and pinning them keeps the header
+   from reflowing as the reader steps through the sizes.
+   --------------------------------------------------------------- */
+/* Large is the shipped default, so the bare :root value is the Large step and
+   Small is the one that has to opt out. Setting it this way round also means a
+   visitor whose stamp never lands (no JS, no storage) still gets Large rather
+   than silently falling back to the smallest size. */
+:root {
+  --tscale: 1.15;
+}
+html[data-text="sm"] {
+  --tscale: 1;
+}
+html[data-text="lg"] {
+  --tscale: 1.15;
+}
+html[data-text="xl"] {
+  --tscale: 1.3;
+}
+
+* {
+  box-sizing: border-box;
+}
+/* Root rem base is dialled below 16px so the whole rem-based layout scales
+   down a notch, giving each tab headroom to fit shorter viewports. */
+html {
+  -webkit-text-size-adjust: 100%;
+  font-size: calc(14.5px * var(--tscale));
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Archivo", system-ui, sans-serif;
+  font-weight: 400;
+  font-size: calc(clamp(15px, 1.02vw, 17px) * var(--tscale));
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition:
+    background 0.5s var(--ease),
+    color 0.5s var(--ease);
+  /* Each tab is sized to fit the viewport, so the page itself never scrolls. */
+  overflow: hidden;
+}
+::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* the paper itself, very slightly uneven */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background:
+    radial-gradient(
+      70% 50% at 12% 0%,
+      color-mix(in srgb, var(--ink) 9%, transparent) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      60% 45% at 100% 90%,
+      color-mix(in srgb, var(--ink) 7%, transparent) 0%,
+      transparent 55%
+    );
+}
+.shell {
+  position: relative;
+  z-index: 1;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}

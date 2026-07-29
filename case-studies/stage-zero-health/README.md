@@ -35,12 +35,16 @@ sits stale behind information the user has already given.
 
 | | |
 |---|---|
-| [`CASE-STUDY.md`](CASE-STUDY.md) | The full narrative, source of record for the in-site page |
 | [`EVIDENCE.md`](EVIDENCE.md) | Every external claim in the piece, with its citation and verification date |
 | [`assets/`](assets/) | Cover art for the case-studies gallery, one per theme ink |
 
-The rendered page lives at [`src/StageZeroHealth.tsx`](../../src/StageZeroHealth.tsx)
-and reuses the long-form page styling built for the Kick teardown.
+**The full narrative is the page itself**, at
+[`src/pages/StageZeroHealth.tsx`](../../src/pages/StageZeroHealth.tsx), which
+reuses the long-form styling built for the Kick teardown. There used to be a
+`CASE-STUDY.md` here holding the same prose, and the two drifted: editing the
+markdown changed nothing a visitor sees, because the build never read it. The
+page is now the single source of record for the copy, and this folder keeps only
+what the page cannot carry, which is the citations and the cover art.
 
 ## What I can't claim
 

@@ -1,0 +1,70 @@
+/* ============================ HERO / ABOUT ============================ */
+.hero {
+  padding: clamp(2vh, 3.5vh, 5vh) var(--gut);
+}
+h1 {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.1rem, 4.8vw, 4.2rem);
+  line-height: 0.98;
+  letter-spacing: -0.042em;
+  margin: 0 0 clamp(1rem, 2.4vh, 1.6rem);
+  max-width: 15ch;
+  position: relative;
+  text-shadow: 3px -2px 0 color-mix(in srgb, var(--ink) 14%, transparent);
+}
+h1 em {
+  font-style: normal;
+  color: var(--ink-55);
+  text-shadow: none;
+}
+@supports (-webkit-text-stroke: 1px currentColor) {
+  h1 em {
+    -webkit-text-stroke: clamp(1.5px, 0.22vw, 2.6px) var(--ink);
+    color: transparent;
+  }
+}
+
+/* Hero name: plain "Hey, I'm Jayanth". */
+.about-name {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  color: var(--ink);
+  font-size: clamp(1.5rem, 3.2vw, 2.5rem);
+  max-width: none;
+  margin: 0 0 clamp(1rem, 2.4vh, 1.6rem);
+  text-shadow: none;
+}
+
+.cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 84px);
+  align-items: start;
+}
+.lede {
+  font-size: clamp(1.2rem, 1.75vw, 1.55rem);
+  line-height: 1.4;
+  font-weight: 500;
+  margin: 0 0 0.9rem;
+  max-width: 36ch;
+  color: var(--ink);
+}
+.hero p {
+  font-size: clamp(1.05rem, 1.4vw, 1.3rem);
+  line-height: 1.5;
+}
+.aside {
+  border-left: 1px solid var(--ink-28);
+  padding-left: clamp(16px, 2vw, 28px);
+  color: var(--ink-80);
+}
+.aside p {
+  font-size: clamp(1rem, 1.3vw, 1.2rem);
+}
+.aside b {
+  font-weight: 600;
+  color: var(--ink);
+}

@@ -1,0 +1,58 @@
+/* ============================ PIXEL FROG ============================ */
+/* The mascot: each pose is a horizontal strip of equal-width frames (native
+   28x32 per frame), stepped with steps() rather than interpolated, so a
+   pixel-art frame never lands on a half-pixel and goes soft. Frame counts
+   here must match the `frames` in FrogMascot.tsx and the sheet itself.
+
+   The animated property is background-position-x in pixels, not percent:
+   percentage background-position resolves against (containerSize -
+   imageSize), not the container size itself, so a plain 0%->100% sweep does
+   NOT land on whole-frame offsets for any frame but the last - it shows
+   fractional, blended positions in between, which reads as the strip sliding
+   left-to-right instead of snapping between poses. Pixels sidestep that: the
+   strip moves exactly one --frog-frame-w per step. */
+.frog-mascot {
+  --frog-frame-w: 40px;
+  display: block;
+  width: var(--frog-frame-w);
+  aspect-ratio: 28/32;
+  background-image: var(--frog-sheet);
+  background-repeat: no-repeat;
+  background-size: calc(var(--frog-frames) * 100%) 100%;
+  image-rendering: pixelated;
+  animation-name: frog-cycle;
+  animation-duration: var(--frog-duration);
+  animation-iteration-count: infinite;
+}
+@keyframes frog-cycle {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: calc(var(--frog-frames) * -1 * var(--frog-frame-w));
+  }
+}
+
+.frog-mascot--idle {
+  animation-timing-function: steps(6);
+}
+.frog-mascot--happy {
+  animation-timing-function: steps(6);
+}
+.frog-mascot--sleeping {
+  animation-timing-function: steps(9);
+}
+.frog-mascot--confused {
+  animation-timing-function: steps(6);
+}
+/* One-shot poses: play through once and stop on the last frame. */
+.frog-mascot--catching {
+  animation-timing-function: steps(11);
+  animation-iteration-count: 1;
+}
+
+/* Stands in for the old "JK" wordmark, sized up so it reads next to the
+   theme toggle. */
+.mark-frog {
+  --frog-frame-w: 64px;
+}
