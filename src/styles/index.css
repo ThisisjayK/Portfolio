@@ -61,11 +61,12 @@ html[data-theme="light"] {
 }
 
 /* One scale for the small uppercase labels that index and caption things.
-   Courier Prime is kept for the decorative marks (the colophon, entry numerals)
-   but the functional labels moved to Archivo at 12px with the tracking pulled
-   in: at 10px and .2em+ the typewriter face was breaking up on the coloured
+   These moved to Archivo at 12px with the tracking pulled in: at 10px and .2em+
+   the typewriter face they used to be set in was breaking up on the coloured
    ground. This mirrors the override the Kick teardown had already made locally
-   and now applies everywhere, so the teardown no longer needs its own copy. */
+   and now applies everywhere, so the teardown no longer needs its own copy.
+   No typewriter face is used anywhere on the site now - the card artwork that
+   was set in Courier New is Saint Regus Bold, embedded in each SVG. */
 :root {
   --label-size: calc(12px * var(--tscale));
   --label-track: 0.1em;
@@ -1794,17 +1795,11 @@ body.td-modal-open {
 .frog-mascot--happy {
   animation-timing-function: steps(6);
 }
-.frog-mascot--sad {
-  animation-timing-function: steps(5);
-}
 .frog-mascot--sleeping {
   animation-timing-function: steps(9);
 }
 .frog-mascot--confused {
   animation-timing-function: steps(6);
-}
-.frog-mascot--flies {
-  animation-timing-function: steps(8);
 }
 /* One-shot poses: play through once and stop on the last frame. */
 .frog-mascot--catching {
