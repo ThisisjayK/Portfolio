@@ -144,6 +144,53 @@ function createTextTexture(gl, text, font = 'bold 30px monospace', color = 'blac
   return { texture, width: canvas.width, height: canvas.height };
 }
 
+// One 1x1 transparent texture per GL context, handed to every card that has no
+// sprite so the tSprite sampler is always bound to something valid.
+const emptyTextures = new WeakMap();
+function emptyTexture(gl) {
+  let texture = emptyTextures.get(gl);
+  if (!texture) {
+    texture = new Texture(gl, {
+      image: new Uint8Array([0, 0, 0, 0]),
+      width: 1,
+      height: 1,
+      generateMipmaps: false
+    });
+    emptyTextures.set(gl, texture);
+  }
+  return texture;
+}
+
+// Sprite sheets are shared: every "coming soon" card samples the same frog. One
+// Texture per (context, src) keeps that a single upload no matter how many cards
+// animate, and the per-frame cost is then just a float uniform.
+const spriteTextures = new WeakMap();
+function spriteTexture(gl, src) {
+  let bySrc = spriteTextures.get(gl);
+  if (!bySrc) {
+    bySrc = new Map();
+    spriteTextures.set(gl, bySrc);
+  }
+  let texture = bySrc.get(src);
+  if (!texture) {
+    // Pixel art: NEAREST both ways and no mipmaps, or the frames turn to mush.
+    texture = new Texture(gl, {
+      generateMipmaps: false,
+      magFilter: gl.NEAREST,
+      minFilter: gl.NEAREST,
+      wrapS: gl.CLAMP_TO_EDGE,
+      wrapT: gl.CLAMP_TO_EDGE
+    });
+    const img = new Image();
+    img.src = src;
+    img.onload = () => {
+      texture.image = img;
+    };
+    bySrc.set(src, texture);
+  }
+  return texture;
+}
+
 class Title {
   constructor({ gl, plane, renderer, text, textColor = '#545050', font = '30px sans-serif' }) {
     autoBind(this);
@@ -208,12 +255,14 @@ class Media {
     bend,
     textColor,
     borderRadius = 0,
-    font
+    font,
+    sprite = null
   }) {
     this.extra = 0;
     this.geometry = geometry;
     this.gl = gl;
     this.image = image;
+    this.sprite = sprite;
     this.index = index;
     this.length = length;
     this.renderer = renderer;
@@ -260,6 +309,15 @@ class Media {
         uniform sampler2D tMap;
         uniform float uBorderRadius;
         uniform float uLoaded;
+        // Optional sprite-sheet animation composited into the card art. The sheet
+        // is one horizontal strip of uSpriteFrames frames; uSpriteRect is the box
+        // it occupies in the card's own texture space (x, y, w, h), so the sprite
+        // is cropped and bent along with the card instead of floating over it.
+        uniform sampler2D tSprite;
+        uniform float uHasSprite;
+        uniform float uSpriteFrame;
+        uniform float uSpriteFrames;
+        uniform vec4 uSpriteRect;
         varying vec2 vUv;
 
         float roundedBoxSDF(vec2 p, vec2 b, float r) {
@@ -277,6 +335,25 @@ class Media {
             vUv.y * ratio.y + (1.0 - ratio.y) * 0.5
           );
           vec4 color = texture2D(tMap, uv);
+
+          // Sampled in the same remapped uv space as the card, so the sprite
+          // stays locked to the artwork under the cover-crop above.
+          if (uHasSprite > 0.5) {
+            vec2 local = (uv - uSpriteRect.xy) / uSpriteRect.zw;
+            if (local.x >= 0.0 && local.x <= 1.0 && local.y >= 0.0 && local.y <= 1.0) {
+              // Nudge off the exact frame edge before folding into the strip. At
+              // local 0 the sample sits precisely on the seam, where rounding can
+              // drop it into the previous frame's last column and bleed that in.
+              // 0.001 of a frame stays inside the correct edge texel for any
+              // frame narrower than 1000px, so this needs no frame dimensions.
+              vec2 f = clamp(local, 0.001, 0.999);
+              vec4 s = texture2D(
+                tSprite,
+                vec2((floor(uSpriteFrame) + f.x) / uSpriteFrames, f.y)
+              );
+              color.rgb = mix(color.rgb, s.rgb, s.a);
+            }
+          }
 
           float d = roundedBoxSDF(vUv - 0.5, vec2(0.5 - uBorderRadius), uBorderRadius);
 
@@ -297,7 +374,14 @@ class Media {
         uSpeed: { value: 0 },
         uTime: { value: 100 * Math.random() },
         uBorderRadius: { value: this.borderRadius },
-        uLoaded: { value: 0 }
+        uLoaded: { value: 0 },
+        // A sampler must always be bound even when unused, so cards without a
+        // sprite get a 1x1 transparent stand-in and uHasSprite = 0.
+        tSprite: { value: this.sprite ? this.sprite.texture : emptyTexture(this.gl) },
+        uHasSprite: { value: this.sprite ? 1 : 0 },
+        uSpriteFrame: { value: 0 },
+        uSpriteFrames: { value: this.sprite ? this.sprite.frames : 1 },
+        uSpriteRect: { value: this.sprite ? this.sprite.rect : [0, 0, 1, 1] }
       },
       transparent: true
     });
@@ -406,6 +490,7 @@ class App {
     this.scrollSpeed = scrollSpeed;
     this.onItemClick = onItemClick;
     this.scroll = { ease: scrollEase, current: 0, target: 0, last: 0 };
+    this.spriteStart = performance.now();
     this.onCheckDebounce = debounce(this.onCheck, 200);
     this.createRenderer();
     this.createCamera();
@@ -475,9 +560,19 @@ class App {
         bend,
         textColor,
         borderRadius,
-        font
+        font,
+        sprite: data.sprite
+          ? {
+              texture: spriteTexture(this.gl, data.sprite.src),
+              frames: data.sprite.frames,
+              fps: data.sprite.fps,
+              rect: data.sprite.rect
+            }
+          : null
       });
     });
+    // Only the animated cards get visited each frame.
+    this.spriteMedias = this.medias.filter(m => m.sprite);
   }
   onTouchDown(e) {
     this.isDown = true;
@@ -589,6 +684,16 @@ class App {
     const direction = this.scroll.current > this.scroll.last ? 'right' : 'left';
     if (this.medias) {
       this.medias.forEach(media => media.update(this.scroll, direction));
+    }
+    // Sprite cards step on their own clock, not the render rate: the frog naps at
+    // its authored fps regardless of how fast this display refreshes. Writing a
+    // float uniform means no per-frame texture work.
+    if (this.spriteMedias && this.spriteMedias.length) {
+      const elapsed = (performance.now() - this.spriteStart) / 1000;
+      this.spriteMedias.forEach(media => {
+        const { frames, fps } = media.sprite;
+        media.program.uniforms.uSpriteFrame.value = Math.floor(elapsed * fps) % frames;
+      });
     }
     this.renderer.render({ scene: this.scene, camera: this.camera });
     this.scroll.last = this.scroll.current;

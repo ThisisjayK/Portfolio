@@ -6,7 +6,7 @@
    no legacy formats, since the site targets modern browsers only. */
 @font-face {
   font-family: "Saint Regus";
-  src: url("./assets/fonts/SaintRegus-Expanded.otf") format("opentype");
+  src: url("../assets/fonts/SaintRegus-Expanded.otf") format("opentype");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -16,7 +16,7 @@
    font-weight:700 selects it. */
 @font-face {
   font-family: "Saint Regus";
-  src: url("./assets/fonts/Sonar Hubermann - SaintRegus-SemiBold.otf")
+  src: url("../assets/fonts/Sonar Hubermann - SaintRegus-SemiBold.otf")
     format("opentype");
   font-weight: 700;
   font-style: normal;
@@ -25,7 +25,7 @@
 /* The blocky "KICK" typeface, used for the 404 page's fuzzy "404". */
 @font-face {
   font-family: "Kick Font";
-  src: url("./assets/fonts/kick-font.ttf") format("truetype");
+  src: url("../assets/fonts/kick-font.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;

@@ -21,16 +21,15 @@
   </g>
   <line x1="76" y1="136" x2="724" y2="136" stroke="#ffccfd" stroke-opacity=".3" />
 
-  <!-- One frozen frame of the site's pixel-frog mascot (sleeping pose, frame 0
-       of sleeping_sheet_transparent.png) - a napping frog for a slot with
-       nothing to show yet. Native 28x32, kept in its own colours rather than
-       remapped to the card's ink, matching how the mascot looks everywhere
-       else on the site. Centred above the "Coming soon" line as one group. -->
-  <image
-    x="300" y="286" width="200" height="229"
-    style="image-rendering: pixelated"
-    href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAgCAYAAAABtRhCAAAAxUlEQVR4nO2UUQ6EIAxEW+NZ5Uw9LcYEFJDdKRVMdsP8CJT2UVokmppqFFNf+RcYTfD3YTwoOI8EmuH/UbOfqaEHPsjeBPQkyczd/JC9SUew4/T+HKfz2pqc46pWsijNqFFrN4DyEAuwc6iJXi74GYF5Q2gkwc8AvGDaLB2G6muogQrewt2vFNRR9/CjvsHzG2Br01zOKFPRJbGAMPHvcTdslZ6QxMcA/Fi/CKtCQZfiKy2fRtmt5bo87dJ8r0++mvUpGq4dSp9IlYzdIkMAAAAASUVORK5CYII="
-  />
+  <!-- The sleeping pixel-frog that naps here is NOT baked into this file: the
+       gallery composites sleeping_sheet_transparent.png into the card's own
+       texture space and cycles the frames (see the sprite uniforms in
+       CircularGallery.jsx, and the rect passed from sections.tsx). It occupies
+       x=300 y=286 w=200 h=229 - the box below - centred above "Coming soon".
+       Keep that box in sync with the rect if either moves. A frozen frame used
+       to live here; it had to go, or frames with a smaller silhouette would
+       leak it around their edges. -->
+  <!-- frog: x=300 y=286 w=200 h=229 (drawn by the gallery shader) -->
   <g fill="#ffccfd" font-family="'Helvetica Neue',Helvetica,Arial,sans-serif" font-weight="700" font-size="70" letter-spacing="-2.6" opacity=".62" text-anchor="middle">
     <text x="400" y="618">Coming</text>
     <text x="400" y="688">soon</text>

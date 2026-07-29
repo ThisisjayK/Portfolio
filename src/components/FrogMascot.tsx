@@ -1,11 +1,11 @@
 import type { CSSProperties } from "react"
-import idleSheet from "./assets/frog/idle/idle_sheet_transparent.png"
-import happySheet from "./assets/frog/happy/happy_sheet_transparent.png"
-import sadSheet from "./assets/frog/sad/sad_sheet_transparent.png"
-import sleepingSheet from "./assets/frog/sleeping/sleeping_sheet_transparent.png"
-import confusedSheet from "./assets/frog/confused/confused_sheet_transparent.png"
-import catchingSheet from "./assets/frog/catching/catching_sheet_transparent.png"
-import fliesSheet from "./assets/frog/flies/flies_sheet_transparent.png"
+import idleSheet from "../assets/frog/idle/idle_sheet_transparent.png"
+import happySheet from "../assets/frog/happy/happy_sheet_transparent.png"
+import sadSheet from "../assets/frog/sad/sad_sheet_transparent.png"
+import sleepingSheet from "../assets/frog/sleeping/sleeping_sheet_transparent.png"
+import confusedSheet from "../assets/frog/confused/confused_sheet_transparent.png"
+import catchingSheet from "../assets/frog/catching/catching_sheet_transparent.png"
+import fliesSheet from "../assets/frog/flies/flies_sheet_transparent.png"
 
 export type FrogPose =
   | "idle"
