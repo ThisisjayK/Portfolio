@@ -3,19 +3,19 @@ import { AnimatePresence, motion, MotionConfig } from "motion/react"
 // OptionWheel is authored in JS (React Bits); the TS editor may not resolve its
 // types, but Vite/esbuild bundles it fine and we do not run tsc in the build.
 // @ts-expect-error - JS component, no type declaration
-import OptionWheel from "./OptionWheel"
+import OptionWheel from "../components/OptionWheel"
 // Imported (not a public/ path) so Vite rewrites the URL for the GitHub Pages
 // subpath build; a bare "/assets/..." would 404 under /product-teardowns/.
-import clickSoft from "./assets/click-soft.mp3"
+import clickSoft from "../assets/click-soft.mp3"
 // @ts-expect-error - JS component (React Bits), no type declaration
-import PixelTrail from "./PixelTrail"
+import PixelTrail from "../components/PixelTrail"
 import { About, Work, Teardowns, Skills, Volunteer, VolunteerDetail, VOLUNTEER_ITEMS, Resume, Contact, Footer } from "./sections"
 import type { CaseId } from "./sections"
 import KickTeardown from "./KickTeardown"
 import StageZeroHealth from "./StageZeroHealth"
-import { IconSun, IconMoon } from "./icons"
-import Loader from "./Loader"
-import FrogMascot, { type FrogPose } from "./FrogMascot"
+import { IconSun, IconMoon } from "../components/icons"
+import Loader from "../components/Loader"
+import FrogMascot, { type FrogPose } from "../components/FrogMascot"
 
 type TabId =
   | "about"

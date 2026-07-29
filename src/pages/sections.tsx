@@ -3,40 +3,41 @@ import { motion } from "motion/react";
 // InfiniteMenu is authored in JS (React Bits); no type declaration ships with
 // it, and we do not run tsc in the build.
 // @ts-expect-error - JS component, no type declaration
-import InfiniteMenu from "./InfiniteMenu";
+import InfiniteMenu from "../components/InfiniteMenu";
 // @ts-expect-error - JS component, no type declaration
-import CircularGallery from "./CircularGallery";
+import CircularGallery from "../components/CircularGallery";
 // @ts-expect-error - JS component (React Bits), no type declaration
-import FlowingMenu from "./FlowingMenu";
+import FlowingMenu from "../components/FlowingMenu";
 // Two logo tiles (transparent background) in each theme's ink colour, so the
 // wordmark stays legible over the page's pink (light) / green (dark) paper.
-import kickGreen from "./assets/kick-green.svg";
-import kickPink from "./assets/kick-pink.svg";
+import kickGreen from "../assets/kick-green.svg";
+import kickPink from "../assets/kick-pink.svg";
 // Case-study cover art lives with its source documents under case-studies/,
 // not in src/assets, so the write-up and its artwork stay in one folder.
-import stageZeroGreen from "../case-studies/stage-zero-health/assets/cover-green.svg";
-import stageZeroPink from "../case-studies/stage-zero-health/assets/cover-pink.svg";
+import stageZeroGreen from "../../case-studies/stage-zero-health/assets/cover-green.svg";
+import stageZeroPink from "../../case-studies/stage-zero-health/assets/cover-pink.svg";
 // Shared placeholders for the slots that have no write-up yet. They live in
 // src/assets rather than a case-study folder because they belong to no project.
-import soonCardGreen from "./assets/soon-card-green.svg";
-import soonCardPink from "./assets/soon-card-pink.svg";
-import soonTileGreen from "./assets/soon-tile-green.svg";
-import soonTilePink from "./assets/soon-tile-pink.svg";
+import soonCardGreen from "../assets/soon-card-green.svg";
+import soonCardPink from "../assets/soon-card-pink.svg";
+import frogSleepingSheet from "../assets/frog/sleeping/sleeping_sheet_transparent.png";
+import soonTileGreen from "../assets/soon-tile-green.svg";
+import soonTilePink from "../assets/soon-tile-pink.svg";
 // Official brand logos (in each company's own colour) for the Technical & tools
 // skills. Only the tools with an available logo render as a badge; the rest
 // fall back to a text chip.
-import { BRAND_LOGOS } from "./assets/brand-logos";
+import { BRAND_LOGOS } from "../assets/brand-logos";
 // Multicolour brand logos that ship as full SVG art (rendered via <img>).
-import twilioLogo from "./assets/logos/twilio.svg";
-import sendgridLogo from "./assets/logos/sendgrid.svg";
-import excelLogo from "./assets/logos/excel.svg";
-import githubLogo from "./assets/logos/github.svg";
-import vercelLogo from "./assets/logos/vercel.svg";
-import javaLogo from "./assets/logos/java.svg";
-import supabaseLogo from "./assets/logos/supabase.svg";
-import vscodeLogo from "./assets/logos/vscode.svg";
-import slackLogo from "./assets/logos/slack.svg";
-import sqlLogo from "./assets/logos/sql.svg";
+import twilioLogo from "../assets/logos/twilio.svg";
+import sendgridLogo from "../assets/logos/sendgrid.svg";
+import excelLogo from "../assets/logos/excel.svg";
+import githubLogo from "../assets/logos/github.svg";
+import vercelLogo from "../assets/logos/vercel.svg";
+import javaLogo from "../assets/logos/java.svg";
+import supabaseLogo from "../assets/logos/supabase.svg";
+import vscodeLogo from "../assets/logos/vscode.svg";
+import slackLogo from "../assets/logos/slack.svg";
+import sqlLogo from "../assets/logos/sql.svg";
 
 const IMG_LOGOS: Record<string, { src: string; title: string }> = {
   Twilio: { src: twilioLogo, title: "Twilio" },
@@ -160,6 +161,11 @@ const CASE_CARDS: { id: CaseId | null; green: string; pink: string }[] = [
 // artwork for pieces that do not exist. They carry no id and so open nothing.
 const PLACEHOLDER_COUNT = 2;
 
+// Must match the sleeping entry in FrogMascot's POSES table and the strip length
+// of sleeping_sheet_transparent.png (252x32 = 9 frames of 28x32).
+const SLEEPING_FRAMES = 9;
+const SLEEPING_FPS = 5;
+
 // The props default to {} so the component still satisfies the prop-less
 // signature the SECTIONS map in App.tsx is typed against.
 export function Work({
@@ -196,6 +202,18 @@ export function Work({
         image: theme === "dark" ? soonCardGreen : soonCardPink,
         text: "",
         id: null,
+        // The napping frog is cycled by the gallery rather than baked into the
+        // card art. `rect` is the frog's box in the card's texture space, in the
+        // same units the shader samples: the SVG reserves x=300 y=286 w=200
+        // h=229 of its 800x1000 canvas, and y is measured from the bottom here
+        // because texture space is flipped against SVG's top-down y.
+        //   x 300/800, w 200/800, h 229/1000, y 1 - (286+229)/1000
+        sprite: {
+          src: frogSleepingSheet,
+          frames: SLEEPING_FRAMES,
+          fps: SLEEPING_FPS,
+          rect: [0.375, 0.485, 0.25, 0.229] as const,
+        },
       })),
     ],
     [theme],
@@ -474,6 +492,12 @@ export type VolunteerItem = {
   // public/ (referenced through BASE_URL so it resolves under the /Portfolio/ base).
   photo?: string;
   photoAlt?: string;
+  // Intrinsic pixel size of `photo`. Required whenever `photo` is set: the media
+  // grid track is `auto` and the img is `width:auto`, so the column is sized by
+  // the image. Without these the box has no aspect ratio to reserve space from
+  // and collapses to its borders until the bytes arrive.
+  photoW?: number;
+  photoH?: number;
   did: string[];
 };
 
@@ -489,6 +513,8 @@ export const VOLUNTEER_ITEMS: VolunteerItem[] = [
     // same poster; the marquee crops it to a pill via background-size:cover.
     image: "bos.jpg",
     photo: "bos.jpg",
+    photoW: 1100,
+    photoH: 1414,
     photoAlt:
       "Official FIFA World Cup 26 Boston host-city poster: an illustrated Charles River scene with lobsters, swan boats and the Boston skyline.",
     did: [
@@ -623,10 +649,16 @@ export function VolunteerDetail({
         {item.photo ? (
           <div className="vol-split">
             <figure className="vol-split__media">
+              {/* eager, not lazy: this is the artwork the route exists to show,
+                  and it sizes its own grid column. Lazy could never bootstrap —
+                  a zero-width box does not intersect the viewport, so the fetch
+                  that would give it a width never fires. */}
               <img
                 src={`${import.meta.env.BASE_URL}${item.photo}`}
                 alt={item.photoAlt ?? ""}
-                loading="lazy"
+                width={item.photoW}
+                height={item.photoH}
+                loading="eager"
                 decoding="async"
               />
             </figure>

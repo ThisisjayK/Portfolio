@@ -1,7 +1,7 @@
 import { useState } from "react"
 // @ts-expect-error - JS component (React Bits), no type declaration
-import FuzzyText from "./FuzzyText"
-import { IconSun, IconMoon } from "./icons"
+import FuzzyText from "../components/FuzzyText"
+import { IconSun, IconMoon } from "../components/icons"
 
 // Standalone 404 page (its own build entry -> docs/404.html, which GitHub Pages
 // serves for unknown paths). Themed like the rest of the site: paper background
