@@ -1222,6 +1222,36 @@ a.chip:hover {
     padding: 0.5em 0.6em;
   }
 }
+/* Discloses the body of a long-form piece that opens as a summary. Reads as a
+   deliberate affordance rather than a text link, since it is the one thing a
+   visitor who has just read the summary is expected to press. */
+.td-more {
+  margin: 1.5rem 0 0;
+  /* Block (not inline-block) so it clears the table and never shares a line with
+     the "back to case studies" link that follows it once the body is collapsed.
+     fit-content keeps the box tight to the label rather than spanning the column. */
+  display: block;
+  width: fit-content;
+  cursor: pointer;
+  background: none;
+  border: 1px solid var(--ink-28);
+  border-radius: 2px;
+  padding: 0.72rem 1.2rem;
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  transition:
+    border-color 0.25s var(--ease),
+    background 0.25s var(--ease);
+}
+.td-more:hover {
+  border-color: var(--ink);
+  background: var(--ink-14);
+}
+
 .teardown-back {
   margin-top: 2.6rem;
   display: inline-block;
