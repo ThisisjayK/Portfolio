@@ -7,8 +7,6 @@ import OptionWheel from "../components/OptionWheel"
 // Imported (not a public/ path) so Vite rewrites the URL for the GitHub Pages
 // subpath build; a bare "/assets/..." would 404 under /product-teardowns/.
 import clickSoft from "../assets/click-soft.mp3"
-// @ts-expect-error - JS component (React Bits), no type declaration
-import PixelTrail from "../components/PixelTrail"
 import { About, Work, Teardowns, Skills, Volunteer, VolunteerDetail, VOLUNTEER_ITEMS, Resume, Contact, Footer } from "../sections"
 import type { CaseId } from "../sections"
 import KickTeardown from "./KickTeardown"
@@ -343,16 +341,6 @@ export default function App() {
           100; the app mounts underneath meanwhile, so the WebGL background is
           ready by the time the loader fades. */}
       {!booted && <Loader onDone={() => setBooted(true)} />}
-      {/* Site-wide interactive background: a pixel trail in the theme's brand
-          ink (pink in dark, green in light), fixed behind all content. */}
-      <PixelTrail
-        gridSize={60}
-        trailSize={0.06}
-        maxAge={300}
-        interpolate={5}
-        color={theme === "dark" ? "#ffccfd" : "#00663a"}
-        gooeyFilter={{ id: "brand-goo-filter", strength: 4 }}
-      />
       <div className="shell has-rail">
         <header className="bar">
           <button
