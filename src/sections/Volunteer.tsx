@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { motion } from "motion/react";
+import { AnimatedPage } from "../components/AnimatedPage";
 // @ts-expect-error - JS component (React Bits), no type declaration
 import FlowingMenu from "../components/FlowingMenu";
 import { VOLUNTEER_ITEMS } from "../data/volunteer";
@@ -73,7 +73,7 @@ export function VolunteerDetail({
   );
 
   return (
-    <motion.div
+    <AnimatedPage
       className={`teardown-page vol-page${item.photo ? " vol-page--media" : ""}`}
       role="dialog"
       aria-modal="true"
@@ -123,6 +123,6 @@ export function VolunteerDetail({
           copy
         )}
       </div>
-    </motion.div>
+    </AnimatedPage>
   );
 }

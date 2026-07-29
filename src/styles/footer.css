@@ -209,3 +209,13 @@
   padding-left: 0;
   padding-right: 0;
 }
+
+/* The whole strip - wave, shark fin, breaching whale - is pixel art and
+   nothing else (the element is aria-hidden already), so mobile drops it
+   entirely along with every other pixel-art decoration rather than shrinking
+   it down. */
+@media (max-width: 900px) {
+  .foot {
+    display: none;
+  }
+}

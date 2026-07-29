@@ -11,6 +11,7 @@ import soonCardGreen from "../assets/soon-card-green.svg";
 import soonCardPink from "../assets/soon-card-pink.svg";
 import frogSleepingSheet from "../assets/frog/sleeping/sleeping_sheet_transparent.png";
 import { useThemeName } from "../hooks/useThemeName";
+import { useIsMobile } from "../hooks/useIsMobile";
 
 // One card per case study. `id` is what Work hands back on click so App knows
 // which page to open; the remaining cards are still placeholders and open
@@ -37,6 +38,7 @@ export function Work({
   onOpenCase,
 }: { onOpenCase?: (id: CaseId) => void } = {}) {
   const theme = useThemeName();
+  const mobile = useIsMobile();
 
   // Preload both ink variants so flipping the theme swaps the cover from cache
   // rather than leaving the card blank while the new file decodes.
@@ -73,15 +75,21 @@ export function Work({
         // h=229 of its 800x1000 canvas, and y is measured from the bottom here
         // because texture space is flipped against SVG's top-down y.
         //   x 300/800, w 200/800, h 229/1000, y 1 - (286+229)/1000
-        sprite: {
-          src: frogSleepingSheet,
-          frames: SLEEPING_FRAMES,
-          fps: SLEEPING_FPS,
-          rect: [0.375, 0.485, 0.25, 0.229] as const,
-        },
+        // Mobile drops every pixel-art decoration, so the sprite is left off
+        // the placeholder cards entirely there.
+        ...(mobile
+          ? {}
+          : {
+              sprite: {
+                src: frogSleepingSheet,
+                frames: SLEEPING_FRAMES,
+                fps: SLEEPING_FPS,
+                rect: [0.375, 0.485, 0.25, 0.229] as const,
+              },
+            }),
       })),
     ],
-    [theme],
+    [theme, mobile],
   );
 
   return (
@@ -89,11 +97,11 @@ export function Work({
       <div className="case-gallery">
         <CircularGallery
           items={items}
-          bend={1.5}
+          bend={mobile ? 0.8 : 1.5}
           borderRadius={0.05}
           scrollEase={0.05}
           scrollSpeed={6.5}
-          font="bold 28px Geist"
+          font={mobile ? "bold 20px Geist" : "bold 28px Geist"}
           onItemClick={(_i: number, item: { id: CaseId | null }) => {
             if (item?.id) onOpenCase?.(item.id);
           }}

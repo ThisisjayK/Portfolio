@@ -45,6 +45,31 @@
   outline-offset: 4px;
   border-radius: 3px;
 }
+/* Mobile's stand-in for the frog mascot: mobile drops every pixel-art
+   decoration, so the home button falls back to the plain wordmark the frog
+   originally replaced. */
+.mark-text {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 1.6rem;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--ink);
+}
+@media (max-width: 900px) {
+  /* .mark only ever holds the plain wordmark on mobile (the frog mascot is
+     desktop-only), so re-anchoring it here doesn't touch the desktop layout.
+     The base rule's bottom:0/align-items:flex-end was tuned for the frog
+     sprite's feet to sit flush with the bar's bottom border; the text mark
+     needs the opposite - centred in the bar's own height, not hanging off
+     its bottom edge. */
+  .mark {
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    align-items: center;
+  }
+}
 .bar .sp {
   flex: 1;
 }

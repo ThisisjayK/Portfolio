@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
+import { useIsMobile } from '../hooks/useIsMobile';
 import './InfiniteMenu.css';
 
 const discVertShaderSource = `#version 300 es
@@ -964,6 +965,7 @@ export default function InfiniteMenu({ items = [], scale = 1.0, onItemClick }) {
   // Added: track the pointer-down origin so a tap on the sphere navigates while
   // a drag (used to rotate it) does not.
   const pointerDownRef = useRef(null);
+  const mobile = useIsMobile();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -1059,8 +1061,10 @@ export default function InfiniteMenu({ items = [], scale = 1.0, onItemClick }) {
   };
 
   // "OPEN!" shows on every face while the pointer is over the settled logo and
-  // the sphere isn't being dragged.
-  const showOpen = isHovering && !isMoving;
+  // the sphere isn't being dragged. Touch has no hover to trigger it, so on
+  // mobile it stays up permanently instead (whenever the sphere is settled) -
+  // otherwise the tap/drag affordance would never surface at all.
+  const showOpen = (isHovering || mobile) && !isMoving;
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
