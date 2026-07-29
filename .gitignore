@@ -21,3 +21,6 @@ docs/
 # tracked copy. Committing both let them drift: the public/ copy was made by
 # hand, so editing resume.tex and forgetting to re-copy shipped a stale resume.
 public/jayanth-resume.pdf
+
+# Python bytecode from the sprite generators in scripts/
+__pycache__/
