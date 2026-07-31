@@ -15,6 +15,22 @@ import { AnimatedPage } from "../components/AnimatedPage";
    Every external claim is still cited in
    case-studies/stage-zero-health/EVIDENCE.md. */
 
+/* The seven milestones of the Breast Cancer Journey, in order. Kept as data
+   because the diagram reads the count: the rail, the two model brackets and the
+   integration wires all lay out on one seven-column grid, and the brackets are
+   positioned by milestone number. Changing this list means revisiting the
+   grid-column spans in longform.css, which is the one thing here that cannot be
+   derived from the array. */
+const MILESTONES: { n: string; label: string }[] = [
+  { n: "01", label: "Onboarding" },
+  { n: "02", label: "Assessment" },
+  { n: "03", label: "Risk score" },
+  { n: "04", label: "Insights" },
+  { n: "05", label: "SDOH" },
+  { n: "06", label: "Care team" },
+  { n: "07", label: "Screening" },
+];
+
 export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -146,79 +162,82 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
             Drawn from the spec from memory. The caption says so outright, because
             a diagram in a case study reads as if it were traced off a screenshot
             and there is no screenshot of this product to trace. */}
+        {/* A bare h2, the same as "What I'd do differently" and "Sources &
+            verification" lower down, rather than the bordered pill that marks
+            Problem, Solution and Impact. Those three are the spine of the body;
+            this sits above the disclosure and should read as a labelled figure,
+            not as a fourth peer to them. */}
+        <h2 className="td-flow-title">Journey</h2>
         <figure className="td-flow">
-          <div className="td-flow__grid">
-            <div className="td-flow__ms">
-              <b>01</b>
-              <span>Onboarding</span>
-            </div>
-            <div className="td-flow__ms">
-              <b>02</b>
-              <span>Assessment</span>
-            </div>
-            <div className="td-flow__ms">
-              <b>03</b>
-              <span>Risk score</span>
-            </div>
-            <div className="td-flow__ms">
-              <b>04</b>
-              <span>Insights</span>
-            </div>
-            <div className="td-flow__ms">
-              <b>05</b>
-              <span>SDOH</span>
-            </div>
-            <div className="td-flow__ms">
-              <b>06</b>
-              <span>Care team</span>
-            </div>
-            <div className="td-flow__ms">
-              <b>07</b>
-              <span>Screening</span>
+          <div className="td-flow__diagram">
+            {/* The rail. An <ol> because these are seven ordered steps, and the
+                arrows between them are drawn on the nodes rather than sitting in
+                the markup, so nothing here is read out as punctuation. */}
+            <ol className="td-flow__rail">
+              {MILESTONES.map((m) => (
+                <li className="td-flow__node" key={m.n}>
+                  <b>{m.n}</b>
+                  <span>{m.label}</span>
+                </li>
+              ))}
+            </ol>
+
+            {/* Each band is a bracket under the range its model fires across,
+                with end ticks that land on the first and last node it covers.
+                The range is still spelled out in the label: the bracket is the
+                fast read, the words are what survives losing the geometry. */}
+            <div className="td-flow__bands">
+              <div className="td-flow__band td-flow__band--free">
+                <span className="k">Milestones 01 to 03 · Gail · free</span>
+                <p>
+                  Everything Gail reads is collected off questions anyone can
+                  answer, so a real score lands before the long tail of the
+                  assessment rather than after it.
+                </p>
+              </div>
+              <div className="td-flow__band td-flow__band--paid">
+                <span className="k">
+                  Milestones 04 to 07 · BOADICEA · behind the paywall
+                </span>
+                <p>
+                  Fires once the genetic vault holds data. The ensemble re-runs
+                  whichever models the user&apos;s data can support as more of
+                  it arrives, so no score sits stale behind what she already
+                  gave us.
+                </p>
+              </div>
             </div>
 
-            <div className="td-flow__band td-flow__band--free">
-              <span className="k">Milestones 01 to 03 · Gail · free</span>
-              <p>
-                Everything Gail reads is collected off questions anyone can
-                answer, so a real score lands before the long tail of the
-                assessment rather than after it.
+            {/* What runs underneath, drawn as wires tapped into the milestone
+                they attach to rather than listed in a strip. Each one still
+                names that milestone in its own sentence, so the marker is the
+                shortcut and never the only way to know where it lands. */}
+            <div className="td-flow__wires">
+              <span className="td-flow__wires-k">Running underneath</span>
+              <p className="td-flow__wire td-flow__wire--fhir">
+                <b>Epic FHIR</b> pre-fills medical history at Assessment, so
+                nothing already in the record gets asked twice
               </p>
-            </div>
-            <div className="td-flow__band td-flow__band--paid">
-              <span className="k">
-                Milestones 04 to 07 · BOADICEA · behind the paywall
-              </span>
-              <p>
-                Fires once the genetic vault holds data. The ensemble re-runs
-                whichever models the user&apos;s data can support as more of it
-                arrives, so no score sits stale behind what she already gave us.
+              <p className="td-flow__wire td-flow__wire--change">
+                <b>Change API</b> verifies coverage before Screening, so the
+                bill is known before the booking rather than after it
               </p>
-            </div>
-
-            <div className="td-flow__under">
-              <span className="k">Running underneath</span>
-              <ul>
-                <li>
-                  <b>Epic FHIR</b> pre-fills medical history at Assessment, so
-                  nothing already in the record gets asked twice
-                </li>
-                <li>
-                  <b>Change API</b> verifies coverage before Screening, so the
-                  bill is known before the booking rather than after it
-                </li>
-                <li>
-                  <b>Email and SMS</b>, branched by persona, carry a user
-                  between every milestone
-                </li>
-              </ul>
+              <p className="td-flow__wire td-flow__wire--msg">
+                <b>Email and SMS</b>, branched by persona, carry a user between
+                every milestone
+              </p>
+              <p className="td-flow__wire td-flow__wire--learn">
+                <b>Learning</b> sits outside the sequence entirely, open the
+                whole way through and gated by no milestone, in language that
+                does not need a clinician standing next to you to translate it
+              </p>
             </div>
           </div>
           <figcaption>
             The Breast Cancer Journey as I specced it: seven milestones, two
-            staged risk models, two integrations. Redrawn from memory. No
-            screenshots of the product survive, and nothing here is
-            reconstructed from one.
+            staged risk models, two integrations, and the two things that run
+            the whole way through. Redrawn from memory. No screenshots of the
+            product survive, and nothing here is reconstructed from one.
           </figcaption>
         </figure>
 

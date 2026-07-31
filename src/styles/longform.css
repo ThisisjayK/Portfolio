@@ -481,65 +481,103 @@
 }
 
 /* ---- Journey diagram ----------------------------------------------------
-   A journey's milestones in a row, with a band under the range each risk model
-   fires across and a strip for what runs the whole way. Built from type and
-   hairlines rather than drawn as an SVG: it themes off the two inks with no
-   second copy of the palette, it scales with the reader's --tscale like every
-   other block, and every label stays selectable text.
-   Two consequences of that worth keeping in mind when editing the markup.
-   Each band has to name its own milestone range in words, because read
-   linearly there is no grid to look at and the ranges have to survive losing
-   the geometry. And the integrations share one full-width strip rather than
-   sitting in the columns they point at: a partly filled grid row leaks the
-   container's hairline colour through its empty cells, and a marker floating
-   under column six means nothing to a reader who cannot see the column. */
-.td-flow {
-  margin: 1.8rem 0;
+   The Breast Cancer Journey drawn as a flow: seven connected nodes, a bracket
+   under the range each risk model fires across, and the integrations tapped in
+   as wires at the milestone they attach to.
+
+   Still built from type, hairlines and CSS rather than as an SVG, and the
+   reasons are unchanged now that it is a real diagram. It themes off the two
+   inks with no second copy of the palette. It scales with the reader's --tscale
+   like every other block. Every label stays selectable text, and the seven
+   steps stay an <ol>, so the flow is a list of steps to a screen reader rather
+   than an unlabelled picture.
+
+   Two rules to keep when editing. Every band and wire still names its milestone
+   range in words, because the geometry is the fast read and the words are what
+   is left once it is gone (linearised on a phone, read aloud, or printed). And
+   the whole thing lays out on one seven-column grid: the rail, the brackets and
+   the wires are all `grid-template-columns: subgrid`, which is what makes a
+   bracket end land exactly on a node edge and a wire marker sit under the
+   column it points at. Change the milestone count and the spans below need
+   revisiting; nothing derives them. */
+/* Sits tight to the diagram it labels rather than floating between it and the
+   paragraph above, so the two read as one unit. */
+.td-flow-title {
+  margin-top: 2rem;
+  margin-bottom: 0.7rem;
 }
-.td-flow__grid {
+.td-flow {
+  margin: 0 0 1.8rem;
+}
+.td-flow__diagram {
+  /* The gap is the drawing surface: connector lines and arrowheads are painted
+     into it by the nodes either side, so it needs a known width. */
+  --flow-gap: clamp(0.5rem, 1.1vw, 0.95rem);
+  --flow-line: var(--ink-28);
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1px;
-  background: var(--ink-28);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  column-gap: var(--flow-gap);
+  row-gap: clamp(1.15rem, 2.6vw, 1.7rem);
+  padding: clamp(1rem, 2.4vw, 1.4rem);
   border: 1px solid var(--ink-28);
   border-radius: 4px;
-  overflow: hidden;
 }
-.td-flow__grid > * {
+
+/* ---- the rail ---- */
+/* ol/li rather than divs, so the steps are ordered steps. Both selectors carry
+   their element name because .teardown-page ol and .teardown-page li would
+   otherwise outrank a bare class and put list padding back. */
+ol.td-flow__rail {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: none;
+}
+li.td-flow__node {
+  position: relative;
+  margin: 0;
+  padding: 0.6rem 0.6rem 0.65rem;
+  border: 1px solid var(--ink-28);
+  border-radius: 3px;
   background: var(--paper);
-  padding: 0.75rem 0.8rem;
 }
-/* Below this the seven milestones stack one per row: seven columns of type in a
-   phone viewport truncates every label to nothing, and the labels are the
-   diagram. The breakpoint matches .td-table's rather than sitting lower, because
-   seven columns have to hold a word like "Onboarding" at the XL reader size too,
-   and 900px is where that stops wrapping. */
-@media (min-width: 900px) {
-  .td-flow__grid {
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-  }
-  /* 1 to 3 and 4 to 7: between them they fill the row exactly, so the row can
-     never show an empty cell. */
-  .td-flow__band--free {
-    grid-column: 1 / 4;
-  }
-  .td-flow__band--paid {
-    grid-column: 4 / 8;
-  }
-  .td-flow__under {
-    grid-column: 1 / 8;
-  }
+/* The connector into the next node: a hairline across the gap, with an
+   arrowhead sitting on its far end. Drawn by the node on the left of each gap,
+   which is why the last node has neither. */
+li.td-flow__node:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: var(--flow-gap);
+  height: 1px;
+  background: var(--flow-line);
 }
-.td-flow__ms b {
+li.td-flow__node:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: calc(100% + var(--flow-gap));
+  transform: translate(-100%, -50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid var(--ink-55);
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+}
+.td-flow__node b {
   display: block;
   font-family: "Archivo", system-ui, sans-serif;
   font-size: var(--label-size);
   letter-spacing: 0.08em;
   color: var(--ink-55);
   font-weight: 600;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.3rem;
 }
-.td-flow__ms span {
+.td-flow__node span {
   font-family: "Geist", system-ui, sans-serif;
   font-weight: 600;
   font-size: 0.9rem;
@@ -547,24 +585,48 @@
   letter-spacing: -0.02em;
   color: var(--ink);
 }
-/* Stacked one per row, a number-above-label cell makes seven tall boxes and
-   pushes the bands - the half of the diagram that carries the argument - about a
-   thousand pixels down the page. Inline instead, the whole rail costs roughly a
-   paragraph of scroll. */
-@media (max-width: 899px) {
-  .td-flow__grid > .td-flow__ms {
-    display: flex;
-    align-items: baseline;
-    gap: 0.7em;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-  }
-  .td-flow__ms b {
-    margin-bottom: 0;
-  }
+
+/* ---- the model brackets ---- */
+.td-flow__bands {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  row-gap: 1rem;
 }
-.td-flow__band .k,
-.td-flow__under .k {
+/* The bracket itself: a rule along the top of the band with a tick dropping at
+   each end, so it reads as spanning exactly the nodes above it. The ticks are
+   inset by nothing, which puts them on the band's own edges, and the band's
+   edges are the grid column edges the nodes share. */
+.td-flow__band {
+  position: relative;
+  padding-top: 0.85rem;
+}
+.td-flow__band::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--flow-line);
+}
+.td-flow__band::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  border-left: 1px solid var(--flow-line);
+  border-right: 1px solid var(--flow-line);
+}
+.td-flow__band--free {
+  grid-column: 1 / 4;
+}
+.td-flow__band--paid {
+  grid-column: 4 / 8;
+}
+.td-flow__band .k {
   display: block;
   font-family: "Archivo", system-ui, sans-serif;
   font-size: var(--label-size);
@@ -572,7 +634,7 @@
   text-transform: uppercase;
   font-weight: 600;
   color: var(--ink);
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.4rem;
 }
 .td-flow__band p {
   margin: 0;
@@ -581,29 +643,162 @@
   max-width: none;
   color: var(--ink-80);
 }
-.td-flow__under ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  max-width: none;
+
+/* ---- the integration wires ---- */
+.td-flow__wires {
+  grid-column: 1 / -1;
   display: grid;
-  gap: 0.45rem 1.6rem;
+  grid-template-columns: subgrid;
+  row-gap: 0.75rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--ink-28);
 }
-@media (min-width: 900px) {
-  .td-flow__under ul {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+.td-flow__wires-k {
+  grid-column: 1 / -1;
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ink);
 }
-.td-flow__under li {
+/* Each wire is a rule along its top edge, spanning the columns it covers, with
+   the sentence sitting under it. Where a wire taps one milestone rather than a
+   range, a dot marks the column it lands in. */
+.td-flow__wire {
+  position: relative;
   margin: 0;
+  padding-top: 0.6rem;
   font-size: 0.86rem;
   line-height: 1.4;
+  max-width: none;
   color: var(--ink-80);
 }
-.td-flow__under li b {
+.td-flow__wire b {
   color: var(--ink);
   font-weight: 600;
 }
+.td-flow__wire::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--flow-line);
+}
+/* The tap: a filled dot on the wire, centred under the milestone its sentence
+   names. Epic FHIR lands on Assessment (02) and Change API on Screening (07),
+   so the two wires share a row, each three columns wide, tapping at the outer
+   end of its own span.
+
+   The offset is half a column measured inside the wire rather than inside the
+   diagram, because that is the box the dot is positioned against. A wire
+   spanning three columns is `3 columns + 2 gaps` wide, so one column is
+   `(100% - 2 * gap) / 3` and half of one is that over six. Without it the dot
+   sits on the column boundary and reads as pointing between two milestones. */
+.td-flow__wire::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.td-flow__wire--fhir {
+  grid-column: 2 / 5;
+}
+.td-flow__wire--fhir::after {
+  left: calc((100% - 2 * var(--flow-gap)) / 6 - 3.5px);
+}
+.td-flow__wire--change {
+  grid-column: 5 / 8;
+  text-align: right;
+}
+.td-flow__wire--change::after {
+  right: calc((100% - 2 * var(--flow-gap)) / 6 - 3.5px);
+}
+/* These two run the length of the journey, so they span every column and get no
+   dot: there is no single milestone to point at, which is the fact being drawn. */
+.td-flow__wire--msg,
+.td-flow__wire--learn {
+  grid-column: 1 / -1;
+}
+.td-flow__wire--msg::after,
+.td-flow__wire--learn::after {
+  content: none;
+}
+/* Learning is the one thing here that is not sequenced at all, so its rule is
+   dashed rather than solid: same full span, drawn as something running alongside
+   the journey instead of along it. */
+.td-flow__wire--learn::before {
+  background: none;
+  border-top: 1px dashed var(--flow-line);
+}
+
+/* ---- phones ---- */
+/* Below 900px the seven columns collapse to one. Seven columns of type in a
+   phone viewport truncates every label to nothing, and the labels are the
+   diagram. The breakpoint matches .td-table's rather than sitting lower,
+   because seven columns have to hold a word like "Onboarding" at the XL reader
+   size too, and 900px is where that stops wrapping.
+
+   The flow survives the collapse: the horizontal connectors become a down
+   arrow between stacked nodes, and every span resets to full width. The
+   brackets lose their geometry, which is exactly why each one still says
+   "Milestones 01 to 03" in its own label. */
+@media (max-width: 899px) {
+  .td-flow__diagram {
+    grid-template-columns: 1fr;
+    row-gap: 1.15rem;
+  }
+  li.td-flow__node {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7em;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  ol.td-flow__rail {
+    row-gap: 0.95rem;
+  }
+  .td-flow__node b {
+    margin-bottom: 0;
+  }
+  /* The connector, turned through ninety degrees into the row gap. */
+  li.td-flow__node:not(:last-child)::after {
+    top: 100%;
+    left: 1.15rem;
+    width: 1px;
+    height: 0.95rem;
+  }
+  li.td-flow__node:not(:last-child)::before {
+    top: calc(100% + 0.95rem);
+    left: 1.15rem;
+    transform: translate(-50%, -100%);
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 4px solid var(--ink-55);
+    border-bottom: 0;
+  }
+  .td-flow__band--free,
+  .td-flow__band--paid,
+  .td-flow__wire--fhir,
+  .td-flow__wire--change {
+    grid-column: 1 / -1;
+  }
+  /* No columns left to point at, so the dots and the end ticks come off and
+     each block is just a labelled rule. */
+  .td-flow__wire--change {
+    text-align: left;
+  }
+  .td-flow__wire::after,
+  .td-flow__band::after {
+    content: none;
+  }
+}
+
 .td-flow figcaption {
   margin-top: 0.7rem;
   font-size: 0.82rem;
