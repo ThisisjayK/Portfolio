@@ -37,6 +37,52 @@
     height: min(48vh, 380px);
   }
 }
+
+/* The single-cover fallback the Case Studies tab uses while only one study is
+   written (see the `solo` branch in Work.tsx). Same footprint as the gallery it
+   stands in for, so the tab keeps its height whichever one renders. The cover is
+   4:5 art sized off its height, so the button tracks the image rather than the
+   column and stays centred in the content area. */
+.case-solo {
+  position: relative;
+  width: 100%;
+  height: min(78vh, 760px);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.case-solo__card {
+  display: block;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s var(--spring);
+}
+.case-solo__card:hover {
+  transform: translateY(-6px);
+}
+.case-solo__card:active {
+  transform: translateY(-2px) scale(0.99);
+}
+.case-solo__card:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 6px;
+  border-radius: 4px;
+}
+.case-solo__card img {
+  display: block;
+  height: 100%;
+  width: auto;
+}
+@media (max-width: 900px) {
+  .case-solo {
+    height: min(48vh, 380px);
+  }
+}
 /* Recolour the InfiniteMenu action button off its vendor purple onto the
    page's single ink: pink in dark mode, green in light. --ink already flips
    with the theme, and --paper (its opposite) keeps the arrow readable on the

@@ -52,10 +52,12 @@
      header. Matches the same centring guard that rule already carries for
      the contact/volunteer tabs. */
   html:not([data-text="sm"]) main.stage:has(.case-gallery),
+  html:not([data-text="sm"]) main.stage:has(.case-solo),
   html:not([data-text="sm"]) main.stage:has(.teardown-sphere) {
     overflow: hidden;
   }
   html:not([data-text="sm"]) main.stage:has(.case-gallery) > div,
+  html:not([data-text="sm"]) main.stage:has(.case-solo) > div,
   html:not([data-text="sm"]) main.stage:has(.teardown-sphere) > div {
     flex: 1 1 auto;
     min-height: 0;
