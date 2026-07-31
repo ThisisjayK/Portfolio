@@ -56,9 +56,13 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
 
       <div className="teardown-page__inner">
         {/* 01 TITLE */}
+        {/* The third chip used to name the format ("problem, solution, impact"),
+            which told a reader nothing they could not infer from the headings.
+            It carries the impact claim instead: this is the highest thing on the
+            page after the title, and the claim is what a visitor is deciding on. */}
         <div className="eyebrow">
           <b>· Case study</b> <b>· Stage Zero Health</b>{" "}
-          <b>· Problem, solution, impact</b>
+          <b>· Questionnaire to decision</b>
         </div>
         {/* The monkey hangs off the "e" of the second "the". Anchoring it to a
             span around that one letter (rather than to a fixed offset) keeps
@@ -95,11 +99,10 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
           backed by two integrations (Epic FHIR and Change API) pointed at a
           funnel of 45 to 60 questions.
         </p>
-        <p>
-          I left before the cohort was large enough to say anything meaningful,
-          so what follows leads with what shipped and what I would have
-          measured. There are no user numbers in it.
-        </p>
+        {/* The no-numbers admission used to sit here, which put the weakest fact
+            on the page directly above the control a cold visitor decides on. It
+            is made in full at the top of the Impact section instead, where it
+            answers a question the reader is actually asking by then. */}
         <dl className="td-meta">
           <div>
             <dt>Company</dt>
@@ -134,6 +137,97 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
           </div>
         </dl>
 
+        {/* The journey as a diagram rather than the four separate paragraphs of
+            prose that used to be the only description of it, and deliberately
+            above the disclosure: a visitor deciding whether to spend ten minutes
+            here can see the shape of what was built in about the time it takes to
+            read the lede. Which milestone each model fires at, and which step each
+            integration lands on, is the whole architecture of the piece.
+            Drawn from the spec from memory. The caption says so outright, because
+            a diagram in a case study reads as if it were traced off a screenshot
+            and there is no screenshot of this product to trace. */}
+        <figure className="td-flow">
+          <div className="td-flow__grid">
+            <div className="td-flow__ms">
+              <b>01</b>
+              <span>Onboarding</span>
+            </div>
+            <div className="td-flow__ms">
+              <b>02</b>
+              <span>Assessment</span>
+            </div>
+            <div className="td-flow__ms">
+              <b>03</b>
+              <span>Risk score</span>
+            </div>
+            <div className="td-flow__ms">
+              <b>04</b>
+              <span>Insights</span>
+            </div>
+            <div className="td-flow__ms">
+              <b>05</b>
+              <span>SDOH</span>
+            </div>
+            <div className="td-flow__ms">
+              <b>06</b>
+              <span>Care team</span>
+            </div>
+            <div className="td-flow__ms">
+              <b>07</b>
+              <span>Screening</span>
+            </div>
+
+            <div className="td-flow__band td-flow__band--free">
+              <span className="k">Milestones 01 to 03 · Gail · free</span>
+              <p>
+                Everything Gail reads is collected off questions anyone can
+                answer, so a real score lands before the long tail of the
+                assessment rather than after it.
+              </p>
+            </div>
+            <div className="td-flow__band td-flow__band--paid">
+              <span className="k">
+                Milestones 04 to 07 · BOADICEA · behind the paywall
+              </span>
+              <p>
+                Fires once the genetic vault holds data. The ensemble re-runs
+                whichever models the user&apos;s data can support as more of it
+                arrives, so no score sits stale behind what she already gave us.
+              </p>
+            </div>
+
+            <div className="td-flow__under">
+              <span className="k">Running underneath</span>
+              <ul>
+                <li>
+                  <b>Epic FHIR</b> pre-fills medical history at Assessment, so
+                  nothing already in the record gets asked twice
+                </li>
+                <li>
+                  <b>Change API</b> verifies coverage before Screening, so the
+                  bill is known before the booking rather than after it
+                </li>
+                <li>
+                  <b>Email and SMS</b>, branched by persona, carry a user
+                  between every milestone
+                </li>
+              </ul>
+            </div>
+          </div>
+          <figcaption>
+            The Breast Cancer Journey as I specced it: seven milestones, two
+            staged risk models, two integrations. Redrawn from memory. No
+            screenshots of the product survive, and nothing here is
+            reconstructed from one.
+          </figcaption>
+        </figure>
+
+        <p>
+          What follows is the three places a woman falls out of the system, the
+          architectural decision I would defend hardest, and the one number I
+          would have held myself to.
+        </p>
+
         {/* Everything below the summary is disclosed on request: the page opens as
             a ~150 word summary so a cold visitor can decide whether to spend the
             next ten minutes here. Conditionally rendered rather than hidden with
@@ -155,9 +249,14 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
           >
             {/* 02 PROBLEM */}
             <span className="td-finding">Problem</span>
-            <h2 style={{ marginTop: ".2rem" }}>
-              Three gaps, stacked on each other
-            </h2>
+            <h2 style={{ marginTop: ".2rem" }}>Three places she falls out</h2>
+            <p>
+              These are not three separate complaints. They are sequential, and
+              they are the three points a woman drops out of the system: she is
+              never offered screening in the first place, and if she does get
+              assessed the model is blind, and if she is referred anyway she
+              cannot find out what it costs until the bill arrives.
+            </p>
 
             <h3>The guideline gap</h3>
             <p>
@@ -181,6 +280,12 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
               risk and act on it. Most women under 40 have no idea the option
               exists, and there is no appointment on anyone&apos;s calendar
               where that conversation is scheduled to happen.
+            </p>
+            <p>
+              This is the one of the three a product cannot close. Nothing I
+              specced was going to move a USPSTF recommendation. It is the
+              context the other two gaps sit inside, and the two I could
+              actually attack are the ones below.
             </p>
 
             <h3>The model gap</h3>
@@ -265,7 +370,7 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
               book.
             </p>
 
-            <h3>And the business problem underneath all three</h3>
+            <h3>What the company needed to be able to say</h3>
             <p>
               Stage Zero was pre-seed. The thing the company needed to be able
               to say was a number:{" "}
@@ -292,22 +397,23 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
               no reason for anyone to return.
             </p>
 
-            <h3>Rebuilding Gail from the paper up</h3>
+            <h3>Why I read the model before I designed on top of it</h3>
             <p>
-              Before designing anything I went and read the Gail model properly:
-              how it was developed, its factor set, its weights, the score it
-              produces, its published accuracy, and where it has been shown to
-              break. Then I wrote the user stories for engineering to reproduce
-              it, with the weights and expected output scores written into the
-              ticket, so a build could be checked against known cases instead of
-              eyeballed.
-            </p>
-            <p>
-              Doing that first mattered more than it looked like it would.{" "}
               <strong>
                 Once you know exactly what Gail counts, you know exactly what it
                 misses, and that gap turned into the product.
-              </strong>
+              </strong>{" "}
+              That is the whole reason the order of this section is the order I
+              did the work in, and not a timeline I am reciting.
+            </p>
+            <p>
+              So before designing anything I went and read the Gail model
+              properly: how it was developed, its factor set, its weights, the
+              score it produces, its published accuracy, and where it has been
+              shown to break. Then I wrote the user stories for engineering to
+              reproduce it, with the weights and expected output scores written
+              into the ticket, so a build could be checked against known cases
+              instead of eyeballed.
             </p>
 
             <h3>Four personas, from data that was already sitting there</h3>
@@ -324,12 +430,17 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
               for them to stop and something that brings them back.
             </p>
 
+            {/* The seven milestones used to be listed here as well as in the
+                diagram at the top of the page. Two copies of the same list is
+                how the old CASE-STUDY.md and this file drifted apart, so the
+                diagram owns the sequence now and this section keeps only what a
+                diagram cannot say: why it is milestone-shaped, and how it got
+                built. */}
             <h3>The journey</h3>
             <p>
-              Onboarding, assessment, risk score, insights and recommendations,
-              SDOH assessment, care team, screening. Milestone-based, so a user
-              always knows what they have finished and what the next thing
-              unlocks. I built it in Miro first, then specced it.
+              Milestone-based, so a user always knows what they have finished and
+              what the next thing unlocks. The sequence is the diagram at the top
+              of this page. I built it in Miro first, then specced it.
             </p>
 
             <span className="td-finding">
@@ -378,7 +489,10 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
               milestones, so a user gets a real score early instead of grinding
               through an hour of questions on faith. BOADICEA sat behind a
               paywall, because it needs genetic data to say anything and it is
-              the one that earns the word accurate.
+              the one that earns the word accurate. Feeding it meant a{" "}
+              <strong>genetic vault</strong> to collect and store that data,
+              which I specced after researching which genetic factors actually
+              move breast cancer risk.
             </p>
             <p>
               The ensemble was the actual architecture. Whichever models the
@@ -401,11 +515,17 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
               </p>
             </div>
 
-            <h3>45 to 60 questions is the real enemy</h3>
+            {/* Four countermeasures, not two. The persona messaging and the
+                gamified milestones used to sit in the scope list below, which
+                split one argument across two sections and made it read weaker
+                than it was: all four of these attack abandonment, and they
+                belong under the enemy they were built to fight. */}
+            <h3>The real enemy: 45 to 60 questions</h3>
             <p>
               Across the full journey a user answered somewhere between 45 and
               60 questions. That number is the thing most likely to kill the
-              funnel, so most of the engineering I specced went at it directly.
+              funnel, so most of the engineering I specced went at it directly,
+              from four directions.
             </p>
             <ul>
               <li>
@@ -414,62 +534,54 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
                 asked again.
               </li>
               <li>
-                <strong>A genetic vault</strong> collected and stored genetic
-                data for BOADICEA, after I researched which genetic factors
-                actually move breast cancer risk.
-              </li>
-              <li>
                 <strong>Change API</strong> verified insurance coverage, so a
                 user could see whether her screening was covered before booking
                 rather than after.
               </li>
-            </ul>
-            <p>
-              Two integrations that size is a lot to take on at pre-seed. Both
-              were worth it, because both attacked the same thing: this journey
-              asks a great deal of someone before it gives them anything back,
-              and every question you can answer on their behalf is a question
-              they cannot abandon on.
-            </p>
-
-            <h3>The rest of what I owned</h3>
-            <ul>
               <li>
-                <strong>Insights tab.</strong> The risk score plus what to do
-                about it: guideline-based recommendations and insurance context,
-                which I researched per risk tier. I designed and prototyped it,
-                and the prototype is what got built.
-              </li>
-              <li>
-                <strong>SDOH assessment.</strong> Researched it, prototyped the
-                questionnaire, shipped it.
-              </li>
-              <li>
-                <strong>A learning section</strong> covering breast cancer in
-                language that does not need a clinician standing next to you to
-                translate it.
-              </li>
-              <li>
-                <strong>Personalised journeys and messaging</strong> per
-                persona, over email and SMS, through Twilio, SendGrid and
-                Customer.io.
+                <strong>Personalised journeys and messaging</strong> per persona,
+                over email and SMS, through Twilio, SendGrid and Customer.io.
+                This is the one built for the avoidant persona, who does not need
+                more information, she needs a reason to come back.
               </li>
               <li>
                 <strong>Gamified milestones,</strong> because on a 60-question
                 health journey the thing that loses people is not confusion, it
                 is fatigue.
               </li>
-              <li>
-                <strong>Product positioning</strong> on the marketing site, with
-                the product marketing manager.
-              </li>
-              <li>
-                <strong>The operating cadence.</strong> Backlog, triage and
-                two-week sprints in Jira and later Asana. GA4 for activation,
-                DAU and MAU. Minor UI fixes and redesigns I shipped myself
-                throughout.
-              </li>
             </ul>
+            <p>
+              Two integrations that size is a lot to take on at pre-seed. Neither
+              was low-hanging fruit, and both were worth it, because all four of
+              these attacked the same thing: this journey asks a great deal of
+              someone before it gives them anything back, and every question you
+              can answer on their behalf is a question they cannot abandon on.
+            </p>
+
+            {/* This was seven bullets of equal weight, which formatted scope as
+                though it carried the same argument as the architecture above it
+                and flattened both. Two of the seven moved up to the abandonment
+                section where they are load-bearing. The rest is scope, so it is
+                set as scope: prose, and short. */}
+            <h3>The rest of what I owned</h3>
+            <p>
+              The <strong>Insights tab</strong> is the one worth naming on its
+              own: the risk score plus what to do about it, guideline-based
+              recommendations and insurance context that I researched per risk
+              tier. I designed and prototyped it and the prototype is what got
+              built. Alongside it, the <strong>SDOH assessment</strong>, which I
+              researched, prototyped and shipped, and a{" "}
+              <strong>learning section</strong> covering breast cancer in
+              language that does not need a clinician standing next to you to
+              translate it.
+            </p>
+            <p>
+              Then the things that are not features. Product positioning on the
+              marketing site with the product marketing manager. The operating
+              cadence: backlog, triage and two-week sprints in Jira and later
+              Asana, GA4 for activation, DAU and MAU, and the minor UI fixes and
+              redesigns I shipped myself throughout.
+            </p>
 
             <h3>Where my ownership stopped</h3>
             <p>
@@ -491,10 +603,31 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
             <h2 style={{ marginTop: ".2rem" }}>
               What I can claim, and what I can&apos;t
             </h2>
+            {/* The claim leads the section now. It used to sit below "what
+                shipped" and above "what I would have instrumented", sandwiched
+                between the two lists that are supposed to be substantiating it,
+                which is the one place on the page it could not do its job. */}
+            <div className="td-promise">
+              <div className="lab">What actually changed</div>
+              <q>
+                A questionnaire that collected data became a journey that
+                returns a decision.
+              </q>
+              <div className="verdict">Structural, not measured</div>
+            </div>
+            <p>
+              Before: a login and a questionnaire that collected data and
+              returned nothing. After: a journey that produces a risk score,
+              explains it, tells you what it means for your coverage, and routes
+              you to a screening. That is the difference between data collection
+              and a product, and it is the honest version of the impact claim.
+            </p>
             <p className="lede">
-              I do not have the numbers. Pre-seed volume, I left before the
-              cohort was large enough to say anything meaningful with, and I
-              have no access to what happened after.
+              What I do not have is the numbers. Pre-seed volume, I left before
+              the cohort was large enough to say anything meaningful with, and I
+              have no access to what happened after. No completion rates, no
+              conversion data, and I have not estimated a single one of them to
+              fill the gap.
             </p>
             <p>
               Rather than dress up something directional, here is what shipped
@@ -525,22 +658,6 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
                 email and SMS messaging that carries someone between milestones
               </li>
             </ul>
-
-            <div className="td-promise">
-              <div className="lab">What actually changed</div>
-              <q>
-                A questionnaire that collected data became a journey that
-                returns a decision.
-              </q>
-              <div className="verdict">Structural, not measured</div>
-            </div>
-            <p>
-              Before: a login and a questionnaire that collected data and
-              returned nothing. After: a journey that produces a risk score,
-              explains it, tells you what it means for your coverage, and routes
-              you to a screening. That is the difference between data collection
-              and a product, and it is the honest version of the impact claim.
-            </p>
 
             <h3>What I would have instrumented</h3>
             <table className="td-table">
@@ -639,16 +756,15 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
               around, that is a real hole.
             </p>
 
+            {/* The no-numbers admission was made three times on this page: in
+                the summary above the disclosure, at the top of Impact, and here.
+                Said once with force it reads as discipline; said three times it
+                reads as flinching. Impact owns it now. */}
             <h3>Limits worth holding while reading this</h3>
             <ul>
               <li>
                 <strong>Five months, pre-seed.</strong> Small team, decisions
                 made fast and with incomplete information.
-              </li>
-              <li>
-                <strong>No user numbers.</strong> No completion rates, no
-                conversion data. I do not have them and I have not estimated
-                them.
               </li>
               <li>
                 <strong>No screenshots and no notes.</strong> This is written
