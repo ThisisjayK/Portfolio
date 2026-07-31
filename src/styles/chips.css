@@ -4,17 +4,33 @@
   flex-wrap: wrap;
   gap: 0.45em;
 }
-.meta span {
+/* `.text-chip` is listed alongside the bare span because a skill with evidence
+   behind it renders as a <button> rather than a <span> (see Skills.tsx), and a
+   button matches neither `.meta span` nor the browser's idea of an unstyled
+   box. Keeping both selectors on one rule is what makes the two elements
+   indistinguishable on the page. */
+.meta span,
+.meta .text-chip {
   font-family: "Archivo", system-ui, sans-serif;
   font-size: var(--label-size);
   font-weight: 600;
   letter-spacing: var(--label-track);
   text-transform: uppercase;
   color: var(--ink-80);
+  background: none;
   border: 1px solid var(--ink-28);
   border-radius: 1px;
   padding: 0.34em 0.62em;
   transition: 0.3s var(--ease);
+}
+/* Buttons arrive with an appearance, a font and a text-align of their own. */
+.meta button.text-chip,
+.meta button.logo-chip {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  text-align: center;
+  cursor: pointer;
 }
 /* Brand-logo skills: the company logo in its own colour, on a neutral tile so
    it reads against the page ink. Overrides the text-chip look above. */
@@ -42,4 +58,45 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+/* --------- skills that have something behind them --------- */
+/* A dot in the corner is the whole affordance. It has to work on both chip
+   shapes and in both inks, and it has to be visible without turning the grid
+   into a field of buttons: most of these chips do not open anything, and the
+   difference between the two states is the honest part of this section. */
+.meta .chip-evidence {
+  position: relative;
+  border-color: var(--ink-55);
+}
+.meta .chip-evidence::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+  transition: transform 0.25s var(--spring);
+}
+.meta .chip-evidence:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.meta .chip-evidence:hover::after {
+  transform: scale(1.45);
+}
+.meta .chip-evidence:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* --------- the line above the skill grid --------- */
+.skills-hint {
+  max-width: 58ch;
+  margin: 0 0 clamp(1rem, 2.4vh, 1.6rem);
+  font-size: 0.94rem;
+  line-height: 1.45;
+  color: var(--ink-55);
 }

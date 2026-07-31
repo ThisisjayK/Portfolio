@@ -15,28 +15,46 @@ const CERT_TAGS: { label: string; url: string }[] = [
   },
 ];
 
-export function About() {
+/* The opening used to lead with the category ("an early-career product
+   manager who...") which is the one thing about Jay that is not distinctive.
+   What is distinctive is that he will not claim impact he cannot source, so the
+   lede leads with that and sends the reader at the case study section which
+   proves it. The résumé facts follow immediately in the second paragraph, since
+   a hiring manager still needs them inside the first few seconds. */
+export function About({ onOpenCase }: { onOpenCase?: () => void } = {}) {
   return (
     <section className="hero">
       <h1 className="about-name">Hey, I&apos;m Jayanth</h1>
       <div className="cols">
         <div>
           <p className="lede">
-            An early-career product manager who spent five months as a
-            technical PM intern at a pre-seed B2B startup in the MIT
-            Incubator program, building early cancer detection tech. Small
-            team, a huge learning curve, and enough ambiguity that I had to
-            figure out my own footing fast.
+            I keep what I did and what I can prove in separate columns. The case
+            study on this site has a section listing the numbers I do not have,
+            and that is the part I would rather you read first.
+          </p>
+          {/* Directly under the lede rather than at the end of the column: the
+              lede tells the reader where to go, so the way there should be the
+              next thing they see, not four paragraphs later. It also keeps the
+              link clear of the footer band, which the bottom of this column
+              runs into at the default reader size. */}
+          {onOpenCase && (
+            <p className="about-cta">
+              <button className="about-link" type="button" onClick={onOpenCase}>
+                Read the Stage Zero Health case study →
+              </button>
+            </p>
+          )}
+          <p>
+            Five months as the technical PM intern at Stage Zero Health, a
+            pre-seed startup in the MIT Incubator program, where I owned a breast
+            cancer screening journey from a cold signup to a booked appointment.
+            Before that, a year at Bluevoir Technologies, as a business analyst
+            and then a Pega system architect.
           </p>
           <p>
-            What that actually meant day to day: writing PRDs that engineers
-            could work from without guessing, running sprint planning and
-            backlog grooming, and sitting in on bug triage when something
-            customer-facing broke. I got comfortable using RICE to decide what
-            actually mattered this sprint versus what just felt urgent, and I
-            spent a lot of time synthesizing user interviews the team had
-            already run, pulling out the patterns that should actually shape
-            the roadmap.
+            What I like most is reading whatever a product sits on top of.
+            Learning exactly what the Gail risk score counts is how I found the
+            things it never looks at, and that gap turned into the roadmap.
           </p>
         </div>
         <div className="aside">

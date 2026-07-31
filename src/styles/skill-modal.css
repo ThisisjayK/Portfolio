@@ -1,0 +1,146 @@
+/* ==================== SKILL EVIDENCE MODAL ==================== */
+/* Sibling of resume-modal.css and deliberately near-identical in chrome: same
+   blurred scrim over a page that stays put, same pill buttons, same z-index
+   band. A reader should not have to learn two dialogs. What differs is the
+   panel, which is sized to a paragraph rather than to a sheet of paper. */
+.skill-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(0.9rem, 3vh, 2.2rem) var(--gut);
+}
+.skill-modal__scrim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--paper) 60%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.25);
+  backdrop-filter: blur(14px) saturate(1.25);
+}
+.skill-modal__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  /* Capped in ch rather than px so the measure stays readable as the reader
+     changes text size, which is the whole point of the Aa control. */
+  width: min(52ch, 100%);
+  max-height: min(80vh, 100%);
+  background: var(--paper);
+  border: 1px solid var(--ink-28);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px -20px color-mix(in srgb, var(--ink) 45%, transparent);
+}
+.skill-modal__panel:focus {
+  outline: none;
+}
+
+.skill-modal__bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  padding: 0.7rem 0.8rem 0.7rem 1.15rem;
+  border-bottom: 1px solid var(--ink-28);
+}
+.skill-modal__title {
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  font-weight: 600;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.skill-modal__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  padding: 0.5em;
+  border-radius: 999px;
+  background: none;
+  border: 1px solid var(--ink-28);
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    border-color 0.25s var(--ease),
+    background 0.25s var(--ease);
+}
+.skill-modal__btn:hover {
+  border-color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+.skill-modal__btn:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+.skill-modal__close {
+  margin-left: auto;
+}
+.skill-modal__close svg {
+  width: 13px;
+  height: 13px;
+  display: block;
+}
+
+.skill-modal__body {
+  overflow-y: auto;
+  padding: clamp(1.05rem, 3vw, 1.5rem) 1.15rem clamp(1.15rem, 3vw, 1.6rem);
+}
+.skill-modal__why {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ink-80);
+}
+.skill-modal__lab {
+  display: block;
+  margin: 1.35rem 0 0.55rem;
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  font-weight: 600;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-55);
+}
+.skill-modal__where {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+/* Reads as the a.inline links in type.css: this is a link that happens to be a
+   button, because the app routes on its own state rather than on the address. */
+.skill-modal__link {
+  padding: 0;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--ink-28);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.4;
+  text-align: left;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.25s var(--ease);
+}
+.skill-modal__link:hover {
+  border-bottom-color: var(--ink);
+}
+.skill-modal__link:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+  .skill-modal {
+    padding: 0.8rem;
+  }
+  .skill-modal__panel {
+    width: 100%;
+  }
+}
