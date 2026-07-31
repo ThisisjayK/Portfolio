@@ -435,6 +435,48 @@ export default function KickTeardown({ onClose }: { onClose: () => void }) {
           </p>
         </div>
 
+        {/* The finding above is the user-facing cost of the wasted moment. This is the
+            strategic one, and it is the same evidence read one layer down: not a bad screen
+            but an asset that never starts accruing. Kept as a separate subsection rather
+            than folded into the callout above, because the two costs land on different
+            people - the first on the user who notices, the second on whoever owns
+            discovery three years from now. */}
+        <h3>The deeper cost: a flywheel that never starts turning</h3>
+        <p>
+          Read on its own, this is a wasted screen. Read as data strategy it is worse than that.
+          Recommendation quality is the asset a discovery-led platform compounds: every session
+          should leave behind signal that makes the next session better, and that loop is the part
+          a competitor cannot copy by shipping a feature. Onboarding is where it would start. It
+          collects two facts that cannot improve a ranking.
+        </p>
+        <p>
+          Finding 02 is the same hole from the other side. A recommender needs a positive signal and
+          a negative one. Onboarding declines to collect the first, and there is no way to say no
+          anywhere in the product, so the second never arrives either.{" "}
+          <strong>
+            Nothing goes in, so nothing accrues, and a shelf rotating on a timer is what a system
+            with nothing to rank on looks like.
+          </strong>{" "}
+          The two channels that turned over in the table above did so while I was logged out, and
+          both replacements were also Slots &amp; Casino.
+        </p>
+        <p>
+          This is the difference between a bug and a position. The three findings after this one are
+          things a team can decide to fix in a sprint. This one is an asset Kick is choosing not to
+          accumulate, and every month it does not start is a month of compounding a competitor gets
+          and it does not.
+        </p>
+        <div className="td-callout warn">
+          <div className="h">What this evidence does and does not support</div>
+          <p>
+            One account, roughly thirty minutes, one sampled shelf. That is enough to say the loop
+            does not start in the session where it would matter most. It is not enough to say it
+            never starts. A user who watches for a week may well get a shelf that responds, and I
+            did not observe long enough to know. I am not claiming a recommender is absent because I
+            could not watch one work in half an hour.
+          </p>
+        </div>
+
         <span className="td-finding">The fix for Finding 01</span>
         <h3 style={{ marginTop: ".2rem" }}>Spend the moment on taste, not demographics</h3>
         <p>
@@ -442,6 +484,16 @@ export default function KickTeardown({ onClose }: { onClose: () => void }) {
           captioning them with a promise they don&apos;t keep. Then add a third question: three to
           five category picks, and seed the first session from those. One question more than today,
           and the only one of the three that earns the caption the other two are already using.
+        </p>
+        <p>
+          The first session is the smaller half of the argument. Category picks give the ranking
+          something to start from, and a cold start is the hardest thing for a recommender to
+          recover from later, because a user who bounces off an irrelevant first shelf never
+          produces the watch history the loop needs.{" "}
+          <strong>
+            The question is not what one screen is worth. It is when the loop starts, and today it
+            does not start here.
+          </strong>
         </p>
         <Prototype node="9-206" title="A · Personalization theatre" sub="Before and after, 9 screens" />
 
@@ -802,7 +854,7 @@ export default function KickTeardown({ onClose }: { onClose: () => void }) {
             <tr><td>01</td><td>Leak rate: sessions with a preference enabled that are still served hidden content via search, category or channel</td><td>Search latency, since you&apos;ve added a filter to the query path</td></tr>
             <tr><td>02</td><td>Click-through from the empty state to Content Preferences</td><td>Support contacts asking why a category is empty should fall</td></tr>
             <tr><td>03</td><td>Adoption in the first 7 days, then shelf click-through for users who used it against those who didn&apos;t</td><td><strong>Block usage should fall, not rise.</strong> If it rises, the control is in the wrong place</td></tr>
-            <tr><td>04</td><td>Completion rate of the new question, then D1 and D7 return against a holdout</td><td>Total onboarding drop-off, because this adds a step and signup friction is itself one of the problems here</td></tr>
+            <tr><td>04</td><td>Completion rate of the new question, then D1 and D7 return against a holdout. Separately, whether the shelf actually diverges between seeded and holdout users by session three</td><td>Total onboarding drop-off, because this adds a step and signup friction is itself one of the problems here. And if the two shelves never diverge, I have reproduced the original finding one layer up: signal collected, nothing done with it</td></tr>
             <tr><td>05</td><td>Search initiation rate, then share of searches ending in a watch over two minutes</td><td>None. It&apos;s additive to a surface that currently does nothing</td></tr>
             <tr><td>06</td><td>Share of accounts that reach Content Preferences within 30 days</td><td>Toggle enable rate should rise. If it doesn&apos;t, the problem was never discovery</td></tr>
             <tr><td>07</td><td>Account-setup completion, and attempts per successful username</td><td>Time spent on the setup step</td></tr>
