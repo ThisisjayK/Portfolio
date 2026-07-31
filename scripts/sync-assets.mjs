@@ -1,8 +1,13 @@
 // Runs before `npm run dev` and `npm run build` via npm's pre* hooks.
 //
-// 1. Clears docs/assets. The build uses emptyOutDir:false so it does not wipe
-//    docs/favicon.svg and the other files copied from public/, which means stale
-//    hashed bundles would otherwise pile up there forever.
+// 1. Clears docs/assets, but only for `build` (predev passes --skip-clean). The
+//    build uses emptyOutDir:false so it does not wipe docs/favicon.svg and the
+//    other files copied from public/, which means stale hashed bundles would
+//    otherwise pile up there forever. The dev server never writes to docs/, so
+//    clearing it on predev only broke the last build's output: docs/index.html
+//    still referenced the hashed bundles that had just been deleted, leaving
+//    anything serving docs/ statically (npm run preview, GitHub Pages from a
+//    local copy) with an HTML file and no JS or CSS.
 //
 // 2. Copies the compiled resume into public/ under the name the site links to.
 //    resume/resume.pdf is the one tracked copy; public/jayanth-resume.pdf is
@@ -11,7 +16,9 @@
 //    resume while every link kept working.
 import { copyFileSync, existsSync, mkdirSync, rmSync } from "node:fs"
 
-rmSync("docs/assets", { recursive: true, force: true })
+if (!process.argv.includes("--skip-clean")) {
+  rmSync("docs/assets", { recursive: true, force: true })
+}
 
 const RESUME_SRC = "resume/resume.pdf"
 const RESUME_OUT = "public/jayanth-resume.pdf"
