@@ -50,7 +50,7 @@
      top-aligns instead of centring. Shrinking these canvases for mobile made
      that top-alignment obvious - a tall gap under a canvas stuck to the
      header. Matches the same centring guard that rule already carries for
-     the resume/contact/volunteer tabs. */
+     the contact/volunteer tabs. */
   html:not([data-text="sm"]) main.stage:has(.case-gallery),
   html:not([data-text="sm"]) main.stage:has(.teardown-sphere) {
     overflow: hidden;

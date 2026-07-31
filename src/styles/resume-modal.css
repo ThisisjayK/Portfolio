@@ -1,0 +1,158 @@
+/* ==================== RÉSUMÉ MODAL ==================== */
+/* The dialog opened by the Résumé button in the bar. Unlike the long-form
+   overlay pages above, this does not replace the page: it sits over it behind a
+   blurred scrim, so the tab underneath stays visible and the reader keeps their
+   place. z-index clears those pages (200) and their close button (210) so the
+   dialog is never opened underneath one. */
+.resume-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(0.9rem, 3vh, 2.2rem) var(--gut);
+}
+.resume-modal__scrim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--paper) 60%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.25);
+  backdrop-filter: blur(14px) saturate(1.25);
+}
+.resume-modal__panel {
+  /* Positioned so it stacks over the scrim, which is its sibling. */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  /* Shaped like the sheet it holds, so the whole résumé is on screen with
+     nothing to scroll. The résumé is one US Letter page in portrait, so the
+     document area is given that 8.5:11 ratio: height leads (vertical room is
+     what is scarce) and width follows from it, which leaves the viewer no grey
+     gutter to fill either side. The width cap keeps it inside narrow windows,
+     where view=Fit still guarantees the page fits without scrolling - it just
+     letterboxes instead. */
+  --resume-bar-h: 3.4rem;
+  --resume-page-ratio: 0.773;
+  height: min(94vh, 100%);
+  width: min(
+    calc((94vh - var(--resume-bar-h)) * var(--resume-page-ratio)),
+    100%
+  );
+  background: var(--paper);
+  border: 1px solid var(--ink-28);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px -20px color-mix(in srgb, var(--ink) 45%, transparent);
+}
+/* The panel takes focus on open so the keyboard lands inside the dialog; the
+   focus ring belongs on the controls it then tabs to, not on the box itself. */
+.resume-modal__panel:focus {
+  outline: none;
+}
+
+.resume-modal__bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  padding: 0.7rem 0.8rem 0.7rem 1.15rem;
+  border-bottom: 1px solid var(--ink-28);
+}
+.resume-modal__title {
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  font-weight: 600;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-80);
+}
+.resume-modal__actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+/* The same pill the overlay pages' close button is drawn as, so the two read as
+   one family of chrome. */
+.resume-modal__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  padding: 0.5em 0.85em;
+  border-radius: 999px;
+  background: none;
+  border: 1px solid var(--ink-28);
+  color: var(--ink);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition:
+    border-color 0.25s var(--ease),
+    background 0.25s var(--ease);
+}
+.resume-modal__btn:hover {
+  border-color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+.resume-modal__btn:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+.resume-modal__btn svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+.resume-modal__close {
+  padding: 0.5em;
+}
+.resume-modal__close svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* The PDF fills the rest of the panel, drawn by the browser's own viewer, which
+   paints its own surround once it mounts. The white ground is what shows in the
+   moment before that: a white sheet the page then lands on, rather than a flash
+   of the coloured panel. */
+.resume-modal__doc {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: block;
+  border: 0;
+  background: #fff;
+}
+
+.resume-modal__fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.15rem;
+  padding: clamp(1.3rem, 5vw, 2rem);
+}
+.resume-modal__fallback p {
+  max-width: 34ch;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--ink-80);
+}
+@media (max-width: 900px) {
+  .resume-modal {
+    padding: 0.8rem;
+  }
+  /* Small screens always get the fallback rather than the embedded viewer (see
+     ResumeModal.tsx), so the panel holds a paragraph and two links. Sizing it
+     to that content keeps it from standing as a mostly-empty full-height sheet. */
+  .resume-modal__panel {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+  }
+}

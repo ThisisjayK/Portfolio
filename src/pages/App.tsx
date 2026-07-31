@@ -7,7 +7,7 @@ import OptionWheel from "../components/OptionWheel"
 // Imported (not a public/ path) so Vite rewrites the URL for the GitHub Pages
 // subpath build; a bare "/assets/..." would 404 under /product-teardowns/.
 import clickSoft from "../assets/click-soft.mp3"
-import { About, Work, Teardowns, Skills, Volunteer, VolunteerDetail, VOLUNTEER_ITEMS, Resume, Contact, Footer } from "../sections"
+import { About, Work, Teardowns, Skills, Volunteer, VolunteerDetail, VOLUNTEER_ITEMS, Contact, Footer } from "../sections"
 import type { CaseId } from "../sections"
 import KickTeardown from "./KickTeardown"
 import StageZeroHealth from "./StageZeroHealth"
@@ -16,15 +16,18 @@ import Loader from "../components/Loader"
 import FrogMascot, { type FrogPose } from "../components/FrogMascot"
 import { AnimatedPage } from "../components/AnimatedPage"
 import { MobileMenu } from "../components/MobileMenu"
+import { ResumeModal } from "../components/ResumeModal"
 import { useIsMobile } from "../hooks/useIsMobile"
 
+/* The résumé is deliberately not in here. It was a tab whose whole content was
+   a download link, which is a poor use of a section; it is now a button in the
+   bar that opens the PDF in a dialog over whichever tab you are on. */
 type TabId =
   | "about"
   | "work"
   | "teardowns"
   | "skills"
   | "volunteer"
-  | "resume"
   | "contact"
 
 const WHEEL: { id: TabId; label: string }[] = [
@@ -33,7 +36,6 @@ const WHEEL: { id: TabId; label: string }[] = [
   { id: "teardowns", label: "Teardowns" },
   { id: "skills", label: "Skills" },
   { id: "volunteer", label: "Volunteer" },
-  { id: "resume", label: "Resume" },
   { id: "contact", label: "Contact" },
 ]
 const LABELS = WHEEL.map((w) => w.label)
@@ -44,20 +46,20 @@ const SECTIONS: Record<TabId, () => ReactNode> = {
   teardowns: Teardowns,
   skills: Skills,
   volunteer: Volunteer,
-  resume: Resume,
   contact: Contact,
 }
 
 const isTab = (v: string): v is TabId =>
   WHEEL.some((w) => w.id === v)
 
-// In-site pages (the Kick teardown, each case study, each volunteering role)
-// layer over a base tab but carry their own URL so they can be deep-linked and
-// shown in the address bar.
+// In-site pages (the Kick teardown, each case study, each volunteering role) and
+// the résumé dialog layer over a base tab but carry their own URL so they can be
+// deep-linked and shown in the address bar.
 type Overlay =
   | { kind: "kick" }
   | { kind: "case"; id: CaseId }
   | { kind: "volunteer"; id: string }
+  | { kind: "resume" }
   | null
 type Route = { tab: TabId; overlay: Overlay }
 
@@ -70,6 +72,8 @@ function routeToHash(r: Route): string {
       return "work/stage-zero-health"
     case "volunteer":
       return `volunteer/${r.overlay.id}`
+    case "resume":
+      return "resume"
   }
 }
 
@@ -79,6 +83,11 @@ function parseHash(): Route {
   if (h === "work/stage-zero-health") {
     return { tab: "work", overlay: { kind: "case", id: "stage-zero" } }
   }
+  // #resume is the same URL the résumé tab answered to before it became a
+  // dialog, so old links keep working - they now open the PDF over About
+  // rather than landing on a tab of their own. Opening it from the bar keeps
+  // whichever tab you were on; only a cold load has no tab to preserve.
+  if (h === "resume") return { tab: "about", overlay: { kind: "resume" } }
   const vm = h.match(/^volunteer\/(.+)$/)
   if (vm && VOLUNTEER_ITEMS.some((v) => v.id === vm[1])) {
     return { tab: "volunteer", overlay: { kind: "volunteer", id: vm[1] } }
@@ -301,16 +310,21 @@ export default function App() {
     route.overlay?.kind === "case" ? route.overlay.id : null
   const volunteerOpen: string | null =
     route.overlay?.kind === "volunteer" ? route.overlay.id : null
+  const resumeOpen = route.overlay?.kind === "resume"
 
   // One place that moves both the app state and the address bar. Tab switches
   // replace the history entry; opening an overlay pushes one, so the browser
   // Back button (and the page's own close button) returns to the base tab.
-  const go = (next: Route, push = false) => {
+  // `scroll` is the odd one out: every overlay here replaces the page and so
+  // wants to open at the top, but the résumé dialog lays over a page that stays
+  // put behind it, and resetting the scroll would silently lose the reader's
+  // place while they read the PDF.
+  const go = (next: Route, push = false, scroll = true) => {
     setRoute(next)
     const hash = "#" + routeToHash(next)
     if (push) history.pushState(null, "", hash)
     else history.replaceState(null, "", hash)
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" }) // open at the top
+    if (scroll) window.scrollTo({ top: 0, left: 0, behavior: "auto" })
   }
 
   const select = (id: TabId) => go({ tab: id, overlay: null })
@@ -319,7 +333,10 @@ export default function App() {
     go({ tab: "work", overlay: { kind: "case", id } }, true)
   const openVolunteer = (id: string) =>
     go({ tab: "volunteer", overlay: { kind: "volunteer", id } }, true)
-  const closeOverlay = () => go({ tab: route.tab, overlay: null })
+  const openResume = () =>
+    go({ tab: route.tab, overlay: { kind: "resume" } }, true, false)
+  const closeOverlay = () =>
+    go({ tab: route.tab, overlay: null }, false, !resumeOpen)
 
   // Keep state in sync with the browser Back/Forward buttons.
   useEffect(() => {
@@ -370,6 +387,9 @@ export default function App() {
   const volunteerOverlay = volunteerOpen && (
     <VolunteerDetail key={volunteerOpen} id={volunteerOpen} onClose={closeOverlay} />
   )
+  const resumeOverlay = resumeOpen && (
+    <ResumeModal key="resume" onClose={closeOverlay} />
+  )
 
   return (
     <MotionConfig reducedMotion="user">
@@ -409,6 +429,17 @@ export default function App() {
           >
             {theme === "dark" ? <IconSun /> : <IconMoon />}
           </button>
+          {/* The résumé's only entry point now that it is not a tab, so it sits
+              in the bar on mobile too rather than being folded into the
+              hamburger with the sections. */}
+          <button
+            className="resume-btn"
+            type="button"
+            onClick={openResume}
+            aria-haspopup="dialog"
+          >
+            Résumé
+          </button>
           {mobile && (
             <MobileMenu
               items={WHEEL}
@@ -430,6 +461,11 @@ export default function App() {
           volunteerOverlay
         ) : (
           <AnimatePresence>{volunteerOverlay}</AnimatePresence>
+        )}
+        {mobile ? (
+          resumeOverlay
+        ) : (
+          <AnimatePresence>{resumeOverlay}</AnimatePresence>
         )}
 
         <Footer />

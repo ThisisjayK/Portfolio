@@ -23,6 +23,10 @@
 @import "./footer.css";
 @import "./sphere.css";
 @import "./longform.css";
+/* Sits next to longform.css, the other stylesheet for things layered over the
+   app. Its selectors are all .resume-modal*, so nothing here collides and the
+   position is a filing choice rather than a load-bearing one. */
+@import "./resume-modal.css";
 @import "./wheel.css";
 @import "./frog.css";
 @import "./monkey.css";

@@ -17,7 +17,8 @@ export { Work, type CaseId } from "./Work";
 export { Teardowns } from "./Teardowns";
 export { Skills } from "./Skills";
 export { Contact } from "./Contact";
-export { Resume } from "./Resume";
+/* Résumé is no longer a section. It was one file holding a download link, and
+   is now the Résumé button in the bar plus src/components/ResumeModal.tsx. */
 export { Volunteer, VolunteerDetail } from "./Volunteer";
 export { Footer } from "./Footer";
 export { VOLUNTEER_ITEMS, type VolunteerItem } from "../data/volunteer";
