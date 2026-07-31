@@ -1,0 +1,64 @@
+/* ============================ EXPERIENCE ============================ */
+/* The Experience list borrows .vol-menu wholesale (see volunteering.css), so
+   there is nothing here for the list itself. What follows is only the two
+   things the role pages add on top of the shared long-form chrome: the location
+   and dates line under the lede, and the reported-figures block.
+
+   Imported after longform.css on purpose. `.exp-page h2` and `.teardown-page h2`
+   have equal specificity, so source order is what decides between them. */
+
+/* Dates and location, set quieter than the lede it follows. It is orientation
+   rather than argument, so it should not compete with the first paragraph. */
+.exp-page .exp-meta-line {
+  margin-top: 0.9rem;
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-55);
+}
+
+/* --------- figures the team reported --------- */
+/* Deliberately not styled as a stat rail. The case study's big-number treatment
+   is for things Jay can stand behind, and reusing it here would say the
+   opposite of what the surrounding copy says. These sit at body scale, in a
+   bordered row, reading as a citation rather than as a headline. */
+.exp-reported {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.6rem;
+  margin: 0.9rem 0 1rem;
+  padding: 0.75rem 0.95rem;
+  border: 1px solid var(--ink-28);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+}
+.exp-reported__row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.exp-reported__fig {
+  font-family: "Geist", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ink);
+}
+.exp-reported__of {
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: var(--label-size);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-80);
+}
+
+@media (max-width: 900px) {
+  .exp-reported {
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+}

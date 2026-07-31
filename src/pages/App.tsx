@@ -7,7 +7,7 @@ import OptionWheel from "../components/OptionWheel"
 // Imported (not a public/ path) so Vite rewrites the URL for the GitHub Pages
 // subpath build; a bare "/assets/..." would 404 under /product-teardowns/.
 import clickSoft from "../assets/click-soft.mp3"
-import { About, Work, Teardowns, Skills, Volunteer, VolunteerDetail, VOLUNTEER_ITEMS, Contact, Footer } from "../sections"
+import { About, Work, Teardowns, Skills, Volunteer, VolunteerDetail, VOLUNTEER_ITEMS, Experience, ExperienceDetail, EXPERIENCE_ITEMS, Contact, Footer } from "../sections"
 import type { CaseId } from "../sections"
 import KickTeardown from "./KickTeardown"
 import StageZeroHealth from "./StageZeroHealth"
@@ -17,6 +17,8 @@ import FrogMascot, { type FrogPose } from "../components/FrogMascot"
 import { AnimatedPage } from "../components/AnimatedPage"
 import { MobileMenu } from "../components/MobileMenu"
 import { ResumeModal } from "../components/ResumeModal"
+import { SkillModal } from "../components/SkillModal"
+import { SKILL_EVIDENCE, type SkillTarget } from "../data/skill-evidence"
 import { useIsMobile } from "../hooks/useIsMobile"
 
 /* The résumé is deliberately not in here. It was a tab whose whole content was
@@ -26,14 +28,20 @@ type TabId =
   | "about"
   | "work"
   | "teardowns"
+  | "experience"
   | "skills"
   | "volunteer"
   | "contact"
 
+/* Experience sits after the two flagship pieces and before Skills: the case
+   study and the teardown are the strongest things here so they stay first, and
+   Skills links into Experience, so a reader meets the roles before the chips
+   that point at them. */
 const WHEEL: { id: TabId; label: string }[] = [
   { id: "about", label: "About" },
   { id: "work", label: "Case Studies" },
   { id: "teardowns", label: "Teardowns" },
+  { id: "experience", label: "Experience" },
   { id: "skills", label: "Skills" },
   { id: "volunteer", label: "Volunteer" },
   { id: "contact", label: "Contact" },
@@ -44,6 +52,7 @@ const SECTIONS: Record<TabId, () => ReactNode> = {
   about: About,
   work: Work,
   teardowns: Teardowns,
+  experience: Experience,
   skills: Skills,
   volunteer: Volunteer,
   contact: Contact,
@@ -59,6 +68,7 @@ type Overlay =
   | { kind: "kick" }
   | { kind: "case"; id: CaseId }
   | { kind: "volunteer"; id: string }
+  | { kind: "experience"; id: string }
   | { kind: "resume" }
   | null
 type Route = { tab: TabId; overlay: Overlay }
@@ -72,6 +82,8 @@ function routeToHash(r: Route): string {
       return "work/stage-zero-health"
     case "volunteer":
       return `volunteer/${r.overlay.id}`
+    case "experience":
+      return `experience/${r.overlay.id}`
     case "resume":
       return "resume"
   }
@@ -91,6 +103,10 @@ function parseHash(): Route {
   const vm = h.match(/^volunteer\/(.+)$/)
   if (vm && VOLUNTEER_ITEMS.some((v) => v.id === vm[1])) {
     return { tab: "volunteer", overlay: { kind: "volunteer", id: vm[1] } }
+  }
+  const em = h.match(/^experience\/(.+)$/)
+  if (em && EXPERIENCE_ITEMS.some((e) => e.id === em[1])) {
+    return { tab: "experience", overlay: { kind: "experience", id: em[1] } }
   }
   return { tab: isTab(h) ? h : "about", overlay: null }
 }
@@ -310,7 +326,15 @@ export default function App() {
     route.overlay?.kind === "case" ? route.overlay.id : null
   const volunteerOpen: string | null =
     route.overlay?.kind === "volunteer" ? route.overlay.id : null
+  const experienceOpen: string | null =
+    route.overlay?.kind === "experience" ? route.overlay.id : null
   const resumeOpen = route.overlay?.kind === "resume"
+  /* Local state rather than a route, unlike every other overlay here. The skill
+     panel is a stepping stone and not a destination: it holds two sentences and
+     a way onward, and its links immediately push a real URL for the page they
+     open. Giving twenty-one chips twenty-one addresses would add history
+     entries a reader has to press Back through to leave the Skills tab. */
+  const [skill, setSkill] = useState<string | null>(null)
 
   // One place that moves both the app state and the address bar. Tab switches
   // replace the history entry; opening an overlay pushes one, so the browser
@@ -333,8 +357,18 @@ export default function App() {
     go({ tab: "work", overlay: { kind: "case", id } }, true)
   const openVolunteer = (id: string) =>
     go({ tab: "volunteer", overlay: { kind: "volunteer", id } }, true)
+  const openExperience = (id: string) =>
+    go({ tab: "experience", overlay: { kind: "experience", id } }, true)
   const openResume = () =>
     go({ tab: route.tab, overlay: { kind: "resume" } }, true, false)
+  // Close the panel before routing, so the reader is not left with a dialog
+  // hanging over the page it just sent them to.
+  const openSkillTarget = (t: SkillTarget) => {
+    setSkill(null)
+    if (t.kind === "case") openCase("stage-zero")
+    else if (t.kind === "kick") openKick()
+    else openExperience(t.id)
+  }
   const closeOverlay = () =>
     go({ tab: route.tab, overlay: null }, false, !resumeOpen)
 
@@ -345,9 +379,19 @@ export default function App() {
     return () => window.removeEventListener("popstate", onPop)
   }, [])
 
+  /* The `id !== active` guard is load-bearing. The wheel is a controlled
+     component: setting a tab moves its `selected` prop, and when it settles
+     there it reports the move back through onChange. Without the guard that
+     echo runs select() for the tab we just set, which replaces the URL with the
+     bare tab and drops any overlay from it. That only shows up when one action
+     changes the tab AND opens an overlay together (the About link into the case
+     study is the first thing on the site that does), where it pushed
+     #work/stage-zero-health and the echo immediately replaced it with #work,
+     leaving a page whose address no longer pointed at it. Echoing back the
+     current tab is a no-op, so treat it as one. */
   const onWheelChange = (index: number) => {
     const id = WHEEL[index]?.id
-    if (id && isTab(id)) select(id)
+    if (id && isTab(id) && id !== active) select(id)
   }
   const onMobileSelect = (id: string) => {
     if (isTab(id)) select(id)
@@ -375,6 +419,14 @@ export default function App() {
         <Work onOpenCase={openCase} />
       ) : active === "volunteer" ? (
         <Volunteer onOpen={openVolunteer} />
+      ) : active === "experience" ? (
+        <Experience onOpen={openExperience} />
+      ) : active === "skills" ? (
+        <Skills onOpen={setSkill} />
+      ) : active === "about" ? (
+        // The one link out of About, so the strongest thing on the site is one
+        // click from the landing tab rather than four.
+        <About onOpenCase={() => openCase("stage-zero")} />
       ) : (
         <Section />
       )}
@@ -387,8 +439,24 @@ export default function App() {
   const volunteerOverlay = volunteerOpen && (
     <VolunteerDetail key={volunteerOpen} id={volunteerOpen} onClose={closeOverlay} />
   )
+  const experienceOverlay = experienceOpen && (
+    <ExperienceDetail
+      key={experienceOpen}
+      id={experienceOpen}
+      onClose={closeOverlay}
+    />
+  )
   const resumeOverlay = resumeOpen && (
     <ResumeModal key="resume" onClose={closeOverlay} />
+  )
+  const skillEvidence = skill ? SKILL_EVIDENCE[skill] : undefined
+  const skillOverlay = skillEvidence && (
+    <SkillModal
+      key={skill}
+      evidence={skillEvidence}
+      onClose={() => setSkill(null)}
+      onOpenTarget={openSkillTarget}
+    />
   )
 
   return (
@@ -463,10 +531,16 @@ export default function App() {
           <AnimatePresence>{volunteerOverlay}</AnimatePresence>
         )}
         {mobile ? (
+          experienceOverlay
+        ) : (
+          <AnimatePresence>{experienceOverlay}</AnimatePresence>
+        )}
+        {mobile ? (
           resumeOverlay
         ) : (
           <AnimatePresence>{resumeOverlay}</AnimatePresence>
         )}
+        {mobile ? skillOverlay : <AnimatePresence>{skillOverlay}</AnimatePresence>}
 
         <Footer />
 

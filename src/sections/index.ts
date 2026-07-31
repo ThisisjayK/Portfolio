@@ -20,5 +20,7 @@ export { Contact } from "./Contact";
 /* Résumé is no longer a section. It was one file holding a download link, and
    is now the Résumé button in the bar plus src/components/ResumeModal.tsx. */
 export { Volunteer, VolunteerDetail } from "./Volunteer";
+export { Experience, ExperienceDetail } from "./Experience";
 export { Footer } from "./Footer";
 export { VOLUNTEER_ITEMS, type VolunteerItem } from "../data/volunteer";
+export { EXPERIENCE_ITEMS, type ExperienceItem } from "../data/experience";

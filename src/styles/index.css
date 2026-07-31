@@ -27,6 +27,11 @@
    app. Its selectors are all .resume-modal*, so nothing here collides and the
    position is a filing choice rather than a load-bearing one. */
 @import "./resume-modal.css";
+/* Same chrome as resume-modal.css, so it files next to it. */
+@import "./skill-modal.css";
+/* Must follow longform.css: the .exp-page rules inside it share specificity with
+   .teardown-page rules, so source order is what resolves them. */
+@import "./experience.css";
 @import "./wheel.css";
 @import "./frog.css";
 @import "./monkey.css";

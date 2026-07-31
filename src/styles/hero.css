@@ -56,6 +56,29 @@ h1 em {
   font-size: clamp(1.05rem, 1.4vw, 1.3rem);
   line-height: 1.5;
 }
+/* The one link out of About, into the case study. A button rather than an
+   anchor because the app routes on its own state and only listens for popstate:
+   an <a href="#work/..."> would move the address bar without moving the view.
+   Styled to read as the a.inline links in type.css so it does not look like a
+   form control dropped into a paragraph. */
+.about-link {
+  padding: 0;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--ink-28);
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.25s var(--ease);
+}
+.about-link:hover {
+  border-bottom-color: var(--ink);
+}
+.about-link:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
 .aside {
   border-left: 1px solid var(--ink-28);
   padding-left: clamp(16px, 2vw, 28px);
