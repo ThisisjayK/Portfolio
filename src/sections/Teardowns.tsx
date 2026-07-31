@@ -5,8 +5,6 @@ import InfiniteMenu from "../components/InfiniteMenu";
 // wordmark stays legible over the page's pink (light) / green (dark) paper.
 import kickGreen from "../assets/kick-green.svg";
 import kickPink from "../assets/kick-pink.svg";
-import soonTileGreen from "../assets/soon-tile-green.svg";
-import soonTilePink from "../assets/soon-tile-pink.svg";
 import { useThemeName } from "../hooks/useThemeName";
 import { useIsMobile } from "../hooks/useIsMobile";
 
@@ -20,30 +18,28 @@ export function Teardowns({ onOpenKick }: { onOpenKick?: () => void } = {}) {
   // instead of triggering a fresh network/decode, which is what left the sphere
   // briefly blank while the new logo loaded.
   useEffect(() => {
-    [kickGreen, kickPink, soonTileGreen, soonTilePink].forEach((src) => {
+    [kickGreen, kickPink].forEach((src) => {
       const img = new Image();
       img.src = src;
     });
   }, []);
 
-  // One entry per product torn down, plus a placeholder face so the sphere has
-  // something to rotate between while there is only one teardown written. No
-  // title/description by design (logos only). `id` is what the click handler
-  // reads: only the kick face opens anything. Memoised so InfiniteMenu re-inits
-  // only when the theme (and thus the artwork) actually changes.
+  /* One entry per product torn down. No title/description by design (logos
+     only). `id` is what the click handler reads. Memoised so InfiniteMenu
+     re-inits only when the theme (and thus the artwork) actually changes.
+
+     There was a second, "more soon" face here so the sphere had something to
+     rotate between. It was dropped for the same reason as the placeholder cards
+     in Work: it advertised the gap rather than filling it. InfiniteMenu maps a
+     sphere vertex to an item with `index % items.length`, so a single entry
+     tiles across every face and the sphere still turns, it just turns as one
+     product instead of one product and an apology. */
   const items = useMemo(
     () => [
       {
         id: "kick",
         image: theme === "dark" ? kickPink : kickGreen,
         link: "kick/",
-        title: "",
-        description: "",
-      },
-      {
-        id: "soon",
-        image: theme === "dark" ? soonTilePink : soonTileGreen,
-        link: "",
         title: "",
         description: "",
       },
