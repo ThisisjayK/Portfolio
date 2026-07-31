@@ -2,18 +2,17 @@
 .block {
   padding: clamp(1.2vh, 2.2vh, 3vh) var(--gut);
 }
-/* Résumé fits the fixed viewport, no page scroll, with its content left-
-   aligned and vertically centred. At larger reader sizes the stage normally
-   switches to scrolling and top-alignment; :has scopes an override to this tab
-   so it clips and centres instead, and the html:not(...) prefix carries enough
-   specificity to beat those scroll rules. (Content stays short here, so nothing
-   is lost to the clip.) */
-html:not([data-text="sm"]) main.stage:has(.resume-block),
+/* Contact and Volunteer fit the fixed viewport, no page scroll, with their
+   content left-aligned and vertically centred. At larger reader sizes the stage
+   normally switches to scrolling and top-alignment; :has scopes an override to
+   these tabs so they clip and centre instead, and the html:not(...) prefix
+   carries enough specificity to beat those scroll rules. (Content stays short
+   here, so nothing is lost to the clip.) Résumé was the third tab on this list
+   until it became a dialog opened from the bar. */
 html:not([data-text="sm"]) main.stage:has(.contact-block),
 html:not([data-text="sm"]) main.stage:has(.volunteer-block) {
   overflow: hidden;
 }
-html:not([data-text="sm"]) main.stage:has(.resume-block) > div,
 html:not([data-text="sm"]) main.stage:has(.contact-block) > div,
 html:not([data-text="sm"]) main.stage:has(.volunteer-block) > div {
   flex: 1 1 auto;

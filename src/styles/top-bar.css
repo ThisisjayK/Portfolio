@@ -109,6 +109,57 @@
   display: block;
 }
 
+/* --------- résumé: the one control in the bar that is a destination --------- */
+/* Sits immediately right of the theme button, which is what pushed the Aa and
+   theme pair leftward. Drawn as a pill rather than another 40px circle: the
+   other two toggle a setting, this one opens something, and the label says so.
+   Its type is pinned in px like the Aa button's, so stepping the reader size
+   does not reflow the bar. */
+.resume-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  height: 40px;
+  padding: 0 1.05em;
+  border-radius: 999px;
+  background: none;
+  border: 1px solid var(--ink-28);
+  color: var(--ink);
+  cursor: pointer;
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    border-color 0.3s var(--ease),
+    background 0.3s var(--ease),
+    transform 0.3s var(--spring);
+}
+.resume-btn:hover {
+  border-color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+.resume-btn:active {
+  transform: scale(0.94);
+}
+.resume-btn:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+@media (max-width: 900px) {
+  /* Three controls plus the hamburger on a phone bar: tighten this one, since
+     it is the only one carrying a word. */
+  .resume-btn {
+    height: 36px;
+    padding: 0 0.8em;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+}
+
 /* --------- text size control: the Aa button and its panel --------- */
 /* The button borrows .theme-btn wholesale so the two controls sit as a pair;
    only the glyph differs, and it is set type rather than an SVG. Sizes here are

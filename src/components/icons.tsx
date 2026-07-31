@@ -47,3 +47,12 @@ export function IconClose() {
     </svg>
   )
 }
+
+export function IconDownload() {
+  return (
+    <svg {...base} strokeWidth={1.8}>
+      <path d="M12 3.5v11.5m0 0l-4.2-4.2M12 15l4.2-4.2" />
+      <path d="M4.2 17.2v1.3a2 2 0 0 0 2 2h11.6a2 2 0 0 0 2-2v-1.3" />
+    </svg>
+  )
+}
