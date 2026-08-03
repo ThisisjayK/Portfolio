@@ -34,8 +34,20 @@ h1 em {
   color: var(--ink);
   font-size: clamp(1.5rem, 3.2vw, 2.5rem);
   max-width: none;
-  margin: 0 0 clamp(1rem, 2.4vh, 1.6rem);
+  margin: 0 0 0.35rem;
   text-shadow: none;
+}
+
+/* Where he is, set right under the name. Small and muted so it reads as a
+   fact a hiring manager can scan past, not a second headline. It carries the
+   block's bottom margin, so the name tucks up against it (below). Scoped under
+   .hero to outrank the .hero p type scale further down. */
+.hero .about-location {
+  font-size: clamp(0.85rem, 1vw, 0.95rem);
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  color: var(--ink-55);
+  margin: 0 0 clamp(1rem, 2.4vh, 1.6rem);
 }
 
 .cols {

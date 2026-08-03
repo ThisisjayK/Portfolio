@@ -236,52 +236,11 @@ function TextSizeControl() {
   )
 }
 
-/* A soft click on every press, using the same sample the option wheel plays.
-   Fires on pointerdown rather than click so the sound lands with the press
-   instead of trailing it. Presses inside the wheel rail are skipped: the wheel
-   plays this sample itself when the selection changes, and without the skip a
-   press there would stack two copies.
-   Mobile has no option wheel, so sound there is opt-in rather than opt-out:
-   only the hamburger menu and its items make a sound, everything else on the
-   page stays silent. */
-function useClickSound(src: string, mobile: boolean, volume = 0.65) {
-  useEffect(() => {
-    // A small pool, so a quick second press overlaps the first instead of
-    // rewinding it and cutting the first one off.
-    const pool = Array.from({ length: 4 }, () => {
-      const a = new Audio(src)
-      a.volume = volume
-      a.preload = "auto"
-      return a
-    })
-    let next = 0
-    const onDown = (e: PointerEvent) => {
-      const el = e.target as Element | null
-      if (mobile) {
-        // Only the hamburger toggle and its dropdown items get a sound.
-        if (!el?.closest?.(".mobile-menu")) return
-      } else {
-        if (el?.closest?.(".wheel-nav")) return
-        // The wordmark (home) is intentionally silent.
-        if (el?.closest?.(".mark")) return
-      }
-      const a = pool[next++ % pool.length]
-      try {
-        a.currentTime = 0
-        // Browsers reject playback until the page has had a real gesture; a
-        // press is one, so this only ever rejects in edge cases worth ignoring.
-        void a.play()?.catch(() => {})
-      } catch {
-        /* ignore */
-      }
-    }
-    document.addEventListener("pointerdown", onDown)
-    return () => {
-      document.removeEventListener("pointerdown", onDown)
-      pool.forEach((a) => a.pause())
-    }
-  }, [src, volume, mobile])
-}
+/* There used to be a useClickSound hook here: a document-level pointerdown
+   listener that played the soft click on every press anywhere on the page. It
+   is gone deliberately. The click sample now belongs to the option wheel alone,
+   where it marks a selection changing; everywhere else a press is silent, so the
+   sound means something specific rather than following the cursor around. */
 
 // Drives the mascot: left idle long enough, the frog snaps at something before
 // settling back to idle. There used to be a "flies" stage in between - idle,
@@ -309,7 +268,6 @@ function useFrogPose(): { pose: FrogPose; onCatchDone: () => void } {
 export default function App() {
   const { theme, toggle } = useTheme()
   const mobile = useIsMobile()
-  useClickSound(clickSoft, mobile)
   const [initial] = useState(indexFromHash)
   // Boot intro: the rotating-word + counter loader covers the app until it
   // finishes (or is skipped for reduced-motion visitors), then reveals the site.
