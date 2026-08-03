@@ -25,43 +25,38 @@ export function About({ onOpenCase }: { onOpenCase?: () => void } = {}) {
   return (
     <section className="hero">
       <h1 className="about-name">Hey, I&apos;m Jayanth</h1>
+      <p className="about-location"> from Boston, MA, USA</p>
       <div className="cols">
         <div>
-          <p className="lede">
-            I keep what I did and what I can prove in separate columns. The case
-            study on this site has a section listing the numbers I do not have,
-            and that is the part I would rather you read first.
-          </p>
-          {/* Directly under the lede rather than at the end of the column: the
-              lede tells the reader where to go, so the way there should be the
-              next thing they see, not four paragraphs later. It also keeps the
-              link clear of the footer band, which the bottom of this column
-              runs into at the default reader size. */}
-          {onOpenCase && (
-            <p className="about-cta">
-              <button className="about-link" type="button" onClick={onOpenCase}>
-                Read the Stage Zero Health case study →
-              </button>
-            </p>
-          )}
           <p>
             Five months as the technical PM intern at Stage Zero Health, a
-            pre-seed startup in the MIT Incubator program, where I owned a breast
-            cancer screening journey from a cold signup to a booked appointment.
-            Before that, a year at Bluevoir Technologies, as a business analyst
-            and then a Pega system architect.
+            pre-seed startup in the MIT Incubator program, where I owned a
+            breast cancer screening journey from a cold signup to a booked
+            appointment. Before that, a year at Bluevoir Technologies in
+            Hyderabad, India, as a business analyst and then a Pega system
+            architect.
           </p>
           <p>
             What I like most is reading whatever a product sits on top of.
             Learning exactly what the Gail risk score counts is how I found the
-            things it never looks at, and that gap turned into the roadmap.
+            things it never looks at, and that gap turned into the roadmap. That
+            same reading is what told me where to stop: Gail needs nothing past
+            the first two or three milestones, so a real score could ship there
+            rather than at the end of the questionnaire.
+          </p>
+          {/* Sits directly under the paragraph it proves: the claim above is
+              only worth making if the reader can go check it in one click. */}
+          <p>
+            <button type="button" className="about-link" onClick={onOpenCase}>
+              Read the Stage Zero Health case study
+            </button>
           </p>
         </div>
         <div className="aside">
           <p>
-            I&apos;m looking for an APM or new-grad product role where I get
-            to work with people who are good at what they do, on something
-            that actually matters.
+            I&apos;m looking for APM or new-grad product roles where I get to
+            work with people who are good at what they do, on something that
+            actually matters.
           </p>
           <p>
             Outside of work I garden, cook, sing, and watch more anime than
