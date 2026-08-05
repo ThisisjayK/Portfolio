@@ -145,6 +145,10 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
               nothing
             </dd>
           </div>
+          <div>
+            <dt>Shipped to</dt>
+            <dd>A 600+ user waitlist and 40+ beta testers</dd>
+          </div>
           <div className="td-meta__art" aria-hidden="true">
             <span className="td-meta__stamp">
               <b>Web first</b>
@@ -518,9 +522,10 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
               user&apos;s data could support would fire, and they would{" "}
               <strong>re-fire as more data arrived</strong>, so a score never
               sat stale behind information the user had already given us. I
-              owned the API contracts, what data went into each model, and which
-              milestones triggered which. The intent was to extend the same
-              pattern past breast cancer to other cancer types.
+              owned the API contracts, what data went into each model, and the{" "}
+              <strong>event-driven</strong> milestone triggers that fired each
+              one. The intent was to extend the same pattern past breast
+              cancer to other cancer types.
             </p>
             <div className="td-callout">
               <div className="h">The part I am not comfortable with</div>
@@ -577,6 +582,19 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
               can answer on their behalf is a question they cannot abandon on.
             </p>
 
+            <h3>A score nobody could read on their own</h3>
+            <p>
+              A risk score by itself is a number a patient has no way to act
+              on. I defined the product requirements for a production-ready,{" "}
+              <strong>Gemini-powered LLM assistant</strong> to sit next to it:
+              the conversation flows, what it was and was not allowed to say,
+              and the response guardrails around it. A health assistant needs
+              a harder edge on that boundary than most chat products do. I
+              then <strong>prototyped and validated</strong> the prompt
+              behaviour against edge cases myself before handing it to
+              engineering to build.
+            </p>
+
             {/* This was seven bullets of equal weight, which formatted scope as
                 though it carried the same argument as the architecture above it
                 and flattened both. Two of the seven moved up to the abandonment
@@ -597,9 +615,10 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
             <p>
               Then the things that are not features. Product positioning on the
               marketing site with the product marketing manager. The operating
-              cadence: backlog, triage and two-week sprints in Jira and later
-              Asana, GA4 for activation, DAU and MAU, and the minor UI fixes and
-              redesigns I shipped myself throughout.
+              cadence: backlog, bug triage with engineering and beta testers,
+              and two-week sprints in Jira and later Asana, GA4 for activation,
+              DAU and MAU, and the minor UI fixes and redesigns I shipped
+              myself throughout.
             </p>
 
             <h3>Where my ownership stopped</h3>
@@ -632,7 +651,7 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
                 A questionnaire that collected data became a journey that
                 returns a decision.
               </q>
-              <div className="verdict">Structural, not measured</div>
+              <div className="verdict">Confirmed in a 30-user paid pilot</div>
             </div>
             <p>
               Before: a login and a questionnaire that collected data and
@@ -641,16 +660,30 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
               you to a screening. That is the difference between data collection
               and a product, and it is the honest version of the impact claim.
             </p>
+            <p>
+              I also have one number I stand behind rather than a structural
+              claim alone. Late in the internship we ran a{" "}
+              <strong>six-week, 30-user paid pilot</strong> of the at-home
+              screening product, and I tracked the funnel myself: activation,
+              retention, churn. <strong>18 of the 30 paying users were still
+              active through week six, 60%</strong>, and weekly churn fell
+              from <strong>10% to 5%</strong> over the same six weeks. That is
+              what I reported out, and it is what reprioritised the backlog
+              going into the next sprint.
+            </p>
             <p className="lede">
-              What I do not have is the numbers. Pre-seed volume, I left before
-              the cohort was large enough to say anything meaningful with, and I
-              have no access to what happened after. No completion rates, no
-              conversion data, and I have not estimated a single one of them to
-              fill the gap.
+              What I do not have is the rest of the funnel. Pre-seed volume
+              past that one pilot, I left before the cohort was large enough
+              to say anything about screening bookings or high-risk
+              identification with, and I have no access to what happened
+              after. No completion rate broken out by persona, no conversion
+              data beyond the pilot, and I have not estimated a single one of
+              those to fill the gap.
             </p>
             <p>
-              Rather than dress up something directional, here is what shipped
-              and what I would have instrumented.
+              Rather than dress up something directional, here is what
+              shipped, what the pilot measured, and what I would still have
+              instrumented.
             </p>
 
             <h3>What shipped</h3>
@@ -670,15 +703,53 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
               <li>Epic FHIR pre-fill and Change API coverage verification</li>
               <li>
                 A milestone journey from onboarding through to screening,
-                branching across four personas
+                branching across four personas, shipped to a{" "}
+                <strong>600+ user waitlist</strong> and{" "}
+                <strong>40+ beta testers</strong>
               </li>
               <li>
                 Insights, the SDOH assessment, the learning section, and the
                 email and SMS messaging that carries someone between milestones
               </li>
+              <li>
+                A Gemini-powered LLM assistant that explains a user&apos;s
+                score, prototyped and validated against edge cases before
+                handoff
+              </li>
             </ul>
 
-            <h3>What I would have instrumented</h3>
+            <h3>What the pilot measured</h3>
+            <table className="td-table">
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th>Result</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Pilot size</td>
+                  <td>30 paying users, over 6 weeks</td>
+                </tr>
+                <tr>
+                  <td>Week-6 retention</td>
+                  <td>18 users, 60%</td>
+                </tr>
+                <tr>
+                  <td>Weekly churn</td>
+                  <td>10% down to 5%</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              Small n, and pre-seed, so I am not calling this statistically
+              significant. What it gave the team was a real signal to
+              reprioritise the backlog against instead of another round of
+              guessing, which is the whole reason I ran it and reported it out
+              in the first place.
+            </p>
+
+            <h3>What I would still have instrumented</h3>
             <table className="td-table">
               <thead>
                 <tr>
@@ -763,22 +834,11 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
               not collect, and someone has to pay for genetic processing. I
               still would not call it solved.
             </p>
-            <h3>
-              Personas built from someone else&apos;s interviews are exactly
-              that
-            </h3>
-            <p>
-              I compiled the data carefully and the patterns were real. I never
-              sat in front of a user myself and asked the follow-up question I
-              would have wanted to ask, and for the avoidant persona in
-              particular, the one whose behaviour the whole journey is shaped
-              around, that is a real hole.
-            </p>
 
-            {/* The no-numbers admission was made three times on this page: in
-                the summary above the disclosure, at the top of Impact, and here.
-                Said once with force it reads as discipline; said three times it
-                reads as flinching. Impact owns it now. */}
+            {/* The boundary between what's measured (the pilot) and what isn't
+                (everything past it) is drawn once, at the top of Impact, rather
+                than restated here. This list holds the limits that apply to the
+                whole page, not a repeat of that one. */}
             <h3>Limits worth holding while reading this</h3>
             <ul>
               <li>
@@ -786,9 +846,9 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
                 made fast and with incomplete information.
               </li>
               <li>
-                <strong>No screenshots and no notes.</strong> This is written
-                from memory. The architecture and the order of the work are what
-                I am confident about.
+                <strong>Thirty users is a real signal, not a powered study.</strong>{" "}
+                I am not claiming statistical significance on the pilot, only
+                that it is what I measured and reported.
               </li>
               <li>
                 <strong>Clinical guidance moves.</strong> The USPSTF

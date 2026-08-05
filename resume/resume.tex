@@ -1,115 +1,128 @@
-\documentclass{resume} % Use the custom resume.cls style (FAANGPath Simple Template)
+\documentclass[letterpaper,11pt]{article}
 
-\usepackage[left=0.4in,top=0.34in,right=0.4in,bottom=0.34in]{geometry} % Document margins
-\newcommand{\tab}[1]{\hspace{.2667\textwidth}\rlap{#1}}
-\newcommand{\itab}[1]{\hspace{0em}\rlap{#1}}
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
 \usepackage[hidelinks]{hyperref}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+\usepackage[scaled]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\pagestyle{empty}
 
-% Long name overflows the page at the template's default \huge, so step it down one size.
-\def\namesize{\LARGE}
-\setlength{\emergencystretch}{2em} % lets TeX avoid minor right-margin overflow in bullets
+% Margins: at least 0.5in on all sides
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-0.6in}
+\addtolength{\textheight}{1in}
 
-% Compress vertical whitespace so the whole resume fits on a single page.
-\def\nameskip{\smallskip}             % less space under the name
-\def\addressskip{\vspace{1pt}}        % tighter gap between the header address lines
-\def\sectionskip{\smallskip}          % less space above each section rule
-\setlength{\parskip}{1pt}             % tighter gap between entries (cls default is \medskip)
-\setlength{\topsep}{0pt}              % kill the glue above/below every itemize
-\setlength{\partopsep}{0pt}
-\setlength{\parsep}{0pt}
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
 
-\name{Jayanth Adithya Kappagantula} % Your name
-\address{\small +1 (857) 333-6010 \\ Boston, MA}
-% Portfolio added beside GitHub. "Portfolio" is placeholder link text; update the URL below.
-\address{\small \href{mailto:jayanthadityaaa@gmail.com}{jayanthadityaaa@gmail.com} \\ \href{https://www.linkedin.com/in/jayanth-kappagantula/}{LinkedIn} \\ \href{https://github.com/ThisisjayK}{GitHub} \\ \href{https://thisisjayk.github.io/Portfolio/}{Portfolio}}
+% Ensure PDF text is copy-paste and ATS extractable (ligature fix)
+\pdfgentounicode=1
+
+\titleformat{\section}{
+  \vspace{-7pt}\scshape\raggedright\large\bfseries
+}{}{0em}{}[\color{black}\titlerule \vspace{-7pt}]
+
+\newcommand{\resumeItem}[1]{
+  \item\small{#1 \vspace{-3pt}}
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-1pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.0in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=*, itemsep=0pt]}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
 
 \begin{document}
 
-%----------------------------------------------------------------------------------------
-%	EDUCATION
-%----------------------------------------------------------------------------------------
-\begin{rSection}{Education}
+% ---- Header ----
+\begin{center}
+    \textbf{\Large \scshape Jayanth Adithya Kappagantula} \\ \vspace{1pt}
+    \small +1 (857) 333-6010 $|$ \href{mailto:jayanthadityaaa@gmail.com}{jayanthadityaaa@gmail.com} $|$
+    \href{https://www.linkedin.com/in/jayanth-kappagantula/}{LinkedIn} $|$
+    \href{https://github.com/ThisisjayK}{GitHub} $|$
+    \href{https://thisisjayk.github.io/Portfolio/}{Portfolio} \\ \vspace{1pt}
+    \small Boston, MA (open to relocation to Liberty Lake, WA) $|$ Authorized to work in the U.S. (F-1 OPT)
+\end{center}
 
-{\bf Master of Science, Information Systems}, Northeastern University, Boston \hfill {Sep 2024 - Aug 2026}\\
-GPA: 3.76/4.00
+% ---- Experience ----
+\section{Experience}
+\resumeSubHeadingListStart
 
-\smallskip
+  \resumeSubheading
+    {\href{https://thisisjayk.github.io/Portfolio/\#work/stage-zero-health}{\underline{Technical Product Manager Intern}}}{Cambridge, MA}
+    {Stage Zero Health}{Aug 2025 -- Dec 2025}
+  \resumeItemListStart
+    \resumeItem{Inherited a Breast Cancer Journey flow that returned no output to users; owned the \textbf{product roadmap from concept to release}, translating customer problems into \textbf{requirements and technical specifications}, and shipped a milestone journey producing a risk score, explanation, and screening referral for a \textbf{600+ user} waitlist and \textbf{40+ beta testers}.}
+    \resumeItem{Needed a defensible model tiering strategy with no existing spec; authored the \textbf{technical specification} for a staged risk-model ensemble (Gail free tier, \textbf{BOADICEA} paid genetic tier spanning BRCA1/2, PALB2, CHEK2, ATM, and a 313-SNP polygenic score) and partnered with \textbf{Software Engineering} to define \textbf{API contracts} and \textbf{event-driven} milestone triggers that shipped to beta.}
+    \resumeItem{Patients could not interpret their own risk scores; defined product requirements for a production-ready \textbf{Gemini-powered LLM assistant}, including conversation flows, knowledge boundaries, and response guardrails, then \textbf{prototyped and validated} prompt behavior against edge cases before handoff.}
+    \resumeItem{Reduced friction in a 45--60 question intake funnel by specifying \textbf{Epic FHIR} pre-fill and \textbf{Change Healthcare API} coverage checks, and built \textbf{4 personas} from unused prior research to drive persona-based \textbf{workflow automation} across Email and SMS via \textbf{Twilio, SendGrid, and Customer.io}.}
+    \resumeItem{Owned quality and lifecycle optimization end to end: ran two-week sprints and \textbf{bug triage} in \textbf{Jira and Asana} with engineering and beta testers to \textbf{test and validate} each release, and tracked \textbf{adoption, activation, DAU, and MAU} in \textbf{GA4} to reprioritize the backlog.}
+    \resumeItem{Tracked funnel metrics (\textbf{activation, retention, churn}) and reported out on a \textbf{6-week, 30-user paid pilot} of the at-home breast cancer risk screening product, documenting \textbf{18 paying users retained through week 6 (60\%)} and a drop in weekly churn from \textbf{10\% to 5\%} that informed backlog prioritization.}
+  \resumeItemListEnd
 
-{\bf B.Tech, Electronics and Instrumentation Engineering}, JNTU, Hyderabad \hfill {Sep 2019 - Aug 2023}
+  \resumeSubheading
+    {Pega System Architect}{Hyderabad, India}
+    {Bluevoir Technologies}{Jan 2024 -- Jun 2024}
+  \resumeItemListStart
+    \resumeItem{Design cycles on a Microbial Threat Detection application were blocking delivery; architected case-management workflows on \textbf{Pega GenAI Blueprint} using \textbf{AI-assisted tooling to accelerate} design, cutting design time \textbf{30\%} and enabling faster WHO-coordinated containment of public-health threats.}
+    \resumeItem{Configured business rules with decision tables and aligned investigation workflows directly with public-health \textbf{stakeholders}, cutting case processing time \textbf{25\%}.}
+  \resumeItemListEnd
 
-\end{rSection}
+  \resumeSubheading
+    {Business Analyst}{Hyderabad, India}
+    {Bluevoir Technologies}{Jan 2023 -- Jun 2023}
+  \resumeItemListStart
+    \resumeItem{Requirements for HR applications were undocumented and contested across owners; gathered and refined specifications by engaging product owners, authored \textbf{user stories and functional specs}, and translated them into \textbf{Pega BPM} configurations deployed end to end.}
+  \resumeItemListEnd
 
-%----------------------------------------------------------------------------------------
-%	SKILLS  (pulled from the portfolio website's Skills section)
-%	second column uses a wrapping p{} column so the long lists wrap within the page
-%----------------------------------------------------------------------------------------
-\begin{rSection}{SKILLS}
+\resumeSubHeadingListEnd
 
-\begin{tabular}{ @{} >{\bfseries}l @{\hspace{3ex}} p{0.72\textwidth} }
-Product & PRDs \& specs, User stories, Roadmap \& backlog, Two-week sprints, Bug triage, RICE, Prototyping \\[3pt]
-Research \& Discovery & User interviews, Survey \& interview synthesis, Personas, Journey mapping, TAM / SAM / SOM, Market research, Product teardowns \\[3pt]
-Technical \& Tools & GA4, Jira, Asana, Miro, Figma, Twilio, SendGrid, Claude Code, Notion, Microsoft Excel, GitHub, Vercel, SQL, Java, Supabase, VS Code, Slack \\
-\end{tabular}
+% ---- Projects ----
+\section{Projects}
+\resumeSubHeadingListStart
+  \resumeSubheading
+    {\href{https://thisisjayk.github.io/Portfolio/\#teardowns/kick}{\underline{Improving Discovery of Kick}}}{Self-directed}
+    {Product Teardown -- Video Platform Discovery, Trust \& Safety}{Jun 2026}
+  \resumeItemListStart
+    \resumeItem{Ran a hypothesis-driven, outside-in teardown of kick.com's new-viewer discovery on a live \textbf{cloud video platform} (82 min, 31 captures) and traced two content-safety controls to a render-layer-only implementation that leaked on search and direct URLs.}
+    \resumeItem{Proposed and \textbf{prototyped 7 fixes in Figma}, ordered cause before symptom, and defined success metrics on time-to-first-watch and D7 new-viewer retention.}
+  \resumeItemListEnd
+\resumeSubHeadingListEnd
 
-\end{rSection}
+% ---- Education ----
+\section{Education}
+\resumeSubHeadingListStart
+  \resumeSubheading
+    {Northeastern University}{Boston, MA}
+    {M.S., Information Systems, GPA 3.76/4.00}{Sep 2024 -- Aug 2026}
+  \resumeSubheading
+    {JNTU}{Hyderabad, India}
+    {B.Tech, Electronics and Instrumentation Engineering}{Sep 2019 -- Aug 2023}
+\resumeSubHeadingListEnd
 
-%----------------------------------------------------------------------------------------
-%	CASE STUDIES  (the Stage Zero Health role, moved here from Experience, condensed)
-%----------------------------------------------------------------------------------------
-\begin{rSection}{Case Studies}
-
-% Title links to the full case study on the portfolio site (underlined to signal it is a link).
-\href{https://thisisjayk.github.io/Portfolio/\#work/stage-zero-health}{\underline{\textbf{Technical Product Manager Intern}}} \hfill Aug 2025 - Dec 2025\\
-Stage Zero Health \hfill \textit{Cambridge, MA}
- \begin{itemize}
-    \itemsep -3pt {}
-     \item Owned the \textbf{Breast Cancer Journey} end to end, from a cold signup to a booked screening, turning an inherited login-and-questionnaire that returned nothing into a milestone journey that produces a risk score, explains it, and routes to a screening.
-     \item Specced a \textbf{Gail} risk model against its published weights, then designed a staged, re-firing model \textbf{ensemble}: Gail free early, \textbf{BOADICEA} (BRCA1/2, PALB2, CHEK2, ATM, a 313-SNP polygenic score) behind a paid genetic tier; owned the API contracts and milestone triggers.
-     \item Attacked a \textbf{45 to 60 question} funnel by speccing \textbf{Epic FHIR} pre-fill, a genetic vault for BOADICEA, and \textbf{Change Healthcare API} coverage checks so users saw insurance before booking.
-     \item Built \textbf{4 personas} from prior unused research, mapped the journey in Miro, and shipped Insights, an SDOH assessment, a learning section, and per-persona Email/SMS via \textbf{Twilio, SendGrid, and Customer.io}.
-     \item Ran market research and \textbf{TAM / SAM / SOM}, two-week sprints and triage in Jira and Asana, and GA4 activation, DAU, and MAU tracking.
- \end{itemize}
-
-\end{rSection}
-
-%----------------------------------------------------------------------------------------
-%	EXPERIENCE
-%----------------------------------------------------------------------------------------
-\begin{rSection}{EXPERIENCE}
-
-\textbf{Pega System Architect} \hfill Jan 2024 - June 2024\\
-Bluevoir Technologies \hfill \textit{Hyderabad, India}
- \begin{itemize}
-    \itemsep -3pt {}
-     \item Cut design time by \textbf{30\%} and enabled rapid, WHO-coordinated containment of public-health threats by architecting case-management workflows for a \textbf{Microbial Threat Detection (MTD)} application built on Pega GenAI Blueprint.
-     \item Strengthened automated decision-making and cut processing times by \textbf{25\%} for faster threat detection and WHO reporting by configuring business rules with decision tables, and managed investigation and MTAS case workflows with public-health stakeholders.
- \end{itemize}
-
-\textbf{Business Analyst}, Bluevoir Technologies \hfill Jan 2023 - June 2023
- \begin{itemize}
-    \itemsep -3pt {}
-     \item Improved HRMS requirement accuracy by engaging product owners to gather and refine specifications for employee hiring, onboarding, and leave-management applications, authoring user stories and functional specs.
-     \item Reduced manual HR effort by translating business requirements into Pega BPM configurations and deploying end-to-end process-automation workflows with project teams.
- \end{itemize}
-
-\end{rSection}
-
-%----------------------------------------------------------------------------------------
-%	TEARDOWN  (was PROJECTS)
-%----------------------------------------------------------------------------------------
-\begin{rSection}{Teardown}
-
-% Title links to the full teardown on the portfolio site (underlined to signal it is a link).
-\href{https://thisisjayk.github.io/Portfolio/\#teardowns/kick}{\underline{\textbf{Improving Discovery of Kick}}} \hfill Jul 2026\\
-Product teardown -- discovery, trust \& safety \hfill \textit{Self-directed}
- \begin{itemize}
-    \itemsep -3pt {}
-     \item Ran an outside-in teardown of \textbf{kick.com}'s new-viewer discovery (\textbf{n=1, 82 min, 31 captures}); a timed cold-start task took \textbf{$\sim$10 minutes} to surface nothing worth watching.
-     \item Showed onboarding collected gender and country but changed nothing downstream: the same \textbf{10 channels} ranked before and after answering.
-     \item Proved both content controls (Hide Slots \& Casino, Block a creator) suppress at the \textbf{render layer only}, leaking on search and direct URLs.
-     \item Proposed and prototyped \textbf{7 fixes} in Figma, ordered cause before symptom, measured on time to first watch and D7 new-viewer retention.
- \end{itemize}
-
-\end{rSection}
+% ---- Skills ----
+\section{Skills}
+\small{\textbf{AI \& Technical:} Claude Code, LLM prompting \& guardrails, Generative AI, workflow automation, Python, SQL, Java, GitHub, Vercel, Supabase, GA4, VS Code} \\
+\small{\textbf{Product:} Roadmap \& vision, PRDs \& technical specs, requirements analysis, user stories, API contracts, bug triage, RICE, prototyping (Figma)} \\
+\small{\textbf{Cross-Functional \& Delivery:} Jira, Asana, Miro, Notion, Slack, Salesforce, Pega}
 
 \end{document}

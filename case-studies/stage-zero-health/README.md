@@ -46,13 +46,20 @@ markdown changed nothing a visitor sees, because the build never read it. The
 page is now the single source of record for the copy, and this folder keeps only
 what the page cannot carry, which is the citations and the cover art.
 
-## What I can't claim
+## What I can claim, and what I can't
 
-No user numbers, no completion rates, no conversion data. Stage Zero was
-pre-seed and I left before the cohort was large enough to say anything with. I
-have no screenshots and no notes from the internship, so everything here is
-written from memory: the architecture and the sequence of work are the parts I
-am confident about, and I have not estimated a single metric to fill the gap.
+One measured number: a six-week, 30-user paid pilot of the at-home screening
+product, where I tracked activation, retention and churn myself. 18 of the 30
+paying users were still active through week six (60%), and weekly churn fell
+from 10% to 5% over the pilot. That is what I reported out at the time, and
+it is the one figure on this page I am recalling rather than reconstructing.
+
+Past that pilot: no completion rates, no conversion data, no screening-booking
+numbers. Stage Zero was pre-seed and I left before the cohort was large enough
+to say anything more with. I have no screenshots and no notes from the
+internship otherwise, so everything else here is written from memory: the
+architecture and the sequence of work are the parts I am confident about, and
+I have not estimated a single other metric to fill the gap.
 
 The company raised $50K about a week or two after I left, and $400K after that.
 That is sequence, not attribution. I was not in those rooms.

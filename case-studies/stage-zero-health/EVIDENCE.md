@@ -92,13 +92,30 @@ separate them from the clinical material above.
 - The 45 to 60 question count across the full journey
 - Gail collected across the first two to three milestones, BOADICEA behind a
   paywall after genetic data
-- The ensemble re-firing design and its intended extension to other cancer types
+- The ensemble re-firing design, its event-driven milestone triggers, and its
+  intended extension to other cancer types
 - Epic FHIR for medical history pre-fill, Change API for insurance verification
+- The Gemini-powered LLM assistant: its scope, guardrails, and that I
+  prototyped and validated it before handoff
+- The 600+ user waitlist and 40+ beta tester counts
 - Tooling: Jira then Asana, Miro, Figma, Twilio, SendGrid, Customer.io, GA4
-- Two-week sprints
+- Two-week sprints, and bug triage run with engineering and beta testers
 - Funding of $50K roughly one to two weeks after my internship ended, and $400K
   after that
 
-**Not claimed anywhere:** user counts, completion rates, conversion rates,
-screening bookings, activation numbers, or any causal link between my work and
-the funding.
+## The pilot, reported at the time rather than sourced now
+
+**Claim:** A six-week, 30-user paid pilot of the at-home screening product had
+18 of 30 paying users still active through week six (60%), and weekly churn
+fell from 10% to 5% over the same six weeks.
+
+This is not externally sourceable — it is a number I tracked and reported out
+myself during the internship, not a citation to someone else's publication. It
+is marked separately from the rest of the "claims from memory" list above
+because I am recalling a number I reported at the time, not reconstructing an
+architecture from general recollection the way the rest of this list is. Small
+n, pre-seed; not presented as a statistically powered result.
+
+**Not claimed anywhere:** completion rates broken out by persona, conversion
+rates beyond the pilot, screening bookings, high-risk identification rates, or
+any causal link between my work and the funding.

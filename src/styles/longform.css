@@ -277,8 +277,12 @@
   margin: 1.6rem 0;
 }
 .td-meta {
-  /* fixed 2-up / 4-up so the five facts + decorative cell always tile cleanly
-     and "By" lands in column 1 (the art cell fills the rest of its row) */
+  /* 2-up / 4-up for six facts + the decorative cell. Six tiles evenly into
+     the 2-up grid (three full rows, no remainder), but leaves a two-cell gap
+     in the last row of the 4-up grid — the art cell's placement below fills
+     exactly that gap rather than starting a new row, which is what left
+     empty trailing cells the last time a fact was added. If the fact count
+     changes, both this comment and the art rule below need re-checking. */
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1px;
@@ -298,15 +302,22 @@
   padding: 0.9rem 1rem;
 }
 
-/* decorative "evidence tag" filling the empty trailing cells of the last row */
+/* decorative "evidence tag": a full-width row on the 2-up grid (six facts
+   tile it with no remainder to fill), and the last row's trailing two cells
+   on the 4-up grid (six facts leave exactly two open there). */
 .td-meta__art {
-  grid-column: 2 / -1;
+  grid-column: 1 / -1;
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 76px;
+}
+@media (min-width: 640px) {
+  .td-meta__art {
+    grid-column: 3 / -1;
+  }
 }
 .td-meta__art::before {
   content: "";
@@ -539,10 +550,17 @@ ol.td-flow__rail {
 li.td-flow__node {
   position: relative;
   margin: 0;
-  padding: 0.6rem 0.6rem 0.65rem;
+  padding: 0.9rem 0.7rem;
   border: 1px solid var(--ink-28);
-  border-radius: 3px;
+  border-radius: 6px;
   background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 5.4rem;
+  text-align: center;
 }
 /* The connector into the next node: a hairline across the gap, with an
    arrowhead sitting on its far end. Drawn by the node on the left of each gap,
@@ -575,13 +593,13 @@ li.td-flow__node:not(:last-child)::before {
   letter-spacing: 0.08em;
   color: var(--ink-55);
   font-weight: 600;
-  margin-bottom: 0.3rem;
 }
 .td-flow__node span {
+  display: block;
   font-family: "Geist", system-ui, sans-serif;
   font-weight: 600;
   font-size: 0.9rem;
-  line-height: 1.2;
+  line-height: 1.25;
   letter-spacing: -0.02em;
   color: var(--ink);
 }
@@ -688,15 +706,20 @@ li.td-flow__node:not(:last-child)::before {
   background: var(--flow-line);
 }
 /* The tap: a filled dot on the wire, centred under the milestone its sentence
-   names. Epic FHIR lands on Assessment (02) and Change API on Screening (07),
-   so the two wires share a row, each three columns wide, tapping at the outer
-   end of its own span.
+   names. Epic FHIR lands on Assessment (02) and Change API on Screening (07).
 
-   The offset is half a column measured inside the wire rather than inside the
-   diagram, because that is the box the dot is positioned against. A wire
-   spanning three columns is `3 columns + 2 gaps` wide, so one column is
-   `(100% - 2 * gap) / 3` and half of one is that over six. Without it the dot
-   sits on the column boundary and reads as pointing between two milestones. */
+   Change API's span is exactly the three columns ending at Screening, so its
+   dot sits half a column in from the span's outer (right) edge: a span of
+   `3 columns + 2 gaps` makes one column `(100% - 2 * gap) / 3`, and half of
+   that is the same divided by six.
+
+   Epic FHIR's span runs flush from column 1 (Onboarding) so the row has no
+   dead leading gap, which makes Assessment the *second* of its four columns
+   rather than the first. A span of `4 columns + 3 gaps` makes one column
+   `(100% - 3 * gap) / 4`; the dot needs one full column plus one gap plus half
+   a column in from the left edge, which simplifies to
+   `0.375 * (100% - 3 * gap) + gap`. Without either offset the dot sits on a
+   column boundary and reads as pointing between two milestones. */
 .td-flow__wire::after {
   content: "";
   position: absolute;
@@ -707,14 +730,15 @@ li.td-flow__node:not(:last-child)::before {
   background: var(--ink);
 }
 .td-flow__wire--fhir {
-  grid-column: 2 / 5;
+  grid-column: 1 / 5;
 }
 .td-flow__wire--fhir::after {
-  left: calc((100% - 2 * var(--flow-gap)) / 6 - 3.5px);
+  left: calc(
+    0.375 * (100% - 3 * var(--flow-gap)) + var(--flow-gap) - 3.5px
+  );
 }
 .td-flow__wire--change {
   grid-column: 5 / 8;
-  text-align: right;
 }
 .td-flow__wire--change::after {
   right: calc((100% - 2 * var(--flow-gap)) / 6 - 3.5px);
@@ -790,9 +814,6 @@ li.td-flow__node:not(:last-child)::before {
   }
   /* No columns left to point at, so the dots and the end ticks come off and
      each block is just a labelled rule. */
-  .td-flow__wire--change {
-    text-align: left;
-  }
   .td-flow__wire::after,
   .td-flow__band::after {
     content: none;
