@@ -402,6 +402,7 @@ export default function App() {
       key={experienceOpen}
       id={experienceOpen}
       onClose={closeOverlay}
+      onOpenCase={() => openCase("stage-zero")}
     />
   )
   const resumeOverlay = resumeOpen && (

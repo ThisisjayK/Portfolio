@@ -216,7 +216,7 @@ export default function KickTeardown({ onClose }: { onClose: () => void }) {
           <div className="td-meta__art" aria-hidden="true">
             <span className="td-meta__stamp">
               <b>Field study</b>
-              n=1 · 82 min · 31 captures
+              n=1 · 80 min · 30 captures
             </span>
           </div>
         </dl>
@@ -259,7 +259,7 @@ export default function KickTeardown({ onClose }: { onClose: () => void }) {
           <div className="h">Scope</div>
           <p>
             kick.com on web, logged out through post-onboarding, plus one targeted test of the
-            mobile Block control that web doesn&apos;t have. One account, one session, roughly 82
+            mobile Block control that web doesn&apos;t have. One account, one session, roughly 80
             minutes. Everything is tied to a timestamped screenshot.
           </p>
         </div>

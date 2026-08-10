@@ -1,7 +1,8 @@
 # Screening the Women the Guidelines Miss
 
 A product case study from five months as a technical product manager intern at
-**Stage Zero Health**, a pre-seed early cancer detection company near MIT.
+**Stage Zero Health**, a pre-seed early cancer detection company in the MIT
+incubator program.
 
 I owned the Breast Cancer Journey: onboarding through to a booked screening.
 

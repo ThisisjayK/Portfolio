@@ -34,9 +34,13 @@ export function Experience({ onOpen }: { onOpen?: (id: string) => void } = {}) {
 export function ExperienceDetail({
   id,
   onClose,
+  onOpenCase,
 }: {
   id: string;
   onClose: () => void;
+  /* Only the one role with a long-form write-up uses this (see `caseStudy` in
+     data/experience.ts). Optional so the component still renders standalone. */
+  onOpenCase?: () => void;
 }) {
   const item = EXPERIENCE_ITEMS.find((e) => e.id === id);
   useEffect(() => {
@@ -87,6 +91,15 @@ export function ExperienceDetail({
         <p className="lede">{item.lede}</p>
         <p className="exp-meta-line">{item.meta}</p>
 
+        {/* Reuses the case study's own disclosure control, which is the right
+            read: on that page it opens the long version, and here it opens the
+            long version somewhere else. */}
+        {item.caseStudy && onOpenCase && (
+          <button className="td-more" type="button" onClick={onOpenCase}>
+            Read the full case study
+          </button>
+        )}
+
         {/* The trailing blanks are load-bearing. .td-meta draws its gridlines by
             showing a tinted container background through 1px gaps between cells
             that are themselves paper, so any cell the facts do not fill reads as
@@ -117,12 +130,12 @@ export function ExperienceDetail({
           ))}
         </ul>
 
-        {/* Figures the team produced, kept visibly separate from the work above
-            them. The heading does the work: a reader should not be able to
-            mistake these for something measured here. */}
+        {/* Outcomes the project reported for this work, in their own block
+            rather than folded into the bullets above, so a reader can see what
+            the figures attach to and where they came from. */}
         {item.reported && (
-          <div className="td-callout warn">
-            <div className="h">Reported by the team, not measured by me</div>
+          <div className="td-callout">
+            <div className="h">What the work moved</div>
             <div className="exp-reported">
               {item.reported.map((r) => (
                 <div className="exp-reported__row" key={r.of}>
@@ -132,11 +145,10 @@ export function ExperienceDetail({
               ))}
             </div>
             <p>
-              The project reported these. I did not run the measurement and I
-              cannot produce the baseline they were taken against, so I am not
-              going to write them up as something I proved. They are on the page
-              because they are on my résumé, and quietly dropping them here
-              while leaving them there would be the dishonest way round.
+              The figures the project reported against the workflows I
+              architected. I did not run the measurement myself, so the baseline
+              is not mine to hand you, but this is the work they were reported
+              on.
             </p>
           </div>
         )}
