@@ -63,16 +63,20 @@ const SKILLS: { group: string; items: string[] }[] = [
       "Figma",
       "Twilio",
       "SendGrid",
+      "Customer.io",
       "Claude Code",
       "Notion",
       "Microsoft Excel",
       "GitHub",
       "Vercel",
       "SQL",
+      "Python",
       "Java",
       "Supabase",
       "VS Code",
       "Slack",
+      "Pega",
+      "Salesforce",
     ],
   },
 ];
@@ -85,7 +89,7 @@ const SKILLS: { group: string; items: string[] }[] = [
    control.
 
    Note the deliberate omission: logo chips still show no text label. Putting
-   the name beside all seventeen marks would push this section past the fixed
+   the name beside every mark would push this section past the fixed
    viewport it is designed to fit inside, and the panel itself opens with the
    full name as its title, so the name is one press away rather than absent.
    Both chip types carry the name in `title` and on the accessible label. */

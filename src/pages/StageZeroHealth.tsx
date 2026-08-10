@@ -104,9 +104,10 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
           an exception looks at six things and never once looks at a gene.
         </p>
         <p>
-          I was the technical PM intern at Stage Zero Health, a pre-seed
-          startup, for five months. I owned the product journey that tried to
-          close that gap, from a cold signup through to a booked screening.
+          I was the technical PM intern at Stage Zero Health, a pre-seed startup
+          in the MIT incubator program, for five months. I owned the product
+          journey that tried to close that gap, from a cold signup through to a
+          booked screening.
         </p>
         <p>
           I inherited a login and a questionnaire that collected data and
@@ -122,11 +123,17 @@ export default function StageZeroHealth({ onClose }: { onClose: () => void }) {
         <dl className="td-meta">
           <div>
             <dt>Company</dt>
-            <dd>Stage Zero Health. Pre-seed, early cancer detection</dd>
+            <dd>
+              Stage Zero Health. Pre-seed, early cancer detection, MIT incubator
+            </dd>
           </div>
           <div>
             <dt>Role</dt>
             <dd>Technical product manager intern, 5 months</dd>
+          </div>
+          <div>
+            <dt>Where and when</dt>
+            <dd>Cambridge, MA · Aug to Dec 2025</dd>
           </div>
           <div>
             <dt>Owned</dt>

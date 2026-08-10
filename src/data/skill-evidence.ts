@@ -28,6 +28,7 @@ export type SkillEvidence = {
 const CASE: SkillTarget = { kind: "case" };
 const KICK: SkillTarget = { kind: "kick" };
 const BA: SkillTarget = { kind: "experience", id: "bluevoir-business-analyst" };
+const SA: SkillTarget = { kind: "experience", id: "bluevoir-system-architect" };
 
 export const SKILL_EVIDENCE: Record<string, SkillEvidence> = {
   "PRDs & specs": {
@@ -62,7 +63,7 @@ export const SKILL_EVIDENCE: Record<string, SkillEvidence> = {
   },
   "User interviews": {
     name: "User interviews",
-    why: "The one I want to be exact about: I did not run these. The Stage Zero interviews existed before I arrived and what I did was compile them. The case study says plainly why shaping a journey around a persona built from someone else's follow-up questions is a hole in the work.",
+    why: "The one I want to be exact about: I did not run these. The Stage Zero interviews existed before I arrived and what I did was compile them. Building a journey around a persona drawn from someone else's follow-up questions is a real limit on that work, and I would rather say so than let the chip imply I sat in the room.",
     where: [CASE],
   },
   "Survey & interview synthesis": {
@@ -92,7 +93,7 @@ export const SKILL_EVIDENCE: Record<string, SkillEvidence> = {
   },
   "Product teardowns": {
     name: "Product teardowns",
-    why: "The Kick teardown: 82 minutes, 31 timestamped captures, four findings and seven fixes, with the counter-metric declared before any of the fixes.",
+    why: "The Kick teardown: 80 minutes, 30 timestamped captures, four findings and seven fixes, with the counter-metric declared before any of the fixes.",
     where: [KICK],
   },
   GA4: {
@@ -129,6 +130,16 @@ export const SKILL_EVIDENCE: Record<string, SkillEvidence> = {
     name: "SendGrid",
     why: "The email side of that Stage Zero milestone messaging, branched by persona alongside the SMS.",
     where: [CASE],
+  },
+  "Customer.io": {
+    name: "Customer.io",
+    why: "What orchestrated the Stage Zero milestone messaging on top of Twilio and SendGrid: which persona got which sequence, and when a user who had stopped partway got a reason to come back.",
+    where: [CASE],
+  },
+  Pega: {
+    name: "Pega",
+    why: "Both Bluevoir roles ran on it. Pega BPM for the HRMS as a business analyst, then Pega GenAI Blueprint as a system architect, where the case-management workflows and the decision tables underneath them were the part I owned.",
+    where: [SA, BA],
   },
   "Claude Code": {
     name: "Claude Code",

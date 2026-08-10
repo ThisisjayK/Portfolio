@@ -31,15 +31,22 @@ interested" anywhere in either client to build on.
 
 ## What's in this repo
 
+This folder holds the written record only:
+
 | | |
 |---|---|
-| [`docs/`](docs/) | The deck itself. Served by GitHub Pages, opens as the link above |
 | [`FINDINGS.md`](FINDINGS.md) | The full evidence file. Every claim, every citation, every open gap |
-| [`screens/`](screens/) | 30 original captures, 1920x1080 desktop and 1290x2796 mobile, unedited |
-| [`KICK.pdf`](KICK.pdf) | My raw session notes, exported as written, kept as the source of record |
 | [`CAPTURE-BRIEF.md`](CAPTURE-BRIEF.md) | The original capture plan. Largely superseded, kept for method |
 
-The seven interactive prototypes are in Figma and open full screen from inside the deck.
+The reader-facing version of this teardown is the page on the portfolio site,
+**Teardowns → Improving Discovery of Kick**, at
+[`src/pages/KickTeardown.tsx`](../../src/pages/KickTeardown.tsx). The seven
+interactive prototypes are in Figma and open full screen from inside it.
+
+The 30 original captures, the standalone deck and `KICK.pdf` (my raw session
+notes, kept as the source of record) live in the separate
+[`product-teardowns`](https://github.com/ThisisjayK/product-teardowns) repo,
+which is what the deck link above serves. They are not duplicated here.
 
 ## Method, and its limits
 
@@ -50,7 +57,7 @@ them on, then try to defeat them.
 
 Worth holding while you read it:
 
-- **n=1.** One person, one account, one session of roughly 82 minutes. The cold-start result
+- **n=1.** One person, one account, one session of roughly 80 minutes. The cold-start result
   proves the path can fail, not how often it does.
 - **I'm a daily Kick viewer.** That's a bias, and it's also why I knew where to look. Every
   finding is tied to a timestamped capture specifically because of it.

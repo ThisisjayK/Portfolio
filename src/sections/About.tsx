@@ -30,7 +30,7 @@ export function About({ onOpenCase }: { onOpenCase?: () => void } = {}) {
         <div>
           <p>
             Five months as the technical PM intern at Stage Zero Health, a
-            pre-seed startup in the MIT Incubator program, where I owned a
+            pre-seed startup in the MIT incubator program, where I owned a
             breast cancer screening journey from a cold signup to a booked
             appointment. Before that, a year at Bluevoir Technologies in
             Hyderabad, India, as a business analyst and then a Pega system

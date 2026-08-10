@@ -61,8 +61,3 @@ export function Teardowns({ onOpenKick }: { onOpenKick?: () => void } = {}) {
     </section>
   );
 }
-
-/* Three groups so the existing .par grid (three equal columns) holds them
-   without new layout CSS; the chips reuse .meta span from the teardown list.
-   Everything listed here is drawn from work Jay has actually described rather
-   than a generic PM skills inventory, so it stays defensible in an interview. */
