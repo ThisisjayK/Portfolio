@@ -1,6 +1,6 @@
 # Animated doodles
 
-Your eight doodle stickers, each with its own loop. `source/` holds the PNGs you supplied;
+Your nine doodle stickers, each with its own loop. `source/` holds the PNGs you supplied;
 `animate.py` turns them into animations in `out/`.
 
 | Doodle | Motion | Frames |
@@ -13,6 +13,7 @@ Your eight doodle stickers, each with its own loop. `source/` holds the PNGs you
 | ramen | chopsticks lift the noodles and lower them back | 40 |
 | owl | bends side to side from the perch up | 50 |
 | sneaker | small hop with a squash (my pick; no motion was specified) | 30 |
+| strawhat | Jolly Roger rocks gently side to side (anime / One Piece; source made from Jayanth's image on 2026-10-16 with a sticker border added) | 40 |
 
 All run at 25 fps and are 192 × 192 px (2× the 96 px doodle slot in the lid-lift component).
 
@@ -47,7 +48,7 @@ Edit the numbers in the doodle's function in `animate.py` (amplitudes, frame cou
 positions are all in source-image pixels), then re-run. It takes about 10 seconds:
 
 ```bash
-python3 animate.py            # all eight
+python3 animate.py            # all nine
 python3 animate.py owl dog    # just these
 ```
 

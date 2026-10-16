@@ -10,12 +10,15 @@ export const intro = {
   ],
 }
 
-// TODO(about-me.md): Jayanth's favorite and important things. Placeholders until provided.
+// Short lines from about-me.md 1b (Jayanth's wording, trimmed to fit one line on phones).
+// The longer versions go in the head notes.
 export const favorites: string[] = [
-  'Favorite thing one',
-  'Favorite thing two',
-  'Favorite thing three',
-  'Favorite thing four',
+  'London is red',
+  'Drizzy since Take Care',
+  'Kitchen experiments, always',
+  'Indoor jungle, full-time',
+  'High scores & Gomu Gomu',
+  'Building weekly mileage',
 ]
 
 export const whatIDo = [

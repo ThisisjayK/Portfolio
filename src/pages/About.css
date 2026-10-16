@@ -76,7 +76,7 @@
 
 @media (max-width: 960px) {
   .about {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: auto minmax(0, 1fr);
     grid-template-rows: auto auto auto;
     min-height: 0;
   }

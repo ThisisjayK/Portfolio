@@ -341,7 +341,17 @@ def owl(n=50):
     return frames
 
 
-ANIMATIONS = {f.__name__: f for f in (cannon, plant, controller, sneaker, dog, football, ramen, owl)}
+def strawhat(n=40):
+    """The Jolly Roger rocks gently side to side, like a flag in a light breeze."""
+    pad = 40
+    img = load("strawhat", pad)
+    x, y = grid(img)
+    cx, cy = 170 + pad, 200 + pad                 # centre of the skull
+    return [sample(img, *rotate_about(x, y, cx, cy, math.radians(7) * math.sin(TAU * i / n)))
+            for i in range(n)]
+
+
+ANIMATIONS = {f.__name__: f for f in (cannon, plant, controller, sneaker, dog, football, ramen, owl, strawhat)}
 
 
 # ---------- export ----------
