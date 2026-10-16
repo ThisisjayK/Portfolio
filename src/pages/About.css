@@ -7,13 +7,14 @@
   /* Desktop: the whole page fits one screen, no scroll. Sizes below scale with height. */
   height: calc(100svh - 76px);
   min-height: 560px;
-  /* Anton's tall line box (line-height 0.9) spills invisible space past the year and
-     would add a scrollbar; clipping it hides no visible ink. */
-  overflow: clip;
+
 }
 
 .about-year {
   margin: 0;
+  /* Anton's tall line box (line-height 0.9) spills invisible space past the glyphs and
+     would add a scrollbar; clipping it hides no visible ink. */
+  overflow: clip;
   font-size: clamp(64px, min(14vw, 16vh), 220px);
 }
 .about-year--top { grid-column: 1; grid-row: 1; }
@@ -24,9 +25,9 @@
   grid-row: 1 / 4;
   align-self: center;
   justify-self: center;
+  display: flex;
+  justify-content: center;
   width: 100%;
-  max-height: 46svh;
-  object-fit: contain;
 }
 
 .about-list {
@@ -92,10 +93,10 @@
     grid-template-rows: auto auto auto auto;
     height: auto;
     min-height: 0;
-    overflow: visible;
+
   }
   .intro { grid-column: 1 / -1; grid-row: 3; max-width: 46ch; }
-  .about-face { grid-column: 1 / -1; grid-row: 2; max-width: 360px; }
+  .about-face { grid-column: 1 / -1; grid-row: 2; margin-top: var(--space-7); }
   .about-year--top { grid-column: 1; grid-row: 1; }
   .about-list--top { grid-column: 2; grid-row: 1; }
   .about-year--bottom { grid-column: 1; grid-row: 4; }

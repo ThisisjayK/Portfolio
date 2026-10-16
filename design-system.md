@@ -81,6 +81,8 @@ Draft, 2026-10-16. Motion should feel **calm**: smooth, quick to settle, never b
 - **Signature moment:** the head lid lifts and the items come out (from `prototypes/framer-lid`). One soft spring, settling in under ~600ms. Items stagger by ~40ms.
 - **Notes:** clicking an item opens a note card (*The Last of Us* / *Ghost of Tsushima* style). The card fades and scales in from 0.96 to 1 over 250ms. Focus moves into the note and returns to the item on close (Esc closes).
 - **Small touches:** the face tilts slightly on hover; buttons lift 2px.
+- **Built 2026-10-16** (`src/components/HeadLid.tsx`, `NoteCard.tsx`): 8 doodles (no dog), compact burst that stays on screen at 1280×720 and up, notes open as a tilted paper card. The prototype's floating doodles and bobbing hint were dropped to follow the no-loop rule. The doodles' own animated WebP loops (spinning wheel, swaying plant) stay, since they only play after the visitor opens the head.
+- **Phones:** the head is sized so the open burst fits the screen width, and it makes room above itself when opened instead of covering the nav and red list.
 - **Not allowed:** looping or ambient animation, scroll-jacking, anything that delays reading the facts.
 - `prefers-reduced-motion`: no movement; the lid and notes just appear and disappear (instant or a 150ms fade).
 

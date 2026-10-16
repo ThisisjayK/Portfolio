@@ -35,6 +35,7 @@ These are targets for v1, checked with Lighthouse (mobile) and Chrome DevTools b
 | Cumulative Layout Shift | ≤ 0.05 |
 | Animation frame rate | 60 fps on a mid-range phone, no dropped frames during the lid lift or page transitions |
 | Images | Portrait as an optimized WebP/AVIF or SVG. Every image sized and lazy-loaded below the fold. |
+| Doodles (animated WebP) | ~2 MB total for 8. Loaded only after first hover/focus on the head, never on page load. Re-encode smaller if needed. |
 | Video (Jitter exports) | ≤ 500 KB each, lazy-loaded, never in the first paint |
 
 Rules that keep it smooth:

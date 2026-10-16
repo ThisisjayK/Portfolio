@@ -1,0 +1,83 @@
+/* The box the head occupies on the page. The stage overflows it so the lid and
+   doodles can fly above and around the face. */
+.headlid {
+  position: relative;
+  width: min(100%, 46svh);
+  aspect-ratio: 1;
+  transition: margin-top var(--dur-slow) var(--ease-out);
+}
+
+/* Phones: the face sits under the red list, so it makes room above itself when it
+   opens instead of throwing the doodles over the nav and the list. */
+@media (max-width: 960px) {
+  /* The open burst is ~440 stage px wide for a 300px head, so size the head to keep
+     the whole burst on screen. */
+  .headlid { width: min(100%, 360px, calc((100vw - 16px) * 300 / 440)); }
+  .headlid.is-open { margin-top: 72%; }
+}
+
+.headlid-stage {
+  position: absolute;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
+.headlid-face {
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.headlid-face:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 6px;
+}
+
+.headlid-doodle {
+  position: absolute;
+  z-index: 3;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+.headlid-doodle img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
+.headlid-doodle:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.headlid-hint {
+  position: absolute;
+  z-index: 6;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: var(--fg);
+  color: var(--bg);
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.headlid-hint::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  margin-left: -7px;
+  border: 7px solid transparent;
+  border-bottom: 0;
+  border-top-color: var(--fg);
+}

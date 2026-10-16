@@ -1,5 +1,5 @@
 import { intro, favorites, whatIDo, links } from '../content/about'
-import portrait from '../assets/portrait.webp'
+import HeadLid from '../components/HeadLid'
 import './About.css'
 
 export default function About() {
@@ -8,14 +8,9 @@ export default function About() {
       <section className="about" aria-labelledby="about-title">
         <h1 id="about-title" className="visually-hidden">About Jayanth Kappagantula</h1>
         <p className="display about-year about-year--top" aria-hidden="true">20</p>
-        <img
-          className="about-face"
-          src={portrait}
-          alt="Ink illustration of Jayanth, smiling, with curly hair"
-          width={880}
-          height={880}
-          fetchPriority="high"
-        />
+        <div className="about-face">
+          <HeadLid />
+        </div>
         <ul className="mono about-list about-list--top" aria-label="A few of my favorite things">
           {favorites.map((f) => <li key={f}>{f}</li>)}
         </ul>
