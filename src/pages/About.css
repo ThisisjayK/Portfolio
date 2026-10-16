@@ -1,0 +1,88 @@
+.about {
+  display: grid;
+  grid-template-columns: 1fr minmax(260px, 440px) 1fr;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--space-5);
+  padding: var(--space-5) var(--gutter);
+  min-height: calc(100svh - 80px);
+}
+
+.about-year {
+  margin: 0;
+  font-size: clamp(96px, 18vw, 260px);
+}
+.about-year--top { grid-column: 1; grid-row: 1; }
+.about-year--bottom { grid-column: 1; grid-row: 3; align-self: end; }
+
+.about-face {
+  grid-column: 2;
+  grid-row: 1 / 4;
+  align-self: center;
+  justify-self: center;
+  width: 100%;
+  height: auto;
+}
+
+.about-list {
+  grid-column: 3;
+  justify-self: end;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: right;
+  color: var(--accent);
+  line-height: 1.7;
+}
+.about-list--top { grid-row: 1; }
+.about-list--bottom { grid-row: 3; align-self: end; }
+
+.intro {
+  max-width: var(--reading);
+  margin: var(--space-8) auto var(--space-9);
+  padding: 0 var(--gutter);
+}
+
+.intro-headline {
+  font-size: clamp(36px, 5vw, 56px);
+  line-height: 1.05;
+  margin: 0 0 var(--space-5);
+}
+
+.intro p {
+  margin: 0 0 var(--space-5);
+}
+
+.intro-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target);
+  padding: 0 var(--space-5);
+  border-radius: 999px;
+  border: 1.5px solid var(--fg);
+  background: var(--fg);
+  color: var(--bg);
+  font: 500 15px/1 var(--font-body);
+  text-decoration: none;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.btn:hover { transform: translateY(-2px); }
+.btn--ghost { background: transparent; color: var(--fg); }
+
+@media (max-width: 960px) {
+  .about {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    min-height: 0;
+  }
+  .about-face { grid-column: 1 / -1; grid-row: 2; max-width: 360px; }
+  .about-year--top { grid-column: 1; grid-row: 1; }
+  .about-list--top { grid-column: 2; grid-row: 1; }
+  .about-year--bottom { grid-column: 1; grid-row: 3; }
+  .about-list--bottom { grid-column: 2; grid-row: 3; }
+}

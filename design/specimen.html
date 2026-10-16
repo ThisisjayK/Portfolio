@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Type and color specimen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Instrument+Serif:ital@0;1&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,400..600&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Mono:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Draft tokens. Values marked here are proposals, not decisions. */
+  :root {
+    --bg: #FFFFFF;
+    --fg: #111111;
+    --muted: #6B6B6B;
+    --border: #E6E6E6;
+    --accent: #D62B1F;
+
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+    --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px; --space-9: 96px;
+
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-fast: 150ms; --dur-base: 250ms; --dur-slow: 450ms;
+  }
+  /* Font directions */
+  [data-font="a"] { --font-display: "Anton", sans-serif; --font-body: "Inter", sans-serif; --font-mono: "JetBrains Mono", monospace; --display-case: uppercase; --display-weight: 400; --display-track: 0; }
+  [data-font="b"] { --font-display: "Instrument Serif", serif; --font-body: "Inter", sans-serif; --font-mono: "IBM Plex Mono", monospace; --display-case: none; --display-weight: 400; --display-track: -0.01em; }
+  [data-font="c"] { --font-display: "Bricolage Grotesque", sans-serif; --font-body: "DM Sans", sans-serif; --font-mono: "DM Mono", monospace; --display-case: none; --display-weight: 700; --display-track: -0.03em; }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 17px; line-height: 1.6; }
+
+  .controls { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: var(--space-5); align-items: center; padding: var(--space-3) var(--space-4); background: #F4F4F4; border-bottom: 1px solid var(--border); font: 13px/1.4 "Inter", sans-serif; }
+  .controls fieldset { border: 0; margin: 0; padding: 0; display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap; }
+  .controls legend { float: left; margin-right: var(--space-2); font-weight: 600; }
+  .controls label { display: inline-flex; gap: 6px; align-items: center; padding: 6px 10px; border: 1px solid #CCC; border-radius: 999px; background: #FFF; cursor: pointer; min-height: 32px; }
+  .controls input:checked + span { font-weight: 600; }
+  .swatch { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+
+  nav { display: flex; justify-content: space-between; align-items: center; padding: var(--space-5) var(--space-6); font-family: var(--font-mono); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; }
+  nav ul { display: flex; gap: var(--space-5); list-style: none; margin: 0; padding: 0; }
+  nav a { color: var(--fg); text-decoration: none; padding: var(--space-2) 0; }
+  nav a[aria-current] { color: var(--accent); }
+
+  .about { position: relative; display: grid; grid-template-columns: 1fr minmax(260px, 420px) 1fr; grid-template-rows: auto 1fr auto; gap: var(--space-5); padding: var(--space-6); min-height: 78vh; }
+  .year { font-family: var(--font-display); text-transform: var(--display-case); font-weight: var(--display-weight); letter-spacing: var(--display-track); font-size: clamp(96px, 18vw, 260px); line-height: 0.85; margin: 0; }
+  .y1 { grid-column: 1; grid-row: 1; }
+  .y2 { grid-column: 1; grid-row: 3; align-self: end; }
+  .face { grid-column: 2; grid-row: 1 / 4; align-self: center; justify-self: center; width: 100%; transition: transform var(--dur-slow) var(--ease-out); }
+  .face:hover { transform: translateY(-6px) rotate(-1deg); }
+  .list { font-family: var(--font-mono); color: var(--accent); text-transform: uppercase; font-size: 13px; line-height: 1.7; letter-spacing: 0.04em; margin: 0; padding: 0; list-style: none; justify-self: end; text-align: right; }
+  .favs { grid-column: 3; grid-row: 1; }
+  .does { grid-column: 3; grid-row: 3; align-self: end; }
+  .intro { grid-column: 1 / -1; max-width: 62ch; margin: var(--space-8) auto 0; padding: 0 var(--space-6); }
+  .intro h1 { font-family: var(--font-display); text-transform: var(--display-case); font-weight: var(--display-weight); letter-spacing: var(--display-track); font-size: clamp(36px, 5vw, 56px); line-height: 1.05; margin: 0 0 var(--space-5); }
+  .intro p { margin: 0 0 var(--space-4); }
+  .intro a { color: var(--accent); text-underline-offset: 3px; }
+  .label { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+
+  .scale { max-width: 900px; margin: var(--space-9) auto; padding: 0 var(--space-6); border-top: 1px solid var(--border); }
+  .scale h2 { font-family: var(--font-mono); font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 500; margin: var(--space-6) 0 var(--space-4); }
+  .row { display: grid; grid-template-columns: 120px 1fr; gap: var(--space-4); align-items: baseline; padding: var(--space-3) 0; border-bottom: 1px solid var(--border); }
+  .d { font-family: var(--font-display); text-transform: var(--display-case); font-weight: var(--display-weight); letter-spacing: var(--display-track); }
+  .btns { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+  .btn { font: 500 14px/1 var(--font-body); padding: 0 var(--space-5); min-height: 44px; display: inline-flex; align-items: center; border-radius: 999px; border: 1.5px solid var(--fg); background: var(--fg); color: var(--bg); text-decoration: none; transition: transform var(--dur-fast) var(--ease-out), background var(--dur-base); }
+  .btn.ghost { background: transparent; color: var(--fg); }
+  .btn:hover { transform: translateY(-2px); }
+  .btn:focus-visible, nav a:focus-visible, .controls label:focus-within { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  @media (max-width: 760px) {
+    .about { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto; padding: var(--space-4); }
+    .face { grid-column: 1 / -1; grid-row: 2; max-width: 320px; }
+    .y1 { grid-column: 1; grid-row: 1; } .favs { grid-column: 2; grid-row: 1; }
+    .y2 { grid-column: 1; grid-row: 3; } .does { grid-column: 2; grid-row: 3; }
+    nav { padding: var(--space-4); } nav ul { gap: var(--space-3); }
+    .intro, .scale { padding: 0 var(--space-4); }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body data-font="a">
+<form class="controls" aria-label="Specimen controls">
+  <fieldset>
+    <legend>Fonts</legend>
+    <label><input type="radio" name="font" value="a" checked><span>A · Bold condensed</span></label>
+    <label><input type="radio" name="font" value="b"><span>B · Editorial serif</span></label>
+    <label><input type="radio" name="font" value="c"><span>C · Friendly grotesk</span></label>
+  </fieldset>
+  <fieldset>
+    <legend>Accent</legend>
+    <label><input type="radio" name="accent" value="#D62B1F" checked><span class="swatch" style="background:#D62B1F"></span><span>Red</span></label>
+    <label><input type="radio" name="accent" value="#C2410C"><span class="swatch" style="background:#C2410C"></span><span>Burnt orange</span></label>
+    <label><input type="radio" name="accent" value="#2F5BEA"><span class="swatch" style="background:#2F5BEA"></span><span>Cobalt</span></label>
+  </fieldset>
+</form>
+
+<nav aria-label="Main">
+  <span>Jayanth K.</span>
+  <ul>
+    <li><a href="#">Home</a></li>
+    <li><a href="#" aria-current="page">About</a></li>
+    <li><a href="#">Work</a></li>
+    <li><a href="#">Playground</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="about" aria-label="About layout mock">
+  <p class="year y1" aria-hidden="true">20</p>
+  <img class="face" src="../prototypes/framer-lid/portrait-cutout.png" alt="Ink illustration of Jayanth smiling">
+  <ul class="list favs" aria-label="Favorite things (placeholders)">
+    <li>Favorite thing one</li>
+    <li>Favorite thing two</li>
+    <li>Favorite thing three</li>
+    <li>Favorite thing four</li>
+    <li>(placeholders, yours to fill)</li>
+  </ul>
+  <p class="year y2" aria-hidden="true">02</p>
+  <ul class="list does" aria-label="What I do">
+    <li>Product manager</li>
+    <li>Healthcare · 0 → 1</li>
+    <li>Customers first</li>
+    <li>Engineer by training</li>
+  </ul>
+</section>
+
+<section class="intro">
+  <p class="label">Intro (version A)</p>
+  <h1>I'm a product manager who starts with the people using the product.</h1>
+  <p>I trained as an engineer in electronics and instrumentation, then moved into enterprise systems, starting as a Pega business architect, then building on Salesforce and Pega as a developer. Most recently, I was a technical product manager co-op at <a href="#">Stage Zero Health</a>, an early cancer detection startup, where I helped take the product from zero to one. Cancer has touched my family closely, so healthcare is where I most want to be useful. I'm looking for full-time PM roles anywhere in the US.</p>
+  <div class="btns"><a class="btn" href="#">Email me</a><a class="btn ghost" href="#">LinkedIn</a><a class="btn ghost" href="#">Résumé (PDF)</a></div>
+</section>
+
+<section class="scale">
+  <h2>Type scale (draft)</h2>
+  <div class="row"><span class="label">Display XL</span><span class="d" style="font-size:96px;line-height:0.9">2002</span></div>
+  <div class="row"><span class="label">H1 · 48</span><span class="d" style="font-size:48px;line-height:1.05">Calm, checkable risk scores</span></div>
+  <div class="row"><span class="label">H2 · 32</span><span class="d" style="font-size:32px;line-height:1.1">What users told us</span></div>
+  <div class="row"><span class="label">Body · 17</span><span>Most users were over 40 and struggled to find the source links, so we made targets bigger and contrast higher.</span></div>
+  <div class="row"><span class="label">Small · 14</span><span style="font-size:14px;color:var(--muted)">Stage Zero Health · Aug – Dec 2025 · Cambridge, MA</span></div>
+  <div class="row"><span class="label">Mono · 13</span><span style="font-family:var(--font-mono);font-size:13px;text-transform:uppercase;letter-spacing:0.06em;color:var(--accent)">Also owned · AI assistant · FHIR</span></div>
+</section>
+
+<script>
+  const body = document.body;
+  document.querySelectorAll('input[name="font"]').forEach(r => r.addEventListener('change', e => body.dataset.font = e.target.value));
+  document.querySelectorAll('input[name="accent"]').forEach(r => r.addEventListener('change', e => document.documentElement.style.setProperty('--accent', e.target.value)));
+</script>
+</body>
+</html>
