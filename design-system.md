@@ -31,10 +31,27 @@ Chosen by Jayanth, 2026-10-16. **What Jayanth wants to borrow:**
 - Borrow **ideas and structure** (the year split, the red side lists, the head that opens). Don't copy Huy's code, illustrations, copy or exact layout. Everything that ships is drawn, written and built for Jayanth.
 - Add a small footer credit, e.g. "Inspired by Huy Phan's huyml.co." It's honest, and it shows taste instead of risk.
 
+### Hero (built 2026-10-16)
+- Clip: Kling 2.5 Turbo (`design/hero/kling25.mp4`, start frame `design/hero/start-frame-16x9.png`), leveled frame by frame (tilt from up to 1.9° down to about ±0.3°), encoded 1920px wide with a keyframe every 4 frames so seeking on scroll is smooth (`src/assets/hero/hero.mp4`, ~1.9 MB).
+- Scroll map (`src/content/heroTimeline.ts`): half even in time, half even in measured zoom, which turns the clip's last-second rush into one steady push.
+- From 80–90% of the hero's scroll, a flat `--pink` panel fades in over the lens glow, so the hand-off lands on exactly #FF4FA3 and the next section continues on that pink.
+- Hero text is white with `mix-blend-mode: difference`, so it reads over both the white backdrop and the black silhouette.
+- Reduced motion: no scrubbing; a still poster plus the same text.
+
 ### Page decisions (Jayanth, 2026-10-16)
 1. **Home page stays blank for now.** Work on the other tabs first. ⚠ Risk to revisit before launch: LinkedIn and résumé links land on `/`. Either the home page gets content by 2026-10-20, or the shared link points to the about page.
 2. **Facts without clicking: agreed.** Name, intro, what Jayanth does and contact are always visible. The head and its notes are a bonus layer.
 3. **Playground: built after launch, but the tab exists in v1** (e.g. a simple "in progress" page).
+
+
+### Direction change (Jayanth, 2026-10-16, after seeing https://www.1367studio.com/)
+Replaces earlier decisions where they conflict:
+1. **The whole site is scroll-driven.** Sections hand off to each other with scroll-linked transitions, like 1367 Studio's hero. (Verified by inspecting their page: an 8.75s `hero-video.mp4` stays paused and its time is tied to scroll. The figure turns, the camera pushes into the goggles, and the lens glow floods the screen into the next section.)
+2. **Hero: a silhouette of Jayanth wearing pink glasses, made from a real photo plus an AI-generated turning video.** This reverses the earlier "no photo" decision, for the silhouette only.
+3. **Pages may scroll** on every screen size. The no-scroll rule is retired.
+4. **Pink replaces red as the accent.** See Color.
+- Borrow the mechanism (a scrubbed video, a push into the lenses, a colour flood), not 1367's footage, layout or copy.
+- Open: whether the head-lid and doodles stay (e.g. in About), and the 25-line copy review from the prototype.
 
 ## 3. Color
 Decided by Jayanth, 2026-10-16: **light theme only. Monochrome (mostly white and black) with a small pop of color.** No dark mode in v1.
@@ -44,7 +61,7 @@ Decided by Jayanth, 2026-10-16: **light theme only. Monochrome (mostly white and
 | `--bg` | `#FFFFFF` | Page background |
 | `--fg` | `#111111` (18.9:1 on white) | Body text, illustration ink |
 | `--muted` | `#6B6B6B` (5.3:1 on white) | Secondary text |
-| `--accent` | **`#D62B1F` red** (Jayanth, 2026-10-16). 4.97:1 on white, so it passes AA for small text. | The single pop: side lists, links, focus |
+| `--accent` | **Pink** (replaced red `#D62B1F`, 2026-10-16). In code since 2026-10-16: `--accent` `#DB2777` (4.60:1 on white, AA for small text) for lists, links and focus; `--pink` `#FF4FA3` (3.04:1, **large text and fills only**) for the hero flood and pink sections. Ink on `--pink` is 6.2:1. | The single pop |
 | `--border` | `#E6E6E6` (decorative only, never for text) | Dividers |
 
 Rules:
@@ -71,7 +88,7 @@ Draft, 2026-10-16:
 - Reading width: 62ch for paragraphs. Case study body max ~720px.
 - Breakpoints: about grid stacks below 960px (side lists need room); gutter and nav switch below 760px.
 - About grid: 3 columns (year + year | face | red lists). On phones: year and list share a row, face in between.
-- **No page scrolls on laptop/desktop screens** (Jayanth, 2026-10-16). Each page fits one screen; sizes scale with viewport height (`vh`). Checked at 1280×720, 1366×768, 1440×900 and 1920×1080. Phones (below 960px wide) may scroll (decided by Jayanth, 2026-10-16).
+- ~~No page scrolls on laptop/desktop screens~~ **Retired 2026-10-16: pages may scroll (scroll-driven site).** Previously: Each page fits one screen; sizes scale with viewport height (`vh`). Checked at 1280×720, 1366×768, 1440×900 and 1920×1080. Phones (below 960px wide) may scroll (decided by Jayanth, 2026-10-16).
 - About page: portrait column 220–360px, portrait capped at 46% of screen height (made smaller on Jayanth's request, 2026-10-16). Intro sits right-aligned between the two red lists.
 - Click targets at least 44×44px, matching the Stage Zero lesson.
 

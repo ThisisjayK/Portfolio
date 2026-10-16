@@ -36,6 +36,7 @@ These are targets for v1, checked with Lighthouse (mobile) and Chrome DevTools b
 | Animation frame rate | 60 fps on a mid-range phone, no dropped frames during the lid lift or page transitions |
 | Images | Portrait as an optimized WebP/AVIF or SVG. Every image sized and lazy-loaded below the fold. |
 | Doodles (animated WebP) | ~2 MB total for 8. Loaded only after first hover/focus on the head, never on page load. Re-encode smaller if needed. |
+| Hero scroll video (AI-generated silhouette) | Target ≤ 3 MB, short (≈5–8 s), encoded with frequent keyframes so scrubbing is smooth; poster image shown first; facts rendered as HTML, never inside the video. Unverified estimate; measure the real file. |
 | Video (Jitter exports) | ≤ 500 KB each, lazy-loaded, never in the first paint |
 
 Rules that keep it smooth:

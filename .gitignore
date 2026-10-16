@@ -7,3 +7,6 @@ __pycache__/
 
 # Font trials: most are personal-use-only demos, so never commit or redistribute them.
 design/fonts/
+
+# Hero photo masters (large, personal); the shipped, compressed version lives in src/assets.
+design/hero/

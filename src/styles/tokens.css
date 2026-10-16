@@ -4,7 +4,10 @@
   --fg: #111111;
   --muted: #6b6b6b;
   --border: #e6e6e6;
-  --accent: #d62b1f;
+  /* Pink replaced red on 2026-10-16. --accent is the AA-safe pink for small text and
+     focus (4.60:1 on white); --pink is the glow and flood colour (large text and fills only). */
+  --accent: #db2777;
+  --pink: #ff4fa3;
 
   --font-display: 'Anton', 'Impact', sans-serif;
   --font-body: 'Inter Variable', system-ui, sans-serif;
@@ -23,6 +26,7 @@
   --gutter: var(--space-6);
   --reading: 62ch;
   --target: 44px;
+  --nav-h: 76px;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --dur-fast: 150ms;
@@ -33,5 +37,6 @@
 @media (max-width: 760px) {
   :root {
     --gutter: var(--space-4);
+    --nav-h: 108px;
   }
 }

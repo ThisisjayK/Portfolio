@@ -1,0 +1,48 @@
+.handoff {
+  min-height: 100svh;
+  display: grid;
+  align-content: center;
+  gap: var(--space-5);
+  padding: var(--space-9) var(--gutter);
+  background: var(--pink);
+  color: var(--fg);
+}
+
+.handoff-title {
+  margin: 0;
+  max-width: 14ch;
+  font-size: clamp(48px, min(8vw, 13vh), 150px);
+  line-height: 0.92;
+}
+
+.handoff-lead {
+  margin: 0;
+  max-width: 48ch;
+  font-size: clamp(17px, 1.4vw, 21px);
+  line-height: 1.5;
+}
+
+.handoff-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* Buttons on pink: ink fill and ink outline (ink on #FF4FA3 is 6.2:1). */
+.btn--ink,
+.btn--outline {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target);
+  padding: 0 var(--space-5);
+  border-radius: 999px;
+  border: 1.5px solid var(--fg);
+  font: 500 15px/1 var(--font-body);
+  text-decoration: none;
+  transition: transform var(--dur-fast) var(--ease-out), background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
+}
+.btn--ink { background: var(--fg); color: var(--pink); }
+.btn--outline { background: transparent; color: var(--fg); }
+.btn--outline:hover { background: var(--fg); color: var(--pink); }
+.btn--ink:hover, .btn--outline:hover { transform: translateY(-2px); }
+.handoff :focus-visible { outline-color: var(--fg); }
