@@ -2,7 +2,7 @@
    viewport while the track scrolls past. */
 .hero {
   position: relative;
-  height: 520svh;
+  height: 460svh;
   /* Slide up under the nav so the stage fills the whole viewport. */
   margin-top: calc(-1 * var(--nav-h));
   background: var(--bg);
@@ -13,28 +13,6 @@
   top: 0;
   height: 100svh;
   overflow: hidden;
-}
-
-.hero-zoom {
-  position: absolute;
-  inset: 0;
-  will-change: transform;
-}
-
-/* A soft warm glow centred on the lens: it grows in as the zoom passes the frame of
-   the goggles, hiding the softness of the enlarged video and leading into the flood. */
-.hero-bloom {
-  position: absolute;
-  transform: translate(-50%, -50%); /* centred on left/top, which Hero.tsx sets to the lens */
-  border-radius: 50%;
-  pointer-events: none;
-  background: radial-gradient(
-    closest-side,
-    #ffd38a 0%,
-    #ff9cc6 25%,
-    var(--pink) 45%,
-    rgb(255 79 163 / 0) 75%
-  );
 }
 
 .hero-media {

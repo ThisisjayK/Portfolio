@@ -31,7 +31,10 @@ Chosen by Jayanth, 2026-10-16. **What Jayanth wants to borrow:**
 - Borrow **ideas and structure** (the year split, the red side lists, the head that opens). Don't copy Huy's code, illustrations, copy or exact layout. Everything that ships is drawn, written and built for Jayanth.
 - Add a small footer credit, e.g. "Inspired by Huy Phan's huyml.co." It's honest, and it shows taste instead of risk.
 
-### Hero (built 2026-10-16)
+### Hero (built 2026-10-16, current version)
+- **Now uses the third Kling clip** (`design/hero/kling-v3.mp4`): a real camera push all the way into the lens (goggle-to-head width ratio steady at 0.88–0.92, rising only slightly at the very end as the goggles get closer to the camera, which is correct perspective). Leveled to within ±0.5°. Scroll map is half even in time, half even in measured zoom; flat pink fades in at 80–90% of the hero's scroll. The code-zoom version below is superseded.
+
+### Hero, earlier versions
 - Clip: Kling 2.5 Turbo (`design/hero/kling25.mp4`, start frame `design/hero/start-frame-16x9.png`), leveled frame by frame (tilt from up to 1.9° down to about ±0.3°), encoded 1920px wide with a keyframe every 4 frames so seeking on scroll is smooth (`src/assets/hero/hero.mp4`, ~1.9 MB).
 - **Revised the same day:** after about 7s the clip inflated the goggles instead of moving the camera (the head stayed the same size). The hero now uses the clip only up to **6.75s** (measured: lens-to-shoulder ratio holds at about 0.32 from 3s to 6.9s, so it's a real camera move), then zooms the **whole frame** toward the lens in code (up to 12×), so head, goggles and shoulders grow together.
 - Scroll map (`src/content/heroTimeline.ts`): video phase is half even in time, half even in measured zoom; code zoom is exponential, starting at roughly the speed the video ends at.
