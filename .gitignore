@@ -10,3 +10,4 @@ design/fonts/
 
 # Hero photo masters (large, personal); the shipped, compressed version lives in src/assets.
 design/hero/
+*.tsbuildinfo
