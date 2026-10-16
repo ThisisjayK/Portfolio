@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Display font shortlist</title>
+<!-- Web-font previews only (loaded from Google Fonts and the Fontshare API); nothing is downloaded to disk. -->
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=cabinet-grotesk@800&display=swap" rel="stylesheet">
+<style>
+  @font-face { font-family: 'Magilio'; src: url('fonts/magilio/MagilioRegular-8Mxvg.otf') format('opentype'); }
+  @font-face { font-family: 'Mamenchisa'; src: url('fonts/mamenchisa/Mamenchisa.otf') format('opentype'); }
+  @font-face { font-family: 'Nighty'; src: url('fonts/nighty/Nightydemo.otf') format('opentype'); }
+  @font-face { font-family: 'Meshed Display'; src: url('fonts/meshed/MeshedDisplay-Regular.woff2') format('woff2'); font-weight: 400; }
+  @font-face { font-family: 'Meshed Display'; src: url('fonts/meshed/MeshedDisplay-Bold.woff2') format('woff2'); font-weight: 700; }
+  @font-face { font-family: 'Meshed Display'; src: url('fonts/meshed/MeshedDisplay-Black.woff2') format('woff2'); font-weight: 900; }
+  :root { --bg:#fff; --fg:#111; --muted:#6b6b6b; --accent:#d62b1f; --border:#e6e6e6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 Inter, system-ui, sans-serif; padding: 32px 16px; }
+  h1 { font-size: 15px; font-weight: 500; margin: 0 0 4px; }
+  .note { color: var(--muted); margin: 0 0 32px; max-width: 70ch; }
+  .row { display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: center; padding: 20px 0; border-top: 1px solid var(--border); }
+  .meta { font-size: 13px; }
+  .meta b { display: block; font-size: 15px; }
+  .ok { color: #1a7f37; } .warn { color: var(--accent); }
+  .sample { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; min-width: 0; }
+  .year { font-size: 120px; line-height: .85; }
+  .head { font-size: 34px; line-height: 1.02; text-transform: uppercase; max-width: 14ch; }
+  @media (max-width: 760px) { .row { grid-template-columns: 1fr; } .year { font-size: 88px; } }
+</style>
+</head>
+<body>
+  <h1>Bold display shortlist (from the Awwwards Free Fonts collection)</h1>
+  <p class="note">Only fonts with a public web-font CDN can preview here. Galgo Condensed, Morganite and Big John would need a download first, so they're listed at the bottom with their license.</p>
+
+  <div class="row">
+    <div class="meta"><b>Anton (current)</b><span class="ok">SIL OFL</span></div>
+    <div class="sample" style="font-family: Anton"><span class="year">20</span><span class="head">I'm a product manager who starts with the people</span></div>
+  </div>
+
+  <h1 style="margin-top:40px">From your Downloads (2026-10-16)</h1>
+  <p class="note">Local copies in design/fonts/, git-ignored so they're never committed. Licenses read from each font's own files.</p>
+  <div class="row">
+    <div class="meta"><b>Meshed Display (Bold)</b><span class="ok">Free for personal + commercial; files may not be modified (License.pdf)</span></div>
+    <div class="sample" style="font-family: 'Meshed Display'; font-weight: 700"><span class="year">20</span><span class="head">I'm a product manager who starts with the people</span></div>
+  </div>
+  <div class="row">
+    <div class="meta"><b>Meshed Display (Black)</b><span class="ok">Same license</span></div>
+    <div class="sample" style="font-family: 'Meshed Display'; font-weight: 900"><span class="year">20</span><span class="head">I'm a product manager who starts with the people</span></div>
+  </div>
+  <div class="row">
+    <div class="meta"><b>Mamenchisa</b><span class="warn">Personal use only (demo); commercial license sold separately</span></div>
+    <div class="sample" style="font-family: 'Mamenchisa'"><span class="year">20</span><span class="head">I'm a product manager who starts with the people</span></div>
+  </div>
+  <div class="row">
+    <div class="meta"><b>Magilio</b><span class="warn">Personal use only (demo, Prioritype)</span></div>
+    <div class="sample" style="font-family: 'Magilio'"><span class="year">20</span><span class="head">I'm a product manager who starts with the people</span></div>
+  </div>
+  <div class="row">
+    <div class="meta"><b>Nighty</b><span class="warn">Personal use only (demo, Dharmas Studio)</span></div>
+    <div class="sample" style="font-family: 'Nighty'"><span class="year">20</span><span class="head">I'm a product manager who starts with the people</span></div>
+  </div>
+
+  <h1 style="margin-top:40px">From the Awwwards collection</h1>
+  <div class="row">
+    <div class="meta"><b>Bebas Neue</b><span class="ok">SIL OFL (Google Fonts)</span></div>
+    <div class="sample" style="font-family: 'Bebas Neue'"><span class="year">20</span><span class="head">I'm a product manager who starts with the people</span></div>
+  </div>
+  <div class="row">
+    <div class="meta"><b>Clash Display</b><span class="ok">ITF Free Font License: personal + commercial (Fontshare)</span></div>
+    <div class="sample" style="font-family: 'Clash Display'; font-weight: 700"><span class="year">20</span><span class="head">I'm a product manager who starts with the people</span></div>
+  </div>
+  <div class="row">
+    <div class="meta"><b>Cabinet Grotesk</b><span class="ok">Fontshare: free for personal + commercial</span><br><span class="warn">Preview didn't load from Fontshare; shown in a fallback font</span></div>
+    <div class="sample" style="font-family: 'Cabinet Grotesk', sans-serif; font-weight: 800"><span class="year">20</span><span class="head">I'm a product manager who starts with the people</span></div>
+  </div>
+
+  <h1 style="margin-top:40px">Needs a download to preview</h1>
+  <div class="row"><div class="meta"><b>Galgo Condensed</b><span class="ok">SIL OFL (giuliaboggio.xyz)</span></div><div>Tall, tight condensed, inspired by Morganite. Closest in feel to Anton but thinner and more elegant.</div></div>
+  <div class="row"><div class="meta"><b>Morganite</b><span class="ok">Free for personal + commercial (Behance page)</span></div><div>18 styles, Thin to Black, very condensed.</div></div>
+  <div class="row"><div class="meta"><b>Big John PRO</b><span class="ok">Free for personal + commercial (Behance page)</span></div><div>Wide, geometric all-caps. A different direction from condensed.</div></div>
+  <div class="row"><div class="meta"><b>Humane</b><span class="warn">Pay-what-you-want on Gumroad; no license stated on the page</span></div><div>Ultra-condensed, very tall. Needs the license file checked after download.</div></div>
+  <div class="row"><div class="meta"><b>Mango Grotesque</b><span class="warn">Pay-what-you-want on Gumroad; no license stated on the page</span></div><div>Condensed variable, 9 weights.</div></div>
+  <div class="row"><div class="meta"><b>Thunder</b><span class="warn">No license stated on the Behance page</span></div><div>Condensed variable, 36 styles.</div></div>
+</body>
+</html>

@@ -4,3 +4,6 @@ dist/
 __pycache__/
 .claude/settings.local.json
 .claude/worktrees/
+
+# Font trials: most are personal-use-only demos, so never commit or redistribute them.
+design/fonts/
