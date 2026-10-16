@@ -1,30 +1,41 @@
 .handoff {
-  min-height: 100svh;
-  display: grid;
-  align-content: center;
-  gap: var(--space-5);
-  padding: var(--space-9) var(--gutter);
+  height: 220svh; /* scroll distance for the pinned stage below */
   background: var(--pink);
   color: var(--fg);
 }
 
-.handoff-title {
-  margin: 0;
-  max-width: 14ch;
-  font-size: clamp(48px, min(8vw, 13vh), 150px);
-  line-height: 0.92;
+.handoff-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--space-5);
+  padding: 0 var(--gutter);
+  text-align: center;
 }
 
+.handoff--static {
+  height: auto;
+}
+.handoff--static .handoff-stage {
+  position: static;
+  min-height: 100svh;
+}
+
+/* Small and centred, matching the line that assembles at the end of the hero. */
 .handoff-lead {
   margin: 0;
-  max-width: 48ch;
-  font-size: clamp(17px, 1.4vw, 21px);
+  max-width: 40ch;
+  font-size: clamp(16px, 1.25vw, 19px);
   line-height: 1.5;
 }
 
 .handoff-actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: var(--space-3);
 }
 

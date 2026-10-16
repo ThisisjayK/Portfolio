@@ -11,13 +11,14 @@ type Props = {
   progress: MotionValue<number> // 0 → nothing shown, 1 → fully assembled
   as?: ElementType
   className?: string
-  /** Fraction of the progress each character takes to land (the rest is stagger). */
+  /** Fraction of the progress each piece takes to land (the rest is stagger). */
   overlap?: number
+  /** 'character' for short headlines, 'word' for sentences. */
+  splitBy?: 'character' | 'word'
 }
 
-export default function ScrollText({ text, progress, as: Tag = 'p', className, overlap = 0.25 }: Props) {
-  const chars = [...text]
-  const n = chars.length
+export default function ScrollText({ text, progress, as: Tag = 'p', className, overlap = 0.25, splitBy = 'character' }: Props) {
+  const n = splitBy === 'word' ? text.split(' ').length : [...text].length
   const words = text.split(' ')
   let i = 0
 
@@ -26,13 +27,13 @@ export default function ScrollText({ text, progress, as: Tag = 'p', className, o
       {words.map((word, w) => (
         <span key={w}>
           <span className="tr-word" aria-hidden="true">
-            {[...word].map((ch) => {
+            {(splitBy === 'word' ? [word] : [...word]).map((ch) => {
               const k = i++
               const start = (k / Math.max(n - 1, 1)) * (1 - overlap)
               return <Char key={k} ch={ch} progress={progress} start={start} end={start + overlap} />
             })}
           </span>
-          {w < words.length - 1 ? ((i++), ' ') : null}
+          {w < words.length - 1 ? (splitBy === 'character' && i++, ' ') : null}
         </span>
       ))}
     </Tag>
