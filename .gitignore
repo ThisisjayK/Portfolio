@@ -11,3 +11,7 @@ design/fonts/
 # Hero photo masters (large, personal); the shipped, compressed version lives in src/assets.
 design/hero/
 *.tsbuildinfo
+
+# Personal planning notes (visa status, private Stage Zero details). Never push: the repo is public.
+about-me.md
+product.md
