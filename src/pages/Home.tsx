@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import Hero from '../components/Hero'
 import TextReveal from '../components/TextReveal'
-import { intro } from '../content/about'
 import './Home.css'
 
 export default function Home() {
@@ -10,7 +9,6 @@ export default function Home() {
       <Hero />
       {/* The hero ends on flat pink; the page carries on in the same pink. */}
       <section className="handoff" aria-label="Introduction, continued">
-        <TextReveal as="h2" className="display handoff-title" text={intro.headline} />
         <TextReveal
           className="handoff-lead"
           splitBy="word"

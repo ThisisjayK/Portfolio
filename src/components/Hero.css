@@ -2,7 +2,7 @@
    viewport while the track scrolls past. */
 .hero {
   position: relative;
-  height: 460svh;
+  height: 520svh;
   /* Slide up under the nav so the stage fills the whole viewport. */
   margin-top: calc(-1 * var(--nav-h));
   background: var(--bg);
@@ -73,4 +73,19 @@
   .hero-cue {
     display: none;
   }
+}
+
+/* The small line that assembles on the pink at the end of the hero. */
+.hero-line {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(22ch, 84vw);
+  margin: 0;
+  text-align: center;
+  color: var(--fg);
+  font-size: clamp(26px, min(3vw, 5vh), 44px);
+  line-height: 1.02;
+  pointer-events: none;
 }
