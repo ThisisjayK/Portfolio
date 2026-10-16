@@ -69,3 +69,13 @@ a {
     animation-duration: 0.01ms !important;
   }
 }
+
+/* TextReveal pieces: inline-block so they can move; words never break mid-word. */
+.tr-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+.tr-unit {
+  display: inline-block;
+  will-change: transform, filter, opacity;
+}
