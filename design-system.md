@@ -71,6 +71,8 @@ Draft, 2026-10-16:
 - Reading width: 62ch for paragraphs. Case study body max ~720px.
 - Breakpoints: about grid stacks below 960px (side lists need room); gutter and nav switch below 760px.
 - About grid: 3 columns (year + year | face | red lists). On phones: year and list share a row, face in between.
+- **No page scrolls on laptop/desktop screens** (Jayanth, 2026-10-16). Each page fits one screen; sizes scale with viewport height (`vh`). Checked at 1280×720, 1366×768, 1440×900 and 1920×1080. Phones (below 960px wide) still scroll; see the open question in product.md.
+- About page: portrait column 220–360px, portrait capped at 46% of screen height (made smaller on Jayanth's request, 2026-10-16). Intro sits right-aligned between the two red lists.
 - Click targets at least 44×44px, matching the Stage Zero lesson.
 
 ## 6. Motion
