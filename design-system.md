@@ -33,7 +33,9 @@ Chosen by Jayanth, 2026-10-16. **What Jayanth wants to borrow:**
 
 ### Hero (built 2026-10-16)
 - Clip: Kling 2.5 Turbo (`design/hero/kling25.mp4`, start frame `design/hero/start-frame-16x9.png`), leveled frame by frame (tilt from up to 1.9° down to about ±0.3°), encoded 1920px wide with a keyframe every 4 frames so seeking on scroll is smooth (`src/assets/hero/hero.mp4`, ~1.9 MB).
-- Scroll map (`src/content/heroTimeline.ts`): half even in time, half even in measured zoom, which turns the clip's last-second rush into one steady push.
+- **Revised the same day:** after about 7s the clip inflated the goggles instead of moving the camera (the head stayed the same size). The hero now uses the clip only up to **6.75s** (measured: lens-to-shoulder ratio holds at about 0.32 from 3s to 6.9s, so it's a real camera move), then zooms the **whole frame** toward the lens in code (up to 12×), so head, goggles and shoulders grow together.
+- Scroll map (`src/content/heroTimeline.ts`): video phase is half even in time, half even in measured zoom; code zoom is exponential, starting at roughly the speed the video ends at.
+- A glow sized to the lens grows in late in the zoom, inside the zoomed layer, so the head stays black.
 - From 80–90% of the hero's scroll, a flat `--pink` panel fades in over the lens glow, so the hand-off lands on exactly #FF4FA3 and the next section continues on that pink.
 - Hero text is white with `mix-blend-mode: difference`, so it reads over both the white backdrop and the black silhouette.
 - Reduced motion: no scrubbing; a still poster plus the same text.
