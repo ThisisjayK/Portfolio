@@ -22,12 +22,13 @@ const RIM_WIDTH = 58.4
 const INK = '#111111'
 
 function landingSpots(n: number) {
-  const size = n <= 8 ? 96 : 80
+  // Doodles were 96 in the prototype; scaled down on 2026-10-16. Still ≥44px on phones.
+  const size = n <= 8 ? 72 : 64
   const rows = n <= 4 ? [n] : [Math.floor(n / 2), n - Math.floor(n / 2)]
   const rowY = rows.length === 1 ? [330] : [290, 384]
   const spots: { x: number; y: number; r: number; size: number }[] = []
   rows.forEach((count, row) => {
-    const step = count > 1 ? Math.min(size + 18, 360 / (count - 1)) : 0
+    const step = count > 1 ? Math.min(size + 24, 360 / (count - 1)) : 0
     for (let j = 0; j < count; j++) {
       spots.push({
         x: 300 + (j - (count - 1) / 2) * step,
