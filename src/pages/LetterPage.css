@@ -1,0 +1,41 @@
+/* Letter pages (Jayanth, 2026-10-17, after aiu.is's article pages): an empty page with one
+   column of text in the middle, heading, subheading and paragraphs, all in --accent. */
+.lp {
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  /* Clear the pinned roll box, which fills the top fifth of the screen (RollBox.css). */
+  padding: calc(20svh + var(--space-5)) var(--gutter) var(--space-9);
+  background: var(--bg);
+  color: var(--accent);
+}
+
+.lp-column {
+  width: min(100%, var(--reading));
+}
+
+/* Sentence case like the reference, not the site's uppercase display style. */
+.lp-title,
+.lp-sub {
+  text-transform: none;
+}
+
+.lp-title {
+  margin: 0 0 var(--space-7);
+  font-size: var(--text-h1);
+  line-height: var(--leading-heading);
+  color: var(--accent);
+}
+
+.lp-sub {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-h2);
+  line-height: var(--leading-heading);
+  color: var(--accent);
+}
+
+.lp-text {
+  margin: 0 0 var(--space-5);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}

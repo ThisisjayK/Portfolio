@@ -1,33 +1,18 @@
 // A–Z across the hero's first screen (layout sketched by Jayanth, 2026-10-17): an even 7×5 grid
 // over the whole stage, leaving the nav's corner and the silhouette's column empty. Ten letters,
 // picked at random on each visit, are lowercase, and each letter gets one of eight fonts at random. Letters that stand for one of Jayanth's
-// interests are buttons with a pink amoeba behind them (BlobLetter) that swells into a circle on
-// hover or focus; a click opens that interest's note. The letters swell gently toward a fine cursor.
+// interests are buttons with an accent amoeba behind them (BlobLetter) that ripples on hover or
+// focus; a click shatters the page and opens that letter's own page (shatter.ts, LetterPage).
+// The letters swell gently toward a fine cursor.
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { AnimatePresence, useReducedMotion } from 'motion/react'
-import NoteCard from './NoteCard'
+import { useLocation } from 'react-router-dom'
+import { useReducedMotion } from 'motion/react'
 import BlobLetter from './BlobLetter'
-import { notes } from '../content/notes'
-import '@fontsource/anton/latin-400.css'
-import '@fontsource/archivo-black/latin-400.css'
-import '@fontsource/playfair-display/latin-400-italic.css'
-import '@fontsource/instrument-serif/latin-400-italic.css'
-import '@fontsource-variable/space-grotesk'
-import '@fontsource/dm-serif-display/latin-400.css'
-import '@fontsource-variable/bodoni-moda'
+import { useShatterNavigate } from './shatter'
+import { LETTER_FONTS, letterPageFor } from '../content/letters'
+import '../styles/letterFonts'
 import './LetterGrid.css'
 
-// Letter → note key (src/content/notes.ts, from about-me.md 1b). Anime sits on O for One Piece.
-const clickable: Record<string, { key: string; topic: string }> = {
-  A: { key: 'arsenal', topic: 'Arsenal' },
-  C: { key: 'cooking', topic: 'Cooking' },
-  D: { key: 'drake', topic: 'Drake' },
-  F: { key: 'football', topic: 'Football' },
-  G: { key: 'gaming', topic: 'Gaming' },
-  O: { key: 'anime', topic: 'One Piece' },
-  P: { key: 'plants', topic: 'Plants' },
-  R: { key: 'running', topic: 'Running' },
-}
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 
 // [column, row] on the 7×5 grid, as in Jayanth's sketch. Row 1, columns 1–2 is the nav;
@@ -42,12 +27,10 @@ const CELLS: Record<string, [number, number]> = {
 const LOWERCASE_COUNT = 10
 
 // Two bold, two italic, two sans, two serif; classes map to the --font-letter-* tokens.
-const FONTS = [
-  'bold-1', 'bold-2', 'italic-1', 'italic-2', 'sans-1', 'sans-2', 'serif-1', 'serif-2',
-] as const
-
 function pickFonts() {
-  return Object.fromEntries(LETTERS.map((l) => [l, FONTS[Math.floor(Math.random() * FONTS.length)]]))
+  return Object.fromEntries(
+    LETTERS.map((l) => [l, LETTER_FONTS[Math.floor(Math.random() * LETTER_FONTS.length)]]),
+  )
 }
 
 function pickLowercase() {
@@ -64,11 +47,18 @@ type Props = { hidden?: boolean }
 export default function LetterGrid({ hidden }: Props) {
   const reduced = useReducedMotion()
   const grid = useRef<HTMLDivElement>(null)
-  const [noteKey, setNoteKey] = useState<string | null>(null)
   const [activeKey, setActiveKey] = useState<string | null>(null)
+  const [chosen, setChosen] = useState<string | null>(null)
   const lower = useMemo(pickLowercase, [])
   const fonts = useMemo(pickFonts, [])
-  const noteIndex = notes.findIndex((x) => x.key === noteKey)
+  const go = useShatterNavigate()
+  const { state } = useLocation()
+
+  // Back from a letter page (via the roll box): focus returns to that letter.
+  useEffect(() => {
+    const slug = (state as { fromSlug?: string } | null)?.fromSlug
+    if (slug) grid.current?.querySelector<HTMLElement>(`[data-key="${slug}"]`)?.focus({ preventScroll: true })
+  }, [state])
 
   // Swell toward the cursor: transform only, written once per frame.
   useEffect(() => {
@@ -106,29 +96,23 @@ export default function LetterGrid({ hidden }: Props) {
     }
   }, [reduced])
 
-  const closeNote = () => {
-    const k = noteKey
-    setNoteKey(null)
-    requestAnimationFrame(() => grid.current?.querySelector<HTMLElement>(`[data-key="${k}"]`)?.focus())
-  }
-
   return (
     <>
       <div
         ref={grid}
         className="letters"
         role="group"
-        aria-label="A to Z: some letters open a note about something I love"
+        aria-label="A to Z: some letters open a page about something I love"
         aria-hidden={hidden || undefined}
       >
         {LETTERS.map((l) => {
-          const hit = clickable[l]
+          const hit = letterPageFor(l)
           const [col, row] = CELLS[l]
           const cell = { gridColumn: col, gridRow: row }
           const shown = lower.has(l) ? l.toLowerCase() : l
           if (!hit) {
             return (
-              <span key={l} className={`letter letter--${fonts[l]}`} style={cell} aria-hidden="true">
+              <span key={l} className={`letter letter--${fonts[l]}`} style={cell} aria-hidden="true" data-shatter>
                 {shown}
               </span>
             )
@@ -137,27 +121,30 @@ export default function LetterGrid({ hidden }: Props) {
             <button
               key={l}
               type="button"
-              className={`letter letter--button letter--${fonts[l]}`}
+              className={`letter letter--button letter--${fonts[l]}${chosen === hit.slug ? ' is-chosen' : ''}`}
               style={cell}
-              data-key={hit.key}
+              data-key={hit.slug}
+              data-shatter
               aria-label={`${l}, ${hit.topic}`}
               tabIndex={hidden ? -1 : undefined}
-              onClick={() => setNoteKey(hit.key)}
-              onPointerEnter={() => setActiveKey(hit.key)}
-              onPointerLeave={() => setActiveKey((k) => (k === hit.key ? null : k))}
-              onFocus={(e) => e.currentTarget.matches(':focus-visible') && setActiveKey(hit.key)}
-              onBlur={() => setActiveKey((k) => (k === hit.key ? null : k))}
+              onClick={(e) => {
+                const r = e.currentTarget.getBoundingClientRect()
+                setChosen(hit.slug)
+                go(`/${hit.slug}`, {
+                  origin: { x: r.left + r.width / 2, y: r.top + r.height / 2 },
+                  keep: e.currentTarget,
+                })
+              }}
+              onPointerEnter={() => setActiveKey(hit.slug)}
+              onPointerLeave={() => setActiveKey((k) => (k === hit.slug ? null : k))}
+              onFocus={(e) => e.currentTarget.matches(':focus-visible') && setActiveKey(hit.slug)}
+              onBlur={() => setActiveKey((k) => (k === hit.slug ? null : k))}
             >
-              <BlobLetter glyph={shown} active={activeKey === hit.key} />
+              <BlobLetter glyph={shown} active={activeKey === hit.slug} />
             </button>
           )
         })}
       </div>
-      <AnimatePresence>
-        {noteIndex >= 0 && (
-          <NoteCard note={notes[noteIndex]} index={noteIndex} total={notes.length} onClose={closeNote} />
-        )}
-      </AnimatePresence>
     </>
   )
 }

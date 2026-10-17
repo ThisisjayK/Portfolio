@@ -93,3 +93,13 @@ h1.display {
   display: inline-block;
   will-change: transform, filter, opacity;
 }
+
+/* The A–Z's eight-font mix, shared by the hero grid and the letter pages. Italics are true italic cuts, not slanted romans. */
+.letter--bold-1 { font-family: var(--font-letter-bold-1); font-weight: 400; }
+.letter--bold-2 { font-family: var(--font-letter-bold-2); font-weight: 400; }
+.letter--italic-1 { font-family: var(--font-letter-italic-1); font-weight: 400; font-style: italic; }
+.letter--italic-2 { font-family: var(--font-letter-italic-2); font-weight: 400; font-style: italic; }
+.letter--sans-1 { font-family: var(--font-letter-sans-1); font-weight: 500; }
+.letter--sans-2 { font-family: var(--font-letter-sans-2); font-weight: 500; }
+.letter--serif-1 { font-family: var(--font-letter-serif-1); font-weight: 400; }
+.letter--serif-2 { font-family: var(--font-letter-serif-2); font-weight: 500; }

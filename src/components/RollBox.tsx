@@ -4,10 +4,11 @@
 // turn, so the two faces alternate: scrolling down tips the front face up and away and brings
 // the next one up from below; scrolling up rolls it back. The page keeps scrolling normally; one
 // continuous scroll (including trackpad momentum) counts as one roll. Clicking it always goes to
-// the top of the landing page. Unlike the letters, it's never hidden: it's fixed to the screen
+// the top of the landing page; from a letter page the page shatters on the way (shatter.ts). Unlike the letters, it's never hidden: it's fixed to the screen
 // for the whole landing page, over the bloom, the flood and the sections after (Jayanth, 2026-10-17).
 import { useEffect, useState, type CSSProperties, type MouseEvent } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useShatterNavigate } from './shatter'
 import collage from '../assets/box/collage.webp'
 import jaykay from '../assets/box/jaykay-2026.svg'
 import './RollBox.css'
@@ -20,11 +21,16 @@ const FACES = [collage, jaykay, collage, jaykay]
 export default function RollBox() {
   const [turn, setTurn] = useState(0)
   const { pathname } = useLocation()
+  const go = useShatterNavigate()
 
+  // On a letter page: shatter home, and tell the grid which letter to focus.
   // Already on the landing page: a click goes back to its top instead of doing nothing.
   const toTop = (e: MouseEvent) => {
-    if (pathname !== '/') return
     e.preventDefault()
+    if (pathname !== '/') {
+      go('/', { origin: { x: e.clientX, y: e.clientY }, state: { fromSlug: pathname.slice(1) } })
+      return
+    }
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
     window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' })
   }

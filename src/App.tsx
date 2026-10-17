@@ -7,6 +7,8 @@ import Page from './components/Page'
 import Home from './pages/Home'
 import About from './pages/About'
 import Playground from './pages/Playground'
+import LetterPage from './pages/LetterPage'
+import { letterPages } from './content/letters'
 
 export default function App() {
   const location = useLocation()
@@ -26,6 +28,10 @@ export default function App() {
             <Route path="/work" element={<Page><OpenCardOnMount name="work"><Home /></OpenCardOnMount></Page>} />
             <Route path="/playground" element={<Page><Playground /></Page>} />
             <Route path="/contact" element={<Page><OpenCardOnMount name="contact"><Home /></OpenCardOnMount></Page>} />
+            {/* One page per clickable letter of the hero's A–Z (src/content/letters.ts). */}
+            {letterPages.map((p) => (
+              <Route key={p.slug} path={`/${p.slug}`} element={<Page><LetterPage page={p} /></Page>} />
+            ))}
             <Route path="*" element={<Page><Home /></Page>} />
           </Routes>
         </AnimatePresence>
