@@ -3,6 +3,7 @@
 // aside and only Contact stays, bottom-left.
 import { NavLink } from 'react-router-dom'
 import { useCards } from './Cards'
+import SilkBall from './SilkBall'
 import './Nav.css'
 
 export default function Nav() {
@@ -10,7 +11,10 @@ export default function Nav() {
   return (
     <>
       <header className={onPink ? 'nav mono nav--away' : 'nav mono'} aria-hidden={onPink || undefined}>
-        <NavLink to="/" className="nav-name" tabIndex={onPink ? -1 : undefined}>Jayanth K.</NavLink>
+        <NavLink to="/" className="nav-name" tabIndex={onPink ? -1 : undefined}>
+          <SilkBall size={28} paused={onPink} />
+          <span className="visually-hidden">Jayanth Kappagantula, home</span>
+        </NavLink>
         <nav aria-label="Main">
           <ul>
             <li><NavLink to="/about" tabIndex={onPink ? -1 : undefined}>About</NavLink></li>

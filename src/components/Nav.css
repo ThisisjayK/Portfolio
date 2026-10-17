@@ -42,7 +42,23 @@
 
 .nav-name {
   margin-bottom: var(--space-2);
-  font-weight: 600;
+}
+.nav a.nav-name:hover,
+.nav a.nav-name.active {
+  transform: none;
+}
+
+/* The site mark. Without WebGL the canvas shows a gradient ball instead. */
+.silk-ball {
+  display: block;
+  border-radius: 50%;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.nav-name:hover .silk-ball {
+  transform: scale(1.06);
+}
+.silk-ball[data-fallback] {
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--pink), white 45%), var(--pink) 45%, color-mix(in srgb, var(--pink), black 40%));
 }
 
 /* On pink: the list steps aside... */

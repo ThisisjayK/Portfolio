@@ -82,3 +82,4 @@ prototypes/        # yesterday's experiments; source for HeadLid, not shipped as
 | 2026-10-16 | GitHub Pages at https://thisisjayk.github.io/Portfolio/ | Replaces the live old site at the same address, so links already sent to recruiters show the new site. Free, no badge. |
 | 2026-10-16 | Plain CSS with design-system tokens | No runtime cost; the tokens are already defined. |
 | 2026-10-16 | Jitter designs rebuilt in Motion where possible, otherwise as lazy-loaded video | Keeps the performance budget ("no lags"). |
+| 2026-10-16 | Nav mark is a code-drawn silky pink ball (`SilkBall`, raw WebGL fragment shader, no 3D library) | Jayanth chose code over a Higgsfield video: exact `--pink`, sharp at any size, loops perfectly, a few KB instead of a video. Pauses when hidden or on the pink. |

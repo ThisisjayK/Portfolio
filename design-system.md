@@ -112,7 +112,7 @@ Draft, 2026-10-16. Motion should feel **calm**: smooth, quick to settle, never b
 | Component | Variants | States | Notes |
 |---|---|---|---|
 | Button / link | TBD | hover, focus, active | |
-| Nav | TBD | | |
+| Nav | Vertical, top-left; on the pink only Contact stays, bottom-left | hover, focus, active | Site mark is `SilkBall`: a 28 px silky `--pink` ball turning slowly (WebGL shader, CSS gradient fallback, still under reduced motion). The name stays as a visually hidden label. |
 | Case study card | TBD | | |
 
 ## 8. Imagery and illustration
