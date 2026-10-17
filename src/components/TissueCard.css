@@ -39,7 +39,7 @@
 }
 
 .tissue--white {
-  background-color: #fbfaf8;
+  background-color: var(--paper);
 }
 .tissue--white::before {
   opacity: 0.4;

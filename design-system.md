@@ -34,6 +34,7 @@ Chosen by Jayanth, 2026-10-16. **What Jayanth wants to borrow:**
 ### Hero (built 2026-10-16, current version)
 - **Now uses the third Kling clip** (`design/hero/kling-v3.mp4`): a real camera push all the way into the lens (goggle-to-head width ratio steady at 0.88–0.92, rising only slightly at the very end as the goggles get closer to the camera, which is correct perspective). Leveled to within ±0.5°. Scroll map is half even in time, half even in measured zoom; flat pink fades in at 80–90% of the hero's scroll. The code-zoom version below is superseded.
 - **No visible name or role on the hero** (Jayanth, 2026-10-16). The silhouette stands alone; "Jayanth Kappagantula, product manager in healthcare" stays as a visually hidden `h1` for screen readers and search.
+- **Interest notes** (`CrumpleNotes`, 2026-10-16): while the head turns (hero scroll ~3–33%), six paper notes pop in as crumpled balls and unfold around the silhouette (doodle + label + Jayanth's note, from about-me.md §1b); they crumple away as the camera pushes in (~43–56%). Paper is `--paper` with a soft shadow. Phones show the label only, below the goggles. Reduced motion / no WebGL: flat HTML cards. Copy is a placeholder until Jayanth sends write-ups.
 
 ### Hero, earlier versions
 - Clip: Kling 2.5 Turbo (`design/hero/kling25.mp4`, start frame `design/hero/start-frame-16x9.png`), leveled frame by frame (tilt from up to 1.9° down to about ±0.3°), encoded 1920px wide with a keyframe every 4 frames so seeking on scroll is smooth (`src/assets/hero/hero.mp4`, ~1.9 MB).
@@ -69,6 +70,7 @@ Decided by Jayanth, 2026-10-16: **light theme only. Monochrome (mostly white and
 | `--muted` | `#6B6B6B` (5.3:1 on white) | Secondary text |
 | `--accent` | **Pink** (replaced red `#D62B1F`, 2026-10-16). In code since 2026-10-16: `--accent` `#DB2777` (4.60:1 on white, AA for small text) for lists, links and focus; `--pink` `#FF4FA3` (3.04:1, **large text and fills only**) for the hero flood and pink sections. Ink on `--pink` is 6.2:1. | The single pop |
 | `--border` | `#E6E6E6` (decorative only, never for text) | Dividers |
+| `--paper` | `#FBFAF8` (added 2026-10-16) | Off-white paper: the white tissue card on pink and the interest notes |
 
 Rules:
 - The accent is used sparingly. If everything pops, nothing does.

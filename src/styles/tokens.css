@@ -8,6 +8,7 @@
      focus (4.60:1 on white); --pink is the glow and flood colour (large text and fills only). */
   --accent: #db2777;
   --pink: #ff4fa3;
+  --paper: #fbfaf8; /* off-white paper: the white tissue card and the interest notes */
 
   --font-display: 'Anton', 'Impact', sans-serif;
   --font-body: 'Inter Variable', system-ui, sans-serif;

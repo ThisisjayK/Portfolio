@@ -1,7 +1,7 @@
 // Scroll-driven hero: the visitor's scroll scrubs a short clip in which Jayanth's
 // silhouette turns to camera and the camera pushes all the way into the pink lens.
 // A flat panel then lands on exactly the site's pink, and the page continues on pink.
-// The name and role are real text, readable before any scroll.
+// While the head turns, Jayanth's interests unfold around him as paper notes.
 import { useEffect, useRef } from 'react'
 import { useMotionValueEvent, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import * as m from 'motion/react-m'
@@ -10,6 +10,7 @@ import poster from '../assets/hero/hero-poster.webp'
 import { videoTimeAt } from '../content/heroTimeline'
 import { intro } from '../content/about'
 import ScrollText from './ScrollText'
+import CrumpleNotes from './CrumpleNotes'
 import { useCards } from './Cards'
 import './Hero.css'
 
@@ -73,6 +74,7 @@ export default function Hero() {
     return (
       <section className="hero hero--static" aria-label="Introduction">
         <img className="hero-media" src={poster} alt="Silhouette of Jayanth in profile, wearing ski goggles with a glowing pink lens" />
+        <CrumpleNotes still />
         {/* The name and role aren't shown (Jayanth, 2026-10-16); they stay as the page heading for screen readers and search. */}
         <h1 className="visually-hidden">Jayanth Kappagantula, product manager in healthcare</h1>
       </section>
@@ -92,6 +94,7 @@ export default function Hero() {
           preload="auto"
           aria-label="Silhouette of Jayanth turning to the camera; the view pushes into his glowing pink goggles"
         />
+        <CrumpleNotes progress={scrollYProgress} />
         <m.div className="hero-flood" style={{ opacity: flood }} aria-hidden="true" />
         <ScrollText as="h2" className="display hero-line" text={intro.headline} progress={line} />
         {/* The name and role aren't shown (Jayanth, 2026-10-16); they stay as the page heading for screen readers and search. */}
