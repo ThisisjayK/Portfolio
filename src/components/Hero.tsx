@@ -99,7 +99,6 @@ export default function Hero() {
       <div ref={stage} className="hero-stage">
         <BlueBloom className="hero-media" progress={scrollYProgress} onReady={setBloomOk} />
         <LetterGrid hidden={lettersGone} />
-        <RollBox />
         <m.div className="hero-flood" style={{ opacity: flood }} aria-hidden="true" />
         <ScrollText as="h2" className="display hero-line" text={intro.headline} progress={line} />
         {/* The name and role aren't shown (Jayanth, 2026-10-16); they stay as the page heading for screen readers and search. */}
@@ -108,6 +107,8 @@ export default function Hero() {
           Scroll ↓
         </m.p>
       </div>
+      {/* Outside the sticky stage, so it stays pinned above the sections after the hero. */}
+      <RollBox />
     </section>
   )
 }

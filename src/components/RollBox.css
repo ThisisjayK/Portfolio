@@ -1,8 +1,10 @@
 /* Same 7×5 grid as the A–Z (LetterGrid.css), so the box sits exactly in row 1, columns 1–2,
-   the space the nav used to take. No blend mode here: the box keeps its own colours. */
+   the space the nav used to take. No blend mode here: the box keeps its own colours.
+   Fixed to the viewport (Jayanth, 2026-10-17): it stays on screen for the whole landing page.
+   z-index sits above the page sections but below the nav (30) and the cards (40). */
 .roll-slot {
-  position: absolute;
-  z-index: 2;
+  position: fixed;
+  z-index: 20;
   inset: var(--space-5) var(--gutter) var(--space-7);
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
