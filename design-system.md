@@ -31,7 +31,21 @@ Chosen by Jayanth, 2026-10-16. **What Jayanth wants to borrow:**
 - Borrow **ideas and structure** (the year split, the red side lists, the head that opens). Don't copy Huy's code, illustrations, copy or exact layout. Everything that ships is drawn, written and built for Jayanth.
 - Add a small footer credit, e.g. "Inspired by Huy Phan's huyml.co." It's honest, and it shows taste instead of risk.
 
-### Hero (built 2026-10-16, current version)
+### Hero (rebuilt 2026-10-17, current version): blue bloom
+- **The silhouette video is replaced by a code-drawn bloom of blues** (`src/components/BlueBloom.tsx`, one WebGL fragment shader). Jayanth chose direction "B · Cool bloom" from a scrubbable preview, then asked for shades of the current blue only, each layer with its own look.
+- **Five layers, all on the accent's hue (~214°), lightest first, each drawn differently:**
+  1. Mist `--bloom-mist` `#E6F1FF`: a feathered wash, the widest layer. Letters stay visible on it.
+  2. Powder `--bloom-powder` `#BFDBFF`: seven nested contour ripples, each turned slightly against the last.
+  3. Sky `--accent-fill` `#8BBDFF`: one solid amoeba (the letters' blob shape).
+  4. Cornflower `--bloom-cornflower` `#5A9BF0`: a fixed 9px halftone dot screen, dots shrinking toward the edge.
+  5. Cobalt `--accent` `#2072DF`: cut paper printed off register over a `--bloom-navy` `#123F7D` shadow (5px, 4px). A 12px cobalt drop sits in the middle column before any scroll, as the focal point.
+- **Grain:** fixed monochrome noise per CSS pixel (about ±4.5%), baked into the shader. It never moves on its own (no looping, per §6). It stops at the flood, because the flood is a flat panel so the next section matches exactly.
+- **Scroll timings unchanged:** layers grow from 0–50% (mist) to 36–80% (cobalt) of the hero's scroll, flat `--accent-fill` flood 80–90%, line 85–97%, "on blue" from 86%.
+- **Letters and roll box unchanged.** They now hide when the powder layer or a darker one reaches them, worked out from the bloom's geometry (`bloomCovers`) instead of reading video pixels. Without WebGL the canvas stays plain white and nothing hides until the flood.
+- Reduced motion: the still first frame (white grain and the cobalt drop), no scrubbing.
+- The old clip (`src/assets/hero/hero.mp4`, `hero-poster.webp`) and `src/content/heroTimeline.ts` are no longer used. Kept in the repo until Jayanth says to delete them.
+
+### Hero, video version (2026-10-16, superseded 2026-10-17)
 - **Now uses the third Kling clip** (`design/hero/kling-v3.mp4`): a real camera push all the way into the lens (goggle-to-head width ratio steady at 0.88–0.92, rising only slightly at the very end as the goggles get closer to the camera, which is correct perspective). Leveled to within ±0.5°. Scroll map is half even in time, half even in measured zoom; flat pink fades in at 80–90% of the hero's scroll. The code-zoom version below is superseded.
 - **No visible name or role on the hero** (Jayanth, 2026-10-16). The silhouette stands alone; "Jayanth Kappagantula, product manager in healthcare" stays as a visually hidden `h1` for screen readers and search.
 - **Interest notes: removed from the hero for now** (Jayanth, 2026-10-16, didn't like the placement). `CrumpleNotes` and `src/assets/interests/` stay in the repo, unused, for a new placement later. As built (`CrumpleNotes`, 2026-10-16): while the head turns (hero scroll ~3–33%), six paper notes pop in as crumpled balls and unfold around the silhouette (doodle + label + Jayanth's note, from about-me.md §1b); they crumple away as the camera pushes in (~43–56%). Paper is `--paper` with a soft shadow. Phones show the label only, below the goggles. Reduced motion / no WebGL: flat HTML cards. Copy is a placeholder until Jayanth sends write-ups.
@@ -68,7 +82,8 @@ Decided by Jayanth, 2026-10-16: **light theme only. Monochrome (mostly white and
 | `--bg` | `#FFFFFF` | Page background |
 | `--fg` | `#111111` (18.9:1 on white) | Body text, illustration ink |
 | `--muted` | `#6B6B6B` (5.3:1 on white) | Secondary text |
-| `--accent`, `--accent-fill` | **Blue** (Jayanth, 2026-10-17; replaced pink `#DB2777`/`#FF4FA3`, which replaced red). `--accent-fill` `#8BBDFF` for fills and large areas (blobs, the hero flood and the section after it, the nav ball, cards): only **1.94:1 on white, never for text**. `--accent` `#2072DF` (same hue, darkened) for text, links, the A–Z letters and focus: 4.63:1 on white (AA). Ink on `--accent-fill` is 9.7:1. The goggle lens in the hero video stays pink. | The single pop |
+| `--accent`, `--accent-fill` | **Blue** (Jayanth, 2026-10-17; replaced pink `#DB2777`/`#FF4FA3`, which replaced red). `--accent-fill` `#8BBDFF` for fills and large areas (blobs, the hero flood and the section after it, the nav ball, cards): only **1.94:1 on white, never for text**. `--accent` `#2072DF` (same hue, darkened) for text, links, the A–Z letters and focus: 4.63:1 on white (AA). Ink on `--accent-fill` is 9.7:1. | The single pop |
+| `--bloom-mist`, `--bloom-powder`, `--bloom-cornflower`, `--bloom-navy` | `#E6F1FF`, `#BFDBFF`, `#5A9BF0`, `#123F7D` (2026-10-17) | The hero bloom only (with `--accent-fill` and `--accent`). Same hue as the accent. Fills only, never text. |
 | `--border` | `#E6E6E6` (decorative only, never for text) | Dividers |
 | `--paper` | `#FBFAF8` (added 2026-10-16) | Off-white paper: the white tissue card on pink and the interest notes |
 

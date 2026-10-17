@@ -9,8 +9,8 @@
   grid-template-rows: repeat(5, minmax(0, 1fr));
   place-items: center;
   pointer-events: none; /* only the letters themselves take the pointer */
-  /* Darken keeps the pink on white but lets the black silhouette win, so the zoom
-     covers the letters as it grows. */
+  /* Darken lets the bloom's pale mist show through the white knock-out inside each blob,
+     instead of a white patch; covered letters are hidden from Hero.tsx. */
   mix-blend-mode: darken;
 }
 

@@ -11,6 +11,13 @@
   --accent: #2072df;
   --accent-fill: #8bbdff;
   --paper: #fbfaf8; /* off-white paper: the white tissue card and the interest notes */
+  /* The hero's blue bloom (2026-10-17): shades of the accent's own hue (~214°), lightest to
+     darkest. Sky is --accent-fill and cobalt is --accent. Navy is only the cobalt layer's
+     off-register shadow. Fills only, never text. */
+  --bloom-mist: #e6f1ff;
+  --bloom-powder: #bfdbff;
+  --bloom-cornflower: #5a9bf0;
+  --bloom-navy: #123f7d;
 
   /* Type (Jayanth, 2026-10-17): Meshed Display Bold for body, Meshed Display Black for
      headings, Mamenchisa for navigation at body size. Inter stays as the fallback for
