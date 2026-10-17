@@ -19,8 +19,11 @@ const FLOOD = [0.8, 0.9] // flat pink takes over from the lens glow
 // The line on pink starts assembling as the pink is nearly flat (only a faint shadow of
 // the nose bridge left) and is fully formed just before the hero scrolls away.
 const LINE = [0.85, 0.97]
-// A letter counts as covered once any of its sample points is no longer near-white.
+// A letter (or the nav's mark or menu) counts as covered once any of its sample spots is no
+// longer near-white.
 const WHITE = 235
+const STEPS = [0.05, 0.35, 0.65, 0.95]
+const SPOTS = STEPS.flatMap((fx) => STEPS.map((fy) => [fx, fy] as const))
 
 export default function Hero() {
   const track = useRef<HTMLDivElement>(null)
@@ -91,13 +94,9 @@ export default function Hero() {
       }
       // The letters, plus the nav's mark and menu (data-zoom-cover), which also step aside.
       document.querySelectorAll<HTMLElement>('.hero .letter, [data-zoom-cover]').forEach((el) => {
+        // A 4×4 grid of spots edge to edge, so a zoom that clips only one end still counts.
         const r = el.getBoundingClientRect()
-        const cx = r.left + r.width / 2
-        const cy = r.top + r.height / 2
-        const dx = r.width * 0.4
-        const dy = r.height * 0.4
-        const clear =
-          white(cx, cy) && white(cx - dx, cy - dy) && white(cx + dx, cy - dy) && white(cx - dx, cy + dy) && white(cx + dx, cy + dy)
+        const clear = SPOTS.every(([fx, fy]) => white(r.left + r.width * fx, r.top + r.height * fy))
         if (clear) {
           el.removeAttribute('data-covered')
           el.inert = false
