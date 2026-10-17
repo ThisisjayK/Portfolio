@@ -1,3 +1,4 @@
+// Not in use (removed from the hero 2026-10-16, placement to be redesigned).
 // Jayanth's interests as paper notes around the silhouette. While the head turns, each
 // note pops in as a crumpled paper ball and unfolds flat; as the camera starts pushing
 // into the lens they crumple back up and vanish. Scroll drives it both ways.
