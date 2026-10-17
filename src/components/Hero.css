@@ -31,26 +31,6 @@
   pointer-events: none;
 }
 
-.hero-intro {
-  position: absolute;
-  z-index: 1;
-  /* White + difference: reads as black over the white backdrop and white over the
-     black silhouette, so the name stays legible wherever the crop puts it. */
-  color: #fff;
-  mix-blend-mode: difference;
-  left: var(--gutter);
-  bottom: var(--space-7);
-  display: grid;
-  gap: var(--space-2);
-  max-width: min(46ch, 90vw);
-}
-
-.hero-name {
-  margin: 0;
-  font-size: clamp(40px, min(5vw, 8vh), 88px);
-  line-height: 0.92;
-}
-
 .hero-cue {
   position: absolute;
   right: var(--gutter);
@@ -65,9 +45,6 @@
 }
 
 @media (max-width: 760px) {
-  .hero-intro {
-    bottom: var(--space-6);
-  }
   .hero-cue {
     display: none;
   }

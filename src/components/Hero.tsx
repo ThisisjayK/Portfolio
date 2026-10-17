@@ -67,18 +67,14 @@ export default function Hero() {
 
   const flood = useTransform(scrollYProgress, FLOOD, [0, 1])
   const line = useTransform(scrollYProgress, LINE, [0, 1])
-  const introOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0])
-  const introY = useTransform(scrollYProgress, [0, 0.1], [0, -24])
   const cueOpacity = useTransform(scrollYProgress, [0, 0.03], [1, 0])
 
   if (reduced) {
     return (
       <section className="hero hero--static" aria-label="Introduction">
         <img className="hero-media" src={poster} alt="Silhouette of Jayanth in profile, wearing ski goggles with a glowing pink lens" />
-        <div className="hero-intro">
-          <h1 className="display hero-name">Jayanth Kappagantula</h1>
-          <p className="mono">Product manager · Healthcare · 0 → 1</p>
-        </div>
+        {/* The name and role aren't shown (Jayanth, 2026-10-16); they stay as the page heading for screen readers and search. */}
+        <h1 className="visually-hidden">Jayanth Kappagantula, product manager in healthcare</h1>
       </section>
     )
   }
@@ -98,10 +94,8 @@ export default function Hero() {
         />
         <m.div className="hero-flood" style={{ opacity: flood }} aria-hidden="true" />
         <ScrollText as="h2" className="display hero-line" text={intro.headline} progress={line} />
-        <m.div className="hero-intro" style={{ opacity: introOpacity, y: introY }}>
-          <h1 className="display hero-name">Jayanth Kappagantula</h1>
-          <p className="mono">Product manager · Healthcare · 0 → 1</p>
-        </m.div>
+        {/* The name and role aren't shown (Jayanth, 2026-10-16); they stay as the page heading for screen readers and search. */}
+        <h1 className="visually-hidden">Jayanth Kappagantula, product manager in healthcare</h1>
         <m.p className="hero-cue mono" style={{ opacity: cueOpacity }} aria-hidden="true">
           Scroll ↓
         </m.p>
