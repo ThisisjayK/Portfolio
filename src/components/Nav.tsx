@@ -2,7 +2,8 @@
 // "Menu" label over a stack of big words (after huyml.co). Hovering or focusing one word
 // puts an arrow in front of it and blurs the rest. Work and Contact open floating cards;
 // About and Playground are pages. Once the visitor has zoomed into the pink, the nav
-// steps aside and only Contact stays, bottom-left.
+// steps aside and only Contact stays, bottom-left. On the landing page (and the old /work and
+// /contact links, which render it) the mark and menu aren't shown at all (Jayanth, 2026-10-17).
 import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useCards, type CardName } from './Cards'
@@ -15,6 +16,7 @@ export default function Nav() {
   const { pathname } = useLocation()
   const off = onPink ? -1 : undefined
   const [indexOpen, setIndexOpen] = useState(false)
+  const onLanding = !pathname.startsWith('/about') && !pathname.startsWith('/playground')
 
   // The arrow rests on the open card, or else on the current page.
   const current = (name: CardName | 'about' | 'playground') =>
@@ -23,31 +25,33 @@ export default function Nav() {
 
   return (
     <>
-      <header className={onPink ? 'nav nav--away' : 'nav'} aria-hidden={onPink || undefined}>
-        <NavLink to="/" className="nav-mark" tabIndex={off} data-zoom-cover>
-          <SilkBall size={28} paused={onPink} />
-          <span className="visually-hidden">Jayanth Kappagantula, home</span>
-        </NavLink>
-        <nav className="nav-menu" aria-label="Main" data-zoom-cover>
-          {/* "Menu" opens the full-screen index; the words below stay as quick links. */}
-          <button
-            type="button"
-            className="nav-label"
-            aria-expanded={indexOpen}
-            aria-controls="index-menu"
-            onClick={() => setIndexOpen(true)}
-            tabIndex={off}
-          >
-            Menu <span className="visually-hidden">(full index)</span>
-          </button>
-          <ul className="display">
-            <li><button type="button" className={cls('work')} onClick={() => openCard('work')} tabIndex={off}>Work</button></li>
-            <li><NavLink to="/about" className={cls('about')} tabIndex={off}>About</NavLink></li>
-            <li><NavLink to="/playground" className={cls('playground')} tabIndex={off}>Playground</NavLink></li>
-            <li><button type="button" className={cls('contact')} onClick={() => openCard('contact')} tabIndex={off}>Contact</button></li>
-          </ul>
-        </nav>
-      </header>
+      {!onLanding && (
+        <header className={onPink ? 'nav nav--away' : 'nav'} aria-hidden={onPink || undefined}>
+          <NavLink to="/" className="nav-mark" tabIndex={off} data-zoom-cover>
+            <SilkBall size={28} paused={onPink} />
+            <span className="visually-hidden">Jayanth Kappagantula, home</span>
+          </NavLink>
+          <nav className="nav-menu" aria-label="Main" data-zoom-cover>
+            {/* "Menu" opens the full-screen index; the words below stay as quick links. */}
+            <button
+              type="button"
+              className="nav-label"
+              aria-expanded={indexOpen}
+              aria-controls="index-menu"
+              onClick={() => setIndexOpen(true)}
+              tabIndex={off}
+            >
+              Menu <span className="visually-hidden">(full index)</span>
+            </button>
+            <ul className="display">
+              <li><button type="button" className={cls('work')} onClick={() => openCard('work')} tabIndex={off}>Work</button></li>
+              <li><NavLink to="/about" className={cls('about')} tabIndex={off}>About</NavLink></li>
+              <li><NavLink to="/playground" className={cls('playground')} tabIndex={off}>Playground</NavLink></li>
+              <li><button type="button" className={cls('contact')} onClick={() => openCard('contact')} tabIndex={off}>Contact</button></li>
+            </ul>
+          </nav>
+        </header>
+      )}
       <button
         type="button"
         className={onPink ? 'nav-contact nav-contact--on' : 'nav-contact'}
