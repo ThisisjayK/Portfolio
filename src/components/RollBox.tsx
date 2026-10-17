@@ -4,7 +4,8 @@
 // turn, so the two faces alternate: scrolling down tips the front face up and away and brings
 // the next one up from below; scrolling up rolls it back. The page keeps scrolling normally; one
 // continuous scroll (including trackpad momentum) counts as one roll. Clicking it always goes to
-// the top of the landing page. Like the letters, the zoom covers it (data-zoom-cover, Hero.tsx).
+// the top of the landing page. Unlike the letters, it stays visible the whole way through the
+// hero, over the bloom and the flood (Jayanth, 2026-10-17).
 import { useEffect, useState, type CSSProperties, type MouseEvent } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import collage from '../assets/box/collage.webp'
@@ -48,7 +49,7 @@ export default function RollBox() {
   return (
     <div className="roll-slot">
       <div className="roll-cell">
-        <Link to="/" className="roll-link" onClick={toTop} aria-label="jaykay, home" data-zoom-cover>
+        <Link to="/" className="roll-link" onClick={toTop} aria-label="jaykay, home">
           <span className="roll-box" style={{ '--turn': turn } as CSSProperties} aria-hidden="true">
             {FACES.map((src, k) => (
               <span key={k} className="roll-face" style={{ '--k': k } as CSSProperties}>

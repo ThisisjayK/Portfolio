@@ -17,7 +17,7 @@ const FLOOD = [0.8, 0.9] // flat blue takes over from the bloom
 // The line on blue starts assembling as the flood is nearly flat and is fully formed just
 // before the hero scrolls away.
 const LINE = [0.85, 0.97]
-// A letter (or the roll box) counts as covered once any of its sample spots is under the bloom.
+// A letter counts as covered once any of its sample spots is under the bloom.
 const STEPS = [0.05, 0.35, 0.65, 0.95]
 const SPOTS = STEPS.flatMap((fx) => STEPS.map((fy) => [fx, fy] as const))
 
@@ -35,7 +35,7 @@ export default function Hero() {
   useEffect(() => () => setOnPink(false), [setOnPink])
 
   // The A–Z stays put while the bloom grows, and the bloom passes over it: on every scroll,
-  // each letter (and the roll box, data-zoom-cover) whose spot is under a dark enough layer
+  // each letter (and the nav, data-zoom-cover; the roll box always stays) whose spot is under a dark enough layer
   // fades out and goes inert. Worked out from the bloom's geometry, not by reading pixels.
   // Without WebGL there's no visible bloom, so nothing is hidden until the flood.
   useEffect(() => {

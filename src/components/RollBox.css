@@ -64,12 +64,6 @@
   user-select: none;
 }
 
-/* Covered by the hero's zoom (set from Hero.tsx). */
-.roll-link[data-covered] {
-  opacity: 0;
-  pointer-events: none;
-}
-
 /* Phones: the letters are hidden, so the box takes the full width of the top row. */
 @media (max-width: 760px) {
   .roll-cell {
