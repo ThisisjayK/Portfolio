@@ -1,6 +1,6 @@
 .handoff {
   height: 220svh; /* scroll distance for the pinned stage below */
-  background: var(--pink);
+  background: var(--accent-fill);
   color: var(--fg);
 }
 
@@ -39,7 +39,7 @@
   gap: var(--space-3);
 }
 
-/* Buttons on pink: ink fill and ink outline (ink on #FF4FA3 is 6.2:1). */
+/* Buttons on the accent fill: ink fill and ink outline (ink on #8BBDFF is 9.7:1). */
 .btn--ink,
 .btn--outline {
   display: inline-flex;
@@ -52,8 +52,8 @@
   text-decoration: none;
   transition: transform var(--dur-fast) var(--ease-out), background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
 }
-.btn--ink { background: var(--fg); color: var(--pink); }
+.btn--ink { background: var(--fg); color: var(--accent-fill); }
 .btn--outline { background: transparent; color: var(--fg); }
-.btn--outline:hover { background: var(--fg); color: var(--pink); }
+.btn--outline:hover { background: var(--fg); color: var(--accent-fill); }
 .btn--ink:hover, .btn--outline:hover { transform: translateY(-2px); }
 .handoff :focus-visible { outline-color: var(--fg); }

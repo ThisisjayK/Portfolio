@@ -1,0 +1,78 @@
+/* Same 7×5 grid as the A–Z (LetterGrid.css), so the box sits exactly in row 1, columns 1–2,
+   the space the nav used to take. No blend mode here: the box keeps its own colours. */
+.roll-slot {
+  position: absolute;
+  z-index: 2;
+  inset: var(--space-5) var(--gutter) var(--space-7);
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-rows: repeat(5, minmax(0, 1fr));
+  pointer-events: none;
+}
+
+.roll-cell {
+  grid-column: 1 / span 2;
+  grid-row: 1;
+  container-type: size;
+  display: grid;
+  place-items: center;
+  perspective: 900px;
+}
+
+/* The link (and the box in it) fills as much of the cell as its shape allows (2752:1536). The
+   box's depth equals its height, so every face is the same size and a quarter turn brings the
+   next face exactly to the front. */
+.roll-link {
+  --ratio: 1.7917;
+  --h: min(92cqh, 92cqw / 1.7917);
+  display: block;
+  width: calc(var(--h) * var(--ratio));
+  height: var(--h);
+  pointer-events: auto;
+  cursor: pointer;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.roll-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* Scrolling down tips the front face up and away (positive rotateX), bringing the face that was
+   underneath to the front. */
+.roll-box {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform: translateZ(calc(var(--h) / -2)) rotateX(calc(var(--turn, 0) * 90deg));
+  transition: transform calc(var(--dur-slow) + var(--dur-base)) var(--ease-out);
+}
+
+.roll-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  display: block;
+  transform: rotateX(calc(var(--k) * -90deg)) translateZ(calc(var(--h) / 2));
+}
+.roll-face img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+
+/* Covered by the hero's zoom (set from Hero.tsx). */
+.roll-link[data-covered] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Phones: the letters are hidden, so the box takes the full width of the top row. */
+@media (max-width: 760px) {
+  .roll-cell {
+    grid-column: 1 / -1;
+  }
+}

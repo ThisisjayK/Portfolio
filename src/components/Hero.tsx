@@ -10,6 +10,7 @@ import { videoTimeAt } from '../content/heroTimeline'
 import { intro } from '../content/about'
 import ScrollText from './ScrollText'
 import LetterGrid from './LetterGrid'
+import RollBox from './RollBox'
 import { useCards } from './Cards'
 import './Hero.css'
 
@@ -90,6 +91,8 @@ export default function Hero() {
         const vy = Math.round(((y - box.top - oy) / s) * k)
         if (vx < 0 || vy < 0 || vx >= cw || vy >= ch) return true
         const i = (vy * cw + vx) * 4
+        // An empty canvas (frame not painted yet) reads as transparent: treat it as uncovered.
+        if (px[i + 3] === 0) return true
         return (px[i] + px[i + 1] + px[i + 2]) / 3 > WHITE
       }
       // The letters, plus the nav's mark and menu (data-zoom-cover), which also step aside.
@@ -108,6 +111,7 @@ export default function Hero() {
     }
     v.addEventListener('seeked', check)
     v.addEventListener('loadeddata', check)
+    v.addEventListener('canplay', check)
     window.addEventListener('resize', check)
     return () => {
       // Leaving the home page mid-zoom must never leave the nav hidden.
@@ -117,6 +121,7 @@ export default function Hero() {
       })
       v.removeEventListener('seeked', check)
       v.removeEventListener('loadeddata', check)
+      v.removeEventListener('canplay', check)
       window.removeEventListener('resize', check)
     }
   }, [reduced])
@@ -145,6 +150,7 @@ export default function Hero() {
       <section className="hero hero--static" aria-label="Introduction">
         <img className="hero-media" src={poster} alt="Silhouette of Jayanth in profile, wearing ski goggles with a glowing pink lens" />
         <LetterGrid />
+        <RollBox />
         {/* The name and role aren't shown (Jayanth, 2026-10-16); they stay as the page heading for screen readers and search. */}
         <h1 className="visually-hidden">Jayanth Kappagantula, product manager in healthcare</h1>
       </section>
@@ -165,6 +171,7 @@ export default function Hero() {
           aria-label="Silhouette of Jayanth turning to the camera; the view pushes into his glowing pink goggles"
         />
         <LetterGrid hidden={lettersGone} />
+        <RollBox />
         <m.div className="hero-flood" style={{ opacity: flood }} aria-hidden="true" />
         <ScrollText as="h2" className="display hero-line" text={intro.headline} progress={line} />
         {/* The name and role aren't shown (Jayanth, 2026-10-16); they stay as the page heading for screen readers and search. */}

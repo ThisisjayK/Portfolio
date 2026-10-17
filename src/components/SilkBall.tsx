@@ -1,4 +1,4 @@
-// The site mark: a small pink ball with a silky, flowing surface, turning slowly.
+// The site mark: a small ball in the accent fill colour with a silky, flowing surface, turning slowly.
 // One fragment shader on a raw WebGL canvas (no 3D library), so it costs a few KB.
 // The ball is shaded per pixel: a sphere normal, bent by slow folds that rotate with
 // the ball, lit with a soft wrap light, a satin highlight and a pale rim.
@@ -52,7 +52,7 @@ void main(){
   float spec=pow(clamp(dot(nb,H),0.,1.),60.);
   float rim=pow(1.-n.z,2.5);
 
-  vec3 deep=uPink*vec3(0.55,0.22,0.42);
+  vec3 deep=uPink*0.45;
   vec3 col=mix(deep,uPink,smoothstep(0.,1.,diff));
   col=mix(col,mix(uPink,vec3(1.),0.35),satin*0.55);
   col+=spec*0.35;
@@ -62,7 +62,7 @@ void main(){
 }`
 
 function pinkFromCss(el: Element): [number, number, number] {
-  const hex = getComputedStyle(el).getPropertyValue('--pink').trim().replace('#', '')
+  const hex = getComputedStyle(el).getPropertyValue('--accent-fill').trim().replace('#', '')
   const n = parseInt(hex.length === 3 ? hex.replace(/./g, '$&$&') : hex, 16)
   if (Number.isNaN(n)) return [1, 0.31, 0.64]
   return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255]

@@ -4,10 +4,12 @@
   --fg: #111111;
   --muted: #6b6b6b;
   --border: #e6e6e6;
-  /* Pink replaced red on 2026-10-16. --accent is the AA-safe pink for small text and
-     focus (4.60:1 on white); --pink is the glow and flood colour (large text and fills only). */
-  --accent: #db2777;
-  --pink: #ff4fa3;
+  /* Blue replaced pink on 2026-10-17 (Jayanth). --accent-fill is #8BBDFF for fills and large
+     areas (blobs, the flood, the nav ball): only 1.94:1 on white, so never for text. --accent is
+     the same hue darkened to pass AA for text, links and focus (4.63:1 on white). Ink on
+     --accent-fill is 9.7:1. */
+  --accent: #2072df;
+  --accent-fill: #8bbdff;
   --paper: #fbfaf8; /* off-white paper: the white tissue card and the interest notes */
 
   /* Type (Jayanth, 2026-10-17): Meshed Display Bold for body, Meshed Display Black for

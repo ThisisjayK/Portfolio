@@ -27,7 +27,7 @@
 .hero-flood {
   position: absolute;
   inset: 0;
-  background: var(--pink);
+  background: var(--accent-fill);
   pointer-events: none;
 }
 

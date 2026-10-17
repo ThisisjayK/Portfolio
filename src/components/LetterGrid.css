@@ -68,7 +68,7 @@
   fill: var(--accent);
 }
 .blob-fill {
-  fill: var(--pink);
+  fill: var(--accent-fill);
 }
 .blob-knock {
   fill: var(--bg);
