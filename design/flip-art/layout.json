@@ -1,0 +1,126 @@
+{
+  "source": "source.webp",
+  "width": 2000,
+  "height": 1116,
+  "assets": [
+    {
+      "file": "cutouts/cannon.png",
+      "x": 45,
+      "y": 906,
+      "w": 189,
+      "h": 165
+    },
+    {
+      "file": "cutouts/owl-mic.png",
+      "x": 84,
+      "y": 64,
+      "w": 155,
+      "h": 397
+    },
+    {
+      "file": "cutouts/figure.png",
+      "x": 234,
+      "y": 22,
+      "w": 1695,
+      "h": 1058
+    },
+    {
+      "file": "cutouts/soccer-ball.png",
+      "x": 241,
+      "y": 852,
+      "w": 94,
+      "h": 95
+    },
+    {
+      "file": "cutouts/ramen.png",
+      "x": 438,
+      "y": 100,
+      "w": 257,
+      "h": 276
+    },
+    {
+      "file": "cutouts/scribble-curve.png",
+      "x": 446,
+      "y": 962,
+      "w": 85,
+      "h": 100
+    },
+    {
+      "file": "cutouts/speed-line-1.png",
+      "x": 648,
+      "y": 323,
+      "w": 254,
+      "h": 166
+    },
+    {
+      "file": "cutouts/speed-line-2.png",
+      "x": 770,
+      "y": 286,
+      "w": 170,
+      "h": 87
+    },
+    {
+      "file": "cutouts/arrow-up.png",
+      "x": 797,
+      "y": 746,
+      "w": 194,
+      "h": 190
+    },
+    {
+      "file": "cutouts/speed-line-3.png",
+      "x": 799,
+      "y": 854,
+      "w": 121,
+      "h": 111
+    },
+    {
+      "file": "cutouts/nyc-skyline.png",
+      "x": 998,
+      "y": 694,
+      "w": 551,
+      "h": 384
+    },
+    {
+      "file": "cutouts/controller.png",
+      "x": 1063,
+      "y": 686,
+      "w": 179,
+      "h": 156
+    },
+    {
+      "file": "cutouts/arrow-down.png",
+      "x": 1522,
+      "y": 488,
+      "w": 107,
+      "h": 156
+    },
+    {
+      "file": "cutouts/vine-leaf.png",
+      "x": 1529,
+      "y": 791,
+      "w": 77,
+      "h": 90
+    },
+    {
+      "file": "cutouts/plant.png",
+      "x": 1595,
+      "y": 620,
+      "w": 357,
+      "h": 458
+    },
+    {
+      "file": "cutouts/scribble-zigzag.png",
+      "x": 1602,
+      "y": 507,
+      "w": 116,
+      "h": 97
+    },
+    {
+      "file": "cutouts/scribble-loop.png",
+      "x": 1650,
+      "y": 415,
+      "w": 199,
+      "h": 83
+    }
+  ]
+}
