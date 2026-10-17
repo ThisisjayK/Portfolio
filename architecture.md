@@ -83,4 +83,4 @@ prototypes/        # yesterday's experiments; source for HeadLid, not shipped as
 | 2026-10-16 | Plain CSS with design-system tokens | No runtime cost; the tokens are already defined. |
 | 2026-10-16 | Jitter designs rebuilt in Motion where possible, otherwise as lazy-loaded video | Keeps the performance budget ("no lags"). |
 | 2026-10-16 | Nav mark is a code-drawn silky pink ball (`SilkBall`, raw WebGL fragment shader, no 3D library) | Jayanth chose code over a Higgsfield video: exact `--pink`, sharp at any size, loops perfectly, a few KB instead of a video. Pauses when hidden or on the pink. |
-| 2026-10-16 | Nav rebuilt after huyml.co's menu: "Menu" label, big stacked words, hover arrow + blur on the rest; order Work, About, Playground, Contact | Jayanth's reference. Work first because it's what a recruiter wants. Blur uses CSS `:has()`, no JS. |
+| 2026-10-16 | Nav rebuilt after huyml.co's menu: "Menu" label, big stacked words, hover arrow + blur on the rest; order Work, About, Playground, Contact | Jayanth's reference. Work first because it's what a recruiter wants (order confirmed by Jayanth, 2026-10-16). Blur uses CSS `:has()`, no JS. |
