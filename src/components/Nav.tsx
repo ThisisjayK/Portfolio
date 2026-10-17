@@ -3,15 +3,18 @@
 // puts an arrow in front of it and blurs the rest. Work and Contact open floating cards;
 // About and Playground are pages. Once the visitor has zoomed into the pink, the nav
 // steps aside and only Contact stays, bottom-left.
+import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useCards, type CardName } from './Cards'
 import SilkBall from './SilkBall'
+import IndexMenu from './IndexMenu'
 import './Nav.css'
 
 export default function Nav() {
   const { card, openCard, onPink } = useCards()
   const { pathname } = useLocation()
   const off = onPink ? -1 : undefined
+  const [indexOpen, setIndexOpen] = useState(false)
 
   // The arrow rests on the open card, or else on the current page.
   const current = (name: CardName | 'about' | 'playground') =>
@@ -26,7 +29,17 @@ export default function Nav() {
           <span className="visually-hidden">Jayanth Kappagantula, home</span>
         </NavLink>
         <nav className="nav-menu" aria-label="Main">
-          <p className="nav-label" aria-hidden="true">Menu</p>
+          {/* "Menu" opens the full-screen index; the words below stay as quick links. */}
+          <button
+            type="button"
+            className="nav-label"
+            aria-expanded={indexOpen}
+            aria-controls="index-menu"
+            onClick={() => setIndexOpen(true)}
+            tabIndex={off}
+          >
+            Menu <span className="visually-hidden">(full index)</span>
+          </button>
           <ul className="display">
             <li><button type="button" className={cls('work')} onClick={() => openCard('work')} tabIndex={off}>Work</button></li>
             <li><NavLink to="/about" className={cls('about')} tabIndex={off}>About</NavLink></li>
@@ -37,13 +50,14 @@ export default function Nav() {
       </header>
       <button
         type="button"
-        className={onPink ? 'nav-contact mono nav-contact--on' : 'nav-contact mono'}
+        className={onPink ? 'nav-contact nav-contact--on' : 'nav-contact'}
         onClick={() => openCard('contact')}
         tabIndex={onPink ? undefined : -1}
         aria-hidden={!onPink || undefined}
       >
         Contact
       </button>
+      <IndexMenu open={indexOpen} onClose={() => setIndexOpen(false)} />
     </>
   )
 }

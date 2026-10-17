@@ -10,9 +10,24 @@
   --pink: #ff4fa3;
   --paper: #fbfaf8; /* off-white paper: the white tissue card and the interest notes */
 
-  --font-display: 'Anton', 'Impact', sans-serif;
-  --font-body: 'Inter Variable', system-ui, sans-serif;
+  /* Type (Jayanth, 2026-10-17): Meshed Display Bold for body, Meshed Display Black for
+     headings, Mamenchisa for navigation at body size. Inter stays as the fallback for
+     glyphs the display fonts lack. */
+  --font-body: 'Meshed Display', 'Inter Variable', system-ui, sans-serif;
+  --font-display: 'Meshed Display', 'Inter Variable', serif;
+  --font-nav: 'Mamenchisa', 'Inter Variable', sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+  --weight-body: 700;
+  --weight-heading: 900;
+
+  /* Sizes: body 18px / 1.5 (Butterick: 15–25px on the web; Material 3 Body Large is 16px,
+     nudged up because Meshed's hairlines are thin). Headings after Material 3's Display
+     Large (57px) and Headline Large (32px). */
+  --text-body: 18px;
+  --leading-body: 1.5;
+  --text-h1: clamp(40px, 4.5vw, 57px);
+  --text-h2: 32px;
+  --leading-heading: 1.1;
 
   --space-1: 4px;
   --space-2: 8px;

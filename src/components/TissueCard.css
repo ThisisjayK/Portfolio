@@ -64,14 +64,14 @@
 
 .tissue h2 {
   margin: 0 0 var(--space-2);
-  font-size: clamp(32px, 4vw, 44px);
+  font-size: var(--text-h2);
   line-height: 0.95;
 }
 
 .tissue p {
   margin: 0 0 var(--space-4);
-  font-size: 15px;
-  line-height: 1.55;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
 }
 
 .tissue .meta {
@@ -86,8 +86,8 @@
   padding: 0;
   display: grid;
   gap: var(--space-2);
-  font-size: 15px;
-  line-height: 1.45;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
 }
 
 .tissue li {
@@ -118,7 +118,7 @@
   min-height: var(--target);
   border-bottom: 1px solid rgb(17 17 17 / 0.18);
   text-decoration: none;
-  font-size: 15px;
+  font-size: var(--text-body);
 }
 .tissue-links a:hover {
   text-decoration: underline;

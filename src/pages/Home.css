@@ -28,8 +28,8 @@
 .handoff-lead {
   margin: 0;
   max-width: 40ch;
-  font-size: clamp(16px, 1.25vw, 19px);
-  line-height: 1.5;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
 }
 
 .handoff-actions {

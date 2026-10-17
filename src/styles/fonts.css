@@ -1,0 +1,26 @@
+/* Self-hosted display fonts, shipped exactly as downloaded (Meshed's license forbids modifying
+   the files). Meshed Display: free for personal and commercial use (Rajesh Rajput).
+   Mamenchisa: Drizy Studio demo, personal use only; the license allows a non-profit portfolio.
+   Glyphs neither font has (→, and é in Mamenchisa) fall back to Inter. Meshed's hyphen and
+   dashes are 10-unit hairlines (invisible at body size), so unicode-range hands - – — to Inter
+   too; the font file itself is untouched. */
+@font-face {
+  font-family: 'Meshed Display';
+  src: url('../assets/fonts/MeshedDisplay-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+  unicode-range: U+0000-002C, U+002E-2012, U+2015-FFFF;
+}
+@font-face {
+  font-family: 'Meshed Display';
+  src: url('../assets/fonts/MeshedDisplay-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-display: swap;
+  unicode-range: U+0000-002C, U+002E-2012, U+2015-FFFF;
+}
+@font-face {
+  font-family: 'Mamenchisa';
+  src: url('../assets/fonts/Mamenchisa.otf') format('opentype');
+  font-weight: 400;
+  font-display: swap;
+}

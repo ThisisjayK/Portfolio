@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Display font shortlist</title>
 <!-- Web-font previews only (loaded from Google Fonts and the Fontshare API); nothing is downloaded to disk. -->
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Playfair+Display:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=cabinet-grotesk@800&display=swap" rel="stylesheet">
 <style>
   @font-face { font-family: 'Magilio'; src: url('fonts/magilio/MagilioRegular-8Mxvg.otf') format('opentype'); }
@@ -30,7 +30,39 @@
 </style>
 </head>
 <body>
-  <h1>Bold display shortlist (from the Awwwards Free Fonts collection)</h1>
+  <h1>Serif shortlist (Jayanth, 2026-10-17)</h1>
+  <p class="note">Playfair Display loads from Google Fonts. LTC Bodoni 175 and Freight Display Pro are paid fonts and aren't on this Mac, so they only show if installed locally (or through an Adobe Fonts kit). Each row says whether its font actually loaded. Bodoni 72 ships with macOS and is shown as a rough stand-in for LTC Bodoni 175 only.</p>
+  <div class="row" data-font="Playfair Display">
+    <div class="meta"><b>Playfair Display</b><span class="ok">SIL OFL (Google Fonts), free to self-host</span><br><span class="status"></span></div>
+    <div class="sample" style="font-family: 'Playfair Display', serif"><span class="year">20</span><span class="head" style="text-transform:none">Work, About, Playground, Contact</span></div>
+  </div>
+  <div class="row" data-font="LTC Bodoni 175">
+    <div class="meta"><b>LTC Bodoni 175</b><span class="warn">Paid (Lanston Type / P22, inferred). Read the web license before use.</span><br><span class="status"></span></div>
+    <div class="sample" style="font-family: 'LTC Bodoni 175', 'LTCBodoni175', serif"><span class="year">20</span><span class="head" style="text-transform:none">Work, About, Playground, Contact</span></div>
+  </div>
+  <div class="row" data-font="Freight Display Pro">
+    <div class="meta"><b>Freight Display Pro</b><span class="warn">Paid (Darden Studio / GarageFonts, inferred). Read the web license before use.</span><br><span class="status"></span></div>
+    <div class="sample" style="font-family: 'Freight Display Pro', 'FreightDispPro', serif"><span class="year">20</span><span class="head" style="text-transform:none">Work, About, Playground, Contact</span></div>
+  </div>
+  <div class="row" data-font="Bodoni 72">
+    <div class="meta"><b>Bodoni 72 (stand-in)</b><span class="warn">Bundled with macOS; not licensed for the web. Comparison only.</span><br><span class="status"></span></div>
+    <div class="sample" style="font-family: 'Bodoni 72', serif"><span class="year">20</span><span class="head" style="text-transform:none">Work, About, Playground, Contact</span></div>
+  </div>
+  <script>
+    // Say per row whether the named font really rendered, so a fallback serif never passes for the real thing.
+    document.fonts.ready.then(() => {
+      document.querySelectorAll('[data-font]').forEach(row => {
+        const probe = document.createElement('canvas').getContext('2d')
+        const w = f => { probe.font = `40px ${f}`; return probe.measureText('Wagon 20').width }
+        const real = w(`"${row.dataset.font}", monospace`) !== w('monospace')
+        const s = row.querySelector('.status')
+        s.textContent = real ? 'Loaded' : 'Not loaded: showing a fallback serif'
+        s.className = 'status ' + (real ? 'ok' : 'warn')
+      })
+    })
+  </script>
+
+  <h1 style="margin-top:40px">Bold display shortlist (from the Awwwards Free Fonts collection)</h1>
   <p class="note">Only fonts with a public web-font CDN can preview here. Galgo Condensed, Morganite and Big John would need a download first, so they're listed at the bottom with their license.</p>
 
   <div class="row">

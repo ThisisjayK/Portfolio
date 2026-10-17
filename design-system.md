@@ -85,6 +85,20 @@ Three directions to compare in `design/specimen.html` (all Google Fonts, free):
 | B · Editorial serif | Instrument Serif | Inter | IBM Plex Mono | Calm, grown-up, a little literary |
 | C · Friendly grotesk | Bricolage Grotesque | DM Sans | DM Mono | Warm, approachable, playful without being loud |
 
+**Current type (Jayanth, 2026-10-17), replaces Direction A below:**
+| Token | Font | Size | Use |
+|---|---|---|---|
+| `--font-body` | Meshed Display **Bold** (700) | `--text-body` 18px, line height 1.5 | All body text, buttons, index items, card text |
+| `--font-display` | Meshed Display **Black** (900) | `--text-h1` clamp(40–57px), `--text-h2` 32px, line height 1.1 | Headings and titles (`.display`). Display moments (hero line, About year) keep their own large sizes. |
+| `--font-nav` | Mamenchisa (one weight, no faux bold) | 18px, same as body | Nav words, "Menu", pink Contact, index chapter names, A–Z letters |
+| `--font-mono` | JetBrains Mono (unchanged) | 13px | Small labels |
+- Why these sizes: Butterick recommends 15–25px body text for websites (practicaltypography.com/point-size.html); Material 3 Body Large is 16px/24px, Display Large 57px, Headline Large 32px (androidx TypeScaleTokens.kt). Body is nudged to 18px because Meshed's hairlines are thin (judgment, not sourced).
+- Meshed's hyphen and dashes are 10-unit hairlines, so `unicode-range` hands `- – —` to Inter. Neither display font has `→`; Mamenchisa lacks `é`. Those fall back to Inter.
+- Licenses (read from each font's own file): Meshed Display is free for personal and commercial use, files may not be modified (shipped byte-identical). Mamenchisa is a Drizy Studio demo, **personal use only**; its license names "a portfolio or individual work that does not make a profit" as allowed. Whether a job-search portfolio counts is Jayanth's call; a commercial license is sold by Drizy Studio.
+- Risk to readability: Meshed Display is a high-contrast display face, not a text face. Watch long paragraphs (case study) for strain.
+
+**Serif candidates (Jayanth, 2026-10-17):** Playfair Display, LTC Bodoni 175, Freight Display Pro, compared in `design/display-fonts.html`. Playfair is SIL OFL (free to self-host). The other two are paid (inferred: LTC Bodoni 175 from Lanston/P22, Freight Display Pro from Darden Studio); not installed here, so they don't render in the specimen yet. A web license is needed before either ships. Anton stays until one is picked.
+
 **Chosen: A · Bold condensed** (Jayanth, 2026-10-16): `--font-display` Anton (uppercase), `--font-body` Inter, `--font-mono` JetBrains Mono.
 
 Draft scale (px, desktop): display XL `clamp(96, 18vw, 260)` · H1 48 · H2 32 · body 17/1.6 · small 14 · mono labels 13, uppercase, +0.06em tracking. Body line length max 62ch.
@@ -116,6 +130,7 @@ Draft, 2026-10-16. Motion should feel **calm**: smooth, quick to settle, never b
 |---|---|---|---|
 | Button / link | TBD | hover, focus, active | |
 | Nav | Fixed at the top: `SilkBall` mark at the far left (28 px silky `--pink` ball, WebGL, CSS fallback, still under reduced motion); further in, a small "Menu" label over Work, About, Playground, Contact in the display font (after huyml.co). On the pink only Contact stays, bottom-left. | hover/focus: an arrow slides in front of the word and the others blur (4px, 50%); the arrow rests on the current page or open card | Menu is white with `mix-blend-mode: difference`, so it reads over the silhouette. The name stays as a visually hidden label on the mark. |
+| Index menu (`IndexMenu`, 2026-10-17) | Full-screen overlay opened by the nav's "Menu" button (structure after https://aiu.is/) | Hover/focus: a `--accent` bar wipes in left to right behind the item (scaleX) and the text turns white. Letters swell toward the cursor (fine pointers only, off under reduced motion). | Left: numbered chapters W. Work → 1. Stage Zero Health (Work card), A. About → 2. About me, P. Playground → 3. Mood board (in progress), C. Contact → 4. Say hi (Contact card). Right: A–Z grid; circled letters open the head notes: A Arsenal, C Cooking, D Drake, F Football, G Gaming, O One Piece (anime), P Plants, R Running (from about-me.md §1b). Page behind is `inert`; Esc closes a note first, then the menu; focus returns to Menu. The word stack stays as quick links. Small credit "Index after aiu.is". |
 | Case study card | TBD | | |
 
 ## 8. Imagery and illustration
