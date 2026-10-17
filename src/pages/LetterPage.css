@@ -1,7 +1,6 @@
 /* Letter pages (Jayanth, 2026-10-17, after aiu.is's article pages): an empty page with one
    column of text in the middle, heading, subheading and paragraphs, all in --accent. */
-/* One screen that never scrolls; only the article inside it does (Jayanth, 2026-10-17). The
-   cross sits outside the scroller, so it stays put. */
+/* One screen that never scrolls; only the article inside it does (Jayanth, 2026-10-17). */
 .lp-shell {
   height: 100svh;
   overflow: hidden;
@@ -10,7 +9,7 @@
 
 /* The scroller fills the screen, so the wheel works anywhere. Like the reference, the column
    is centred across the page and the text starts a fifth of the way down. Text fades out as it
-   rises into the top band (gone entirely by the cross) and in from the bottom edge. */
+   rises into the top band and in from the bottom edge. */
 .lp {
   display: grid;
   justify-items: center;
@@ -41,8 +40,17 @@
   text-transform: none;
 }
 
-.lp-title {
+/* The heading row: the heading at the left, the close cross where the text column ends. */
+.lp-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
   margin: 0 0 var(--space-7);
+}
+
+.lp-title {
+  margin: 0;
   font-size: var(--text-h1);
   line-height: var(--leading-heading);
   color: var(--accent);
@@ -57,6 +65,7 @@
 
 .lp-text {
   margin: 0 0 var(--space-5);
+  text-align: justify; /* always justified (Jayanth, 2026-10-17) */
   font-size: var(--text-body);
   line-height: var(--leading-body);
 }

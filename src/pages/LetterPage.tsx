@@ -1,6 +1,7 @@
 // One page per clickable letter of the hero's A–Z (Jayanth, 2026-10-17, after aiu.is).
 // Empty on purpose: a heading, a subheading and the text, in one column in the middle of the
-// page, all in the accent. A hand-drawn cross (top-right) is the way back. The page condenses
+// page, all in the accent. A hand-drawn cross at the right end of the heading row is the way
+// back (it scrolls with the text; Esc works from anywhere). The page condenses
 // out of vapour on arrival and turns back into vapour on the way out (vapor.ts).
 // The page itself never scrolls: it's one screen, and only the text column scrolls inside it,
 // fading out as it moves up (Jayanth, 2026-10-17: "only the text should move up").
@@ -28,12 +29,14 @@ export default function LetterPage({ page }: { page: Entry }) {
 
   return (
     <div ref={shell} className="lp-shell">
-      <CloseCross slug={page.slug} />
       <article ref={scroller} className="lp" aria-labelledby="lp-title" tabIndex={-1}>
       <div className="lp-column">
-        <h1 id="lp-title" className="display lp-title" data-vapor>
-          {page.topic}
-        </h1>
+        <div className="lp-head">
+          <h1 id="lp-title" className="display lp-title" data-vapor>
+            {page.topic}
+          </h1>
+          <CloseCross slug={page.slug} />
+        </div>
         <h2 className="display lp-sub" data-vapor>
           {page.note.title}
         </h2>

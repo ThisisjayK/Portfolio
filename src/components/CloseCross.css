@@ -1,19 +1,18 @@
-/* The letter pages' close cross: top-right, pinned, drawn in the accent. Tokens only. */
+/* The letter pages' close cross: at the right end of the heading row (LetterPage.css), drawn in
+   the accent, no hover animation. Tokens only. */
 .close-cross {
-  position: fixed;
-  z-index: 20;
-  top: var(--space-6);
-  right: var(--gutter);
+  flex: none;
   display: grid;
   place-items: center;
   width: var(--space-8);
   height: var(--space-8);
   padding: var(--space-3);
+  /* The drawn strokes, not the padded tap area, line up with the text's right edge. */
+  margin-right: calc(var(--space-3) * -1);
   border: 0;
   background: none;
   color: var(--accent);
   cursor: pointer;
-  transition: transform var(--dur-base) var(--ease-out);
 }
 .close-cross svg {
   width: 100%;
@@ -27,9 +26,6 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
-}
-.close-cross:hover {
-  transform: rotate(-8deg) scale(1.08);
 }
 .close-cross:focus-visible {
   outline: 2px solid var(--accent);
