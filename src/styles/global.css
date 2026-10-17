@@ -56,8 +56,7 @@ a {
 /* Mamenchisa has one weight; never let the browser fake a bold version of it. */
 .nav-label,
 .nav-contact,
-.index-chapter-title,
-.index-letter {
+.index-chapter-title {
   font-weight: 400;
   font-synthesis: none;
 }

@@ -162,3 +162,10 @@
   text-decoration: underline;
   text-underline-offset: 4px;
 }
+
+/* Covered by the hero's zoom (set from Hero.tsx): out of the way until the zoom moves off. */
+.nav-mark[data-covered],
+.nav-menu[data-covered] {
+  opacity: 0;
+  pointer-events: none;
+}

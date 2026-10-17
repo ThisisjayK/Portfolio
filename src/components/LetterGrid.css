@@ -1,0 +1,93 @@
+/* An even 7×5 grid over the whole hero stage: every column the same width, every row the
+   same height, so the gaps between letters stay constant. Each letter sits centred in its cell. */
+.letters {
+  position: absolute;
+  z-index: 2;
+  inset: var(--space-5) var(--gutter) var(--space-7);
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-rows: repeat(5, minmax(0, 1fr));
+  place-items: center;
+  pointer-events: none; /* only the letters themselves take the pointer */
+  /* Darken keeps the pink on white but lets the black silhouette win, so the zoom
+     covers the letters as it grows. */
+  mix-blend-mode: darken;
+}
+
+.letter {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: max(var(--target), 1.6em);
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: calc(var(--text-h1) - 4px); /* 4px under the heading size (Jayanth, 2026-10-17) */
+  font-synthesis: none;
+  line-height: 1;
+  color: var(--accent);
+  pointer-events: auto;
+  isolation: isolate;
+  transform: scale(var(--swell, 1));
+  transition: transform var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+    opacity var(--dur-fast) var(--ease-out);
+}
+
+/* The eight-font mix. Italics are true italic cuts, not slanted romans. */
+.letter--bold-1 { font-family: var(--font-letter-bold-1); font-weight: 400; }
+.letter--bold-2 { font-family: var(--font-letter-bold-2); font-weight: 400; }
+.letter--italic-1 { font-family: var(--font-letter-italic-1); font-weight: 400; font-style: italic; }
+.letter--italic-2 { font-family: var(--font-letter-italic-2); font-weight: 400; font-style: italic; }
+.letter--sans-1 { font-family: var(--font-letter-sans-1); font-weight: 500; }
+.letter--sans-2 { font-family: var(--font-letter-sans-2); font-weight: 500; }
+.letter--serif-1 { font-family: var(--font-letter-serif-1); font-weight: 400; }
+.letter--serif-2 { font-family: var(--font-letter-serif-2); font-weight: 500; }
+
+/* Clickable letters: the SVG blob fills the button; its text inherits the letter's font. */
+.letter--button {
+  cursor: pointer;
+}
+.blob-letter {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.blob-letter text {
+  font: inherit;
+  font-size: 62.5px; /* 1em of the letter, in the SVG's 100-unit box (the button is 1.6em) */
+}
+.blob-ink {
+  fill: var(--accent);
+}
+.blob-fill {
+  fill: var(--pink);
+}
+.blob-knock {
+  fill: var(--bg);
+}
+.letter--button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 50%;
+}
+
+/* Phones: hidden (Jayanth, 2026-10-17). The silhouette and nav stand alone. */
+@media (max-width: 760px) {
+  .letters {
+    display: none;
+  }
+}
+
+/* Once scrolled away, no letter takes the pointer. */
+.letters[aria-hidden='true'] .letter {
+  pointer-events: none;
+}
+
+/* Covered by the zoom (set from Hero.tsx): gone until the zoom moves off it again. */
+.letter[data-covered] {
+  opacity: 0;
+}

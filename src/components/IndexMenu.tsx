@@ -1,15 +1,12 @@
 // The full-screen index, opened from the nav's "Menu" button (structure after aiu.is):
-// numbered chapters on the left, an A–Z grid on the right. Letters that stand for one of
-// Jayanth's interests are circled and open that interest's note; the letters swell gently
-// toward the cursor. Esc, Close or picking an item closes it; focus returns to the button.
-import { useEffect, useRef, useState } from 'react'
+// numbered chapters with a pink wipe on hover. Esc, Close or picking an item closes it;
+// focus returns to the button. (The A–Z moved to the hero on 2026-10-17: LetterGrid.)
+import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { Link } from 'react-router-dom'
 import { AnimatePresence, useReducedMotion } from 'motion/react'
 import * as m from 'motion/react-m'
 import { useCards, type CardName } from './Cards'
-import NoteCard from './NoteCard'
-import { notes } from '../content/notes'
 import './IndexMenu.css'
 
 type Item = { label: string; to?: string; card?: CardName }
@@ -22,19 +19,6 @@ const chapters: Chapter[] = [
   { code: 'C', title: 'Contact', items: [{ label: 'Say hi', card: 'contact' }] },
 ]
 
-// Letter → note key (src/content/notes.ts, from about-me.md 1b). Anime sits on O for One Piece.
-const circled: Record<string, { key: string; topic: string }> = {
-  A: { key: 'arsenal', topic: 'Arsenal' },
-  C: { key: 'cooking', topic: 'Cooking' },
-  D: { key: 'drake', topic: 'Drake' },
-  F: { key: 'football', topic: 'Football' },
-  G: { key: 'gaming', topic: 'Gaming' },
-  O: { key: 'anime', topic: 'One Piece' },
-  P: { key: 'plants', topic: 'Plants' },
-  R: { key: 'running', topic: 'Running' },
-}
-const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
-
 const ease = [0.22, 1, 0.36, 1] as const
 
 type Props = { open: boolean; onClose: () => void }
@@ -42,12 +26,9 @@ type Props = { open: boolean; onClose: () => void }
 export default function IndexMenu({ open, onClose }: Props) {
   const { openCard } = useCards()
   const reduced = useReducedMotion()
-  const [noteKey, setNoteKey] = useState<string | null>(null)
   const panel = useRef<HTMLDivElement>(null)
-  const grid = useRef<HTMLDivElement>(null)
-  const noteOpen = noteKey !== null
 
-  // While open: the page behind is inert and doesn't scroll; Esc closes (a note first).
+  // While open: the page behind is inert and doesn't scroll; Esc closes.
   useEffect(() => {
     if (!open) return
     const root = document.getElementById('root')
@@ -64,49 +45,13 @@ export default function IndexMenu({ open, onClose }: Props) {
   }, [open])
 
   useEffect(() => {
-    if (!open || noteOpen) return
+    if (!open) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [open, noteOpen, onClose])
-
-  // Letters swell toward the cursor: transform only, written once per frame.
-  useEffect(() => {
-    const el = grid.current
-    if (!open || reduced || !el || !matchMedia('(pointer: fine)').matches) return
-    const cells = Array.from(el.querySelectorAll<HTMLElement>('.index-letter'))
-    let frame = 0
-    let px = -1e4
-    let py = -1e4
-    const draw = () => {
-      frame = 0
-      for (const c of cells) {
-        const r = c.getBoundingClientRect()
-        const d = Math.hypot(r.left + r.width / 2 - px, r.top + r.height / 2 - py)
-        const k = Math.max(0, 1 - d / 180)
-        c.style.setProperty('--swell', (1 + 0.7 * k * k).toFixed(3))
-      }
-    }
-    const onMove = (e: PointerEvent) => {
-      px = e.clientX
-      py = e.clientY
-      if (!frame) frame = requestAnimationFrame(draw)
-    }
-    const onLeave = () => {
-      px = py = -1e4
-      if (!frame) frame = requestAnimationFrame(draw)
-    }
-    el.addEventListener('pointermove', onMove)
-    el.addEventListener('pointerleave', onLeave)
-    return () => {
-      cancelAnimationFrame(frame)
-      el.removeEventListener('pointermove', onMove)
-      el.removeEventListener('pointerleave', onLeave)
-      cells.forEach((c) => c.style.removeProperty('--swell'))
-    }
-  }, [open, reduced])
+  }, [open, onClose])
 
   const pickCard = (name: CardName) => {
     onClose()
@@ -114,7 +59,6 @@ export default function IndexMenu({ open, onClose }: Props) {
   }
 
   let n = 0
-  const noteIndex = notes.findIndex((x) => x.key === noteKey)
 
   return createPortal(
     <AnimatePresence>
@@ -175,55 +119,8 @@ export default function IndexMenu({ open, onClose }: Props) {
             ))}
           </nav>
 
-          <div className="index-alpha">
-            <p className="index-hint mono" id="index-hint">Circled letters are things I love. Pick one.</p>
-            <div ref={grid} className="index-grid" role="group" aria-labelledby="index-hint">
-              {LETTERS.map((l) => {
-                const hit = circled[l]
-                const note = hit ? notes.find((x) => x.key === hit.key) : undefined
-                if (!note) {
-                  return (
-                    <span key={l} className="index-letter" aria-hidden="true">
-                      <span>{l}</span>
-                    </span>
-                  )
-                }
-                return (
-                  <button
-                    key={l}
-                    type="button"
-                    className="index-letter is-circled"
-                    onClick={() => setNoteKey(note.key)}
-                    data-key={note.key}
-                    aria-label={`${l}, ${hit!.topic}`}
-                  >
-                    <span>{l}</span>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
           <p className="index-credit mono">Index after aiu.is</p>
 
-          <AnimatePresence>
-            {noteOpen && noteIndex >= 0 && (
-              <NoteCard
-                note={notes[noteIndex]}
-                index={noteIndex}
-                total={notes.length}
-                onClose={() => {
-                  const k = noteKey
-                  setNoteKey(null)
-                  requestAnimationFrame(() =>
-                    panel.current
-                      ?.querySelector<HTMLElement>(`[data-key="${k}"]`)
-                      ?.focus(),
-                  )
-                }}
-              />
-            )}
-          </AnimatePresence>
         </m.div>
       )}
     </AnimatePresence>,

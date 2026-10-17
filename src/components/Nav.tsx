@@ -24,11 +24,11 @@ export default function Nav() {
   return (
     <>
       <header className={onPink ? 'nav nav--away' : 'nav'} aria-hidden={onPink || undefined}>
-        <NavLink to="/" className="nav-mark" tabIndex={off}>
+        <NavLink to="/" className="nav-mark" tabIndex={off} data-zoom-cover>
           <SilkBall size={28} paused={onPink} />
           <span className="visually-hidden">Jayanth Kappagantula, home</span>
         </NavLink>
-        <nav className="nav-menu" aria-label="Main">
+        <nav className="nav-menu" aria-label="Main" data-zoom-cover>
           {/* "Menu" opens the full-screen index; the words below stay as quick links. */}
           <button
             type="button"

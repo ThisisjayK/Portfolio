@@ -1,16 +1,12 @@
-/* Full-screen index. Two columns on wide screens: chapters | A–Z grid. Stacks below 760px. */
+/* Full-screen index: the chapter list, centred in the screen. */
 .index {
   position: fixed;
   inset: 0;
   z-index: 40;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto 1fr auto;
-  grid-template-areas:
-    'top top'
-    'list alpha'
-    'credit credit';
-  column-gap: var(--space-8);
+  grid-template-areas: 'top' 'list' 'credit';
   padding: var(--space-5) var(--gutter);
   overflow-y: auto;
   background: var(--bg);
@@ -121,51 +117,6 @@
   outline-offset: 2px;
 }
 
-/* A–Z grid */
-.index-alpha {
-  grid-area: alpha;
-  align-self: center;
-  padding: var(--space-7) 0;
-}
-.index-hint {
-  margin: 0 0 var(--space-5);
-  color: var(--muted);
-}
-.index-grid {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(var(--target), 1fr));
-  gap: var(--space-5) var(--space-3);
-  justify-items: center;
-}
-
-.index-letter {
-  display: grid;
-  place-items: center;
-  width: clamp(var(--target), 4.4vw, 64px);
-  aspect-ratio: 1;
-  font-family: var(--font-nav);
-  font-size: var(--text-body);
-  line-height: 1;
-  color: var(--muted);
-  transform: scale(var(--swell, 1));
-  transition: transform var(--dur-fast) var(--ease-out);
-}
-
-.index-letter.is-circled {
-  padding: 0;
-  border: 1.5px solid var(--fg);
-  border-radius: 50%;
-  background: none;
-  color: var(--fg);
-  cursor: pointer;
-}
-.index-letter.is-circled:hover,
-.index-letter.is-circled:focus-visible {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--bg);
-}
-
 .index-credit {
   grid-area: credit;
   justify-self: end;
@@ -175,17 +126,8 @@
 }
 
 @media (max-width: 760px) {
-  .index {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto auto auto;
-    grid-template-areas: 'top' 'list' 'alpha' 'credit';
-  }
-  .index-list,
-  .index-alpha {
+  .index-list {
     padding: var(--space-5) 0;
-  }
-  .index-grid {
-    gap: var(--space-3) var(--space-2);
   }
 }
 

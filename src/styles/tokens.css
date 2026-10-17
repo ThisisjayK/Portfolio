@@ -17,6 +17,16 @@
   --font-display: 'Meshed Display', 'Inter Variable', serif;
   --font-nav: 'Mamenchisa', 'Inter Variable', sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+  /* The hero A–Z mix (2026-10-17): each letter gets one at random per visit.
+     All SIL OFL, self-hosted via Fontsource (Latin subsets only). */
+  --font-letter-bold-1: 'Anton', 'Impact', sans-serif;
+  --font-letter-bold-2: 'Archivo Black', 'Arial Black', sans-serif;
+  --font-letter-italic-1: 'Playfair Display', Georgia, serif;
+  --font-letter-italic-2: 'Instrument Serif', Georgia, serif;
+  --font-letter-sans-1: 'Inter Variable', system-ui, sans-serif;
+  --font-letter-sans-2: 'Space Grotesk Variable', system-ui, sans-serif;
+  --font-letter-serif-1: 'DM Serif Display', Georgia, serif;
+  --font-letter-serif-2: 'Bodoni Moda Variable', 'Bodoni 72', serif;
   --weight-body: 700;
   --weight-heading: 900;
 
