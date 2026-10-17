@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
+import { useCards } from '../components/Cards'
 import { useReducedMotion, useScroll, useTransform } from 'motion/react'
 import * as m from 'motion/react-m'
 import Hero from '../components/Hero'
@@ -12,6 +13,7 @@ const LEAD =
 export default function Home() {
   const track = useRef<HTMLElement>(null)
   const reduced = useReducedMotion()
+  const { openCard } = useCards()
   const { scrollYProgress } = useScroll({ target: track, offset: ['start start', 'end end'] })
   // Pinned on pink: the sentence assembles word by word with the scroll, then the buttons arrive.
   const lead = useTransform(scrollYProgress, [0, 0.55], [0, 1])
@@ -30,9 +32,9 @@ export default function Home() {
             <ScrollText className="handoff-lead" text={LEAD} progress={lead} splitBy="word" overlap={0.3} />
           )}
           <m.div className="handoff-actions" style={reduced ? undefined : { opacity: actionsOpacity, y: actionsY }}>
-            <Link className="btn btn--ink" to="/work">See how I work →</Link>
+            <button type="button" className="btn btn--ink" onClick={() => openCard('work')}>See how I work →</button>
             <Link className="btn btn--outline" to="/about">About me</Link>
-            <Link className="btn btn--outline" to="/contact">Say hi</Link>
+            <button type="button" className="btn btn--outline" onClick={() => openCard('contact')}>Say hi</button>
           </m.div>
         </div>
       </section>

@@ -10,6 +10,7 @@ import poster from '../assets/hero/hero-poster.webp'
 import { videoTimeAt } from '../content/heroTimeline'
 import { intro } from '../content/about'
 import ScrollText from './ScrollText'
+import { useCards } from './Cards'
 import './Hero.css'
 
 // Scroll budget (fractions of the hero's scroll distance).
@@ -23,6 +24,7 @@ export default function Hero() {
   const track = useRef<HTMLDivElement>(null)
   const vid = useRef<HTMLVideoElement>(null)
   const reduced = useReducedMotion()
+  const { setOnPink } = useCards()
   const { scrollYProgress } = useScroll({ target: track, offset: ['start start', 'end end'] })
 
   // Seek at most once per frame, and never while a seek is still running.
@@ -39,6 +41,9 @@ export default function Hero() {
     }
     if (Math.abs(v.currentTime - wanted.current) > 0.01) v.currentTime = wanted.current
   }
+  // Once the pink is flat, the site is "on pink": the nav steps aside and cards turn white.
+  useMotionValueEvent(scrollYProgress, 'change', (p) => setOnPink(p >= 0.86))
+  useEffect(() => () => setOnPink(false), [setOnPink])
   useMotionValueEvent(scrollYProgress, 'change', (p) => {
     if (reduced) return
     wanted.current = videoTimeAt(p / VIDEO_END)

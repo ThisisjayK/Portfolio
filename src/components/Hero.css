@@ -3,8 +3,6 @@
 .hero {
   position: relative;
   height: 520svh;
-  /* Slide up under the nav so the stage fills the whole viewport. */
-  margin-top: calc(-1 * var(--nav-h));
   background: var(--bg);
 }
 
