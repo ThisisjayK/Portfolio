@@ -112,7 +112,7 @@ Draft, 2026-10-16. Motion should feel **calm**: smooth, quick to settle, never b
 | Component | Variants | States | Notes |
 |---|---|---|---|
 | Button / link | TBD | hover, focus, active | |
-| Nav | Vertical, top-left; on the pink only Contact stays, bottom-left | hover, focus, active | Site mark is `SilkBall`: a 28 px silky `--pink` ball turning slowly (WebGL shader, CSS gradient fallback, still under reduced motion). The name stays as a visually hidden label. |
+| Nav | Fixed at the top: `SilkBall` mark at the far left (28 px silky `--pink` ball, WebGL, CSS fallback, still under reduced motion); further in, a small "Menu" label over Work, About, Playground, Contact in the display font (after huyml.co). On the pink only Contact stays, bottom-left. | hover/focus: an arrow slides in front of the word and the others blur (4px, 50%); the arrow rests on the current page or open card | Menu is white with `mix-blend-mode: difference`, so it reads over the silhouette. The name stays as a visually hidden label on the mark. |
 | Case study card | TBD | | |
 
 ## 8. Imagery and illustration

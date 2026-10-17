@@ -1,68 +1,112 @@
-.nav {
+/* The mark and the menu are fixed separately (the header itself isn't positioned), so the
+   menu can blend with the page under it: white with "difference" reads black on white and
+   white over the black silhouette, like the hero name. */
+.nav-mark,
+.nav-menu {
   position: fixed;
   z-index: 30;
-  top: var(--space-4);
-  left: var(--gutter);
-  display: grid;
-  gap: var(--space-2);
+  top: var(--space-5);
   transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
 }
 
-.nav ul {
-  display: grid;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+/* The site mark, far left. Without WebGL the canvas shows a gradient ball instead. */
+.nav-mark {
+  left: var(--gutter);
+  display: block;
+  border-radius: 50%;
 }
-
-.nav a,
-.nav button,
-.nav-contact {
-  display: inline-flex;
-  align-items: center;
-  min-height: 32px;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--fg);
-  font: inherit;
-  letter-spacing: inherit;
-  text-transform: inherit;
-  text-decoration: none;
-  cursor: pointer;
-  transition: color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
-}
-
-.nav a:hover,
-.nav button:hover,
-.nav a.active {
-  color: var(--accent);
-  transform: translateX(3px);
-}
-
-.nav-name {
-  margin-bottom: var(--space-2);
-}
-.nav a.nav-name:hover,
-.nav a.nav-name.active {
-  transform: none;
-}
-
-/* The site mark. Without WebGL the canvas shows a gradient ball instead. */
 .silk-ball {
   display: block;
   border-radius: 50%;
   transition: transform var(--dur-base) var(--ease-out);
 }
-.nav-name:hover .silk-ball {
-  transform: scale(1.06);
+.nav-mark:hover .silk-ball {
+  transform: scale(1.08);
 }
 .silk-ball[data-fallback] {
   background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--pink), white 45%), var(--pink) 45%, color-mix(in srgb, var(--pink), black 40%));
 }
 
-/* On pink: the list steps aside... */
-.nav--away {
+/* The menu sits further in, not against the edge. */
+.nav-menu {
+  left: calc(var(--gutter) + clamp(var(--space-8), 14vw, 250px));
+  color: var(--bg); /* white, shown black on the white page by the blend */
+  mix-blend-mode: difference;
+}
+
+.nav-label {
+  margin: 0 0 var(--space-5);
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+.nav-menu ul {
+  display: grid;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: clamp(24px, 2.2vw, 34px);
+  line-height: 1;
+}
+
+.nav-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: 0.01em;
+  text-transform: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: filter var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out);
+}
+
+/* The arrow slides in front of the word it points at. */
+.nav-item::before {
+  content: '→';
+  display: inline-block;
+  width: 0;
+  overflow: hidden;
+  opacity: 0;
+  font-family: var(--font-body);
+  font-weight: 300;
+  transition: width var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out);
+}
+.nav-item.is-current::before,
+.nav-item:hover::before,
+.nav-item:focus-visible::before {
+  width: 1.4em;
+  opacity: 1;
+}
+
+/* While one word is hovered or focused, the arrow leaves the current one and the rest blur. */
+.nav-menu ul:has(.nav-item:hover, .nav-item:focus-visible) .nav-item:not(:hover, :focus-visible) {
+  filter: blur(4px);
+  opacity: 0.5;
+}
+.nav-menu ul:has(.nav-item:hover, .nav-item:focus-visible) .nav-item.is-current:not(:hover, :focus-visible)::before {
+  width: 0;
+  opacity: 0;
+}
+
+.nav-item:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* On touch screens each word keeps a full-size tap target. */
+@media (pointer: coarse) {
+  .nav-item {
+    min-height: var(--target);
+  }
+}
+
+/* On pink: the nav steps aside... */
+.nav--away .nav-mark,
+.nav--away .nav-menu {
   opacity: 0;
   transform: translateY(-8px);
   pointer-events: none;
@@ -74,8 +118,15 @@
   z-index: 30;
   left: var(--gutter);
   bottom: var(--space-5);
+  display: inline-flex;
+  align-items: center;
   min-height: var(--target);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--fg);
   font-size: 14px;
+  cursor: pointer;
   opacity: 0;
   transform: translateY(8px);
   pointer-events: none;
