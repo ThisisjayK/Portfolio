@@ -31,7 +31,7 @@
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  background-image: url("data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="480" height="480"><filter id="t" x="0" y="0" width="100%25" height="100%25"><feTurbulence type="fractalNoise" baseFrequency="0.009 0.014" numOctaves="5" seed="11" stitchTiles="stitch" result="n"/><feDiffuseLighting in="n" lighting-color="#ffffff" surfaceScale="3.2" diffuseConstant="1.05"><feDistantLight azimuth="225" elevation="48"/></feDiffuseLighting></filter><rect width="100%25" height="100%25" filter="url%28#t%29"/></svg>");
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='480' height='480'><filter id='t' x='0' y='0' width='100%25' height='100%25'><feTurbulence type='fractalNoise' baseFrequency='0.009 0.014' numOctaves='5' seed='11' stitchTiles='stitch' result='n'/><feDiffuseLighting in='n' lighting-color='%23ffffff' surfaceScale='3.2' diffuseConstant='1.05'><feDistantLight azimuth='225' elevation='48'/></feDiffuseLighting></filter><rect width='100%25' height='100%25' filter='url%28%23t%29'/></svg>");
   background-size: 480px 480px;
   mix-blend-mode: multiply;
   opacity: 0.55;
