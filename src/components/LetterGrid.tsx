@@ -2,13 +2,13 @@
 // over the whole stage, leaving the nav's corner and the silhouette's column empty. Ten letters,
 // picked at random on each visit, are lowercase, and each letter gets one of eight fonts at random. Letters that stand for one of Jayanth's
 // interests are buttons with an accent amoeba behind them (BlobLetter) that ripples on hover or
-// focus; a click shatters the page and opens that letter's own page (shatter.ts, LetterPage).
+// focus; a click turns the page to vapour and opens that letter's own page (vapor.ts, LetterPage).
 // The letters swell gently toward a fine cursor.
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useReducedMotion } from 'motion/react'
 import BlobLetter from './BlobLetter'
-import { useShatterNavigate } from './shatter'
+import { useVaporNavigate } from './vapor'
 import { LETTER_FONTS, letterPageFor } from '../content/letters'
 import '../styles/letterFonts'
 import './LetterGrid.css'
@@ -48,10 +48,9 @@ export default function LetterGrid({ hidden }: Props) {
   const reduced = useReducedMotion()
   const grid = useRef<HTMLDivElement>(null)
   const [activeKey, setActiveKey] = useState<string | null>(null)
-  const [chosen, setChosen] = useState<string | null>(null)
   const lower = useMemo(pickLowercase, [])
   const fonts = useMemo(pickFonts, [])
-  const go = useShatterNavigate()
+  const go = useVaporNavigate()
   const { state } = useLocation()
 
   // Back from a letter page (via the roll box): focus returns to that letter.
@@ -112,7 +111,7 @@ export default function LetterGrid({ hidden }: Props) {
           const shown = lower.has(l) ? l.toLowerCase() : l
           if (!hit) {
             return (
-              <span key={l} className={`letter letter--${fonts[l]}`} style={cell} aria-hidden="true" data-shatter>
+              <span key={l} className={`letter letter--${fonts[l]}`} style={cell} aria-hidden="true" data-vapor>
                 {shown}
               </span>
             )
@@ -121,18 +120,16 @@ export default function LetterGrid({ hidden }: Props) {
             <button
               key={l}
               type="button"
-              className={`letter letter--button letter--${fonts[l]}${chosen === hit.slug ? ' is-chosen' : ''}`}
+              className={`letter letter--button letter--${fonts[l]}`}
               style={cell}
               data-key={hit.slug}
-              data-shatter
+              data-vapor
               aria-label={`${l}, ${hit.topic}`}
               tabIndex={hidden ? -1 : undefined}
               onClick={(e) => {
                 const r = e.currentTarget.getBoundingClientRect()
-                setChosen(hit.slug)
                 go(`/${hit.slug}`, {
                   origin: { x: r.left + r.width / 2, y: r.top + r.height / 2 },
-                  keep: e.currentTarget,
                 })
               }}
               onPointerEnter={() => setActiveKey(hit.slug)}

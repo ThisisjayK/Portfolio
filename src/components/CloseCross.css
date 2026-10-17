@@ -1,0 +1,37 @@
+/* The letter pages' close cross: top-right, pinned, drawn in the accent. Tokens only. */
+.close-cross {
+  position: fixed;
+  z-index: 20;
+  top: var(--space-6);
+  right: var(--gutter);
+  display: grid;
+  place-items: center;
+  width: var(--space-8);
+  height: var(--space-8);
+  padding: var(--space-3);
+  border: 0;
+  background: none;
+  color: var(--accent);
+  cursor: pointer;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.close-cross svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.close-cross path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.close-cross:hover {
+  transform: rotate(-8deg) scale(1.08);
+}
+.close-cross:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

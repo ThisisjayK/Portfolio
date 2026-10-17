@@ -4,11 +4,11 @@
 // turn, so the two faces alternate: scrolling down tips the front face up and away and brings
 // the next one up from below; scrolling up rolls it back. The page keeps scrolling normally; one
 // continuous scroll (including trackpad momentum) counts as one roll. Clicking it always goes to
-// the top of the landing page; from a letter page the page shatters on the way (shatter.ts). Unlike the letters, it's never hidden: it's fixed to the screen
-// for the whole landing page, over the bloom, the flood and the sections after (Jayanth, 2026-10-17).
+// the top of the landing page. It lives on the landing page only: a letter click turns it to
+// vapour with everything else, and letter pages show a drawn cross instead (CloseCross). Unlike
+// the letters, scrolling never hides it: it's fixed to the screen for the whole landing page, over the bloom, the flood and the sections after (Jayanth, 2026-10-17).
 import { useEffect, useState, type CSSProperties, type MouseEvent } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useShatterNavigate } from './shatter'
 import collage from '../assets/box/collage.webp'
 import jaykay from '../assets/box/jaykay-2026.svg'
 import './RollBox.css'
@@ -21,16 +21,12 @@ const FACES = [collage, jaykay, collage, jaykay]
 export default function RollBox() {
   const [turn, setTurn] = useState(0)
   const { pathname } = useLocation()
-  const go = useShatterNavigate()
+  const front = ((turn % 4) + 4) % 4
 
-  // On a letter page: shatter home, and tell the grid which letter to focus.
   // Already on the landing page: a click goes back to its top instead of doing nothing.
   const toTop = (e: MouseEvent) => {
+    if (pathname !== '/') return
     e.preventDefault()
-    if (pathname !== '/') {
-      go('/', { origin: { x: e.clientX, y: e.clientY }, state: { fromSlug: pathname.slice(1) } })
-      return
-    }
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
     window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' })
   }
@@ -55,10 +51,11 @@ export default function RollBox() {
   return (
     <div className="roll-slot">
       <div className="roll-cell">
-        <Link to="/" className="roll-link" onClick={toTop} aria-label="jaykay, home">
+        {/* data-vapor: it turns to vapour with the rest of the page when a letter is clicked. */}
+        <Link to="/" className="roll-link" onClick={toTop} aria-label="jaykay, home" data-vapor>
           <span className="roll-box" style={{ '--turn': turn } as CSSProperties} aria-hidden="true">
             {FACES.map((src, k) => (
-              <span key={k} className="roll-face" style={{ '--k': k } as CSSProperties}>
+              <span key={k} className="roll-face" style={{ '--k': k } as CSSProperties} data-front={k === front || undefined}>
                 <img src={src} alt="" draggable={false} />
               </span>
             ))}

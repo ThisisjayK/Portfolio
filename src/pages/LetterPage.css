@@ -1,13 +1,34 @@
 /* Letter pages (Jayanth, 2026-10-17, after aiu.is's article pages): an empty page with one
    column of text in the middle, heading, subheading and paragraphs, all in --accent. */
+/* One screen that never scrolls; only the article inside it does (Jayanth, 2026-10-17). The
+   cross sits outside the scroller, so it stays put. */
+.lp-shell {
+  height: 100svh;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* The scroller fills the screen, so the wheel works anywhere. Like the reference, the column
+   is centred across the page and the text starts a fifth of the way down. Text fades out as it
+   rises into the top band (gone entirely by the cross) and in from the bottom edge. */
 .lp {
   display: grid;
-  place-items: center;
-  min-height: 100svh;
-  /* Clear the pinned roll box, which fills the top fifth of the screen (RollBox.css). */
-  padding: calc(20svh + var(--space-5)) var(--gutter) var(--space-9);
-  background: var(--bg);
+  justify-items: center;
+  align-items: start;
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  padding: 20svh var(--gutter) var(--space-9);
   color: var(--accent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent 12svh, #000 20svh, #000 calc(100% - var(--space-8)), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, transparent 12svh, #000 20svh, #000 calc(100% - var(--space-8)), transparent 100%);
+}
+.lp::-webkit-scrollbar {
+  display: none;
+}
+.lp:focus {
+  outline: none; /* focused only so the keys scroll it; nothing in it is interactive */
 }
 
 .lp-column {

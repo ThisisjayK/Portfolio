@@ -81,12 +81,6 @@
   pointer-events: none;
 }
 
-/* The letter just clicked: it stays put and grows a little while the rest shatters. */
-.letters .letter.is-chosen {
-  transform: scale(1.35);
-  transition: transform var(--dur-slow) var(--ease-out);
-}
-
 /* Covered by the zoom (set from Hero.tsx): gone until the zoom moves off it again. */
 .letter[data-covered] {
   opacity: 0;
