@@ -21,12 +21,13 @@
   perspective: 900px;
 }
 
-/* The link (and the box in it) fills as much of the cell as its shape allows (2752:1536). The
+/* The link (and the box in it) fills most of the cell its shape allows (2752:1536). The
    box's depth equals its height, so every face is the same size and a quarter turn brings the
    next face exactly to the front. */
 .roll-link {
   --ratio: 1.7917;
-  --h: min(92cqh, 92cqw / 1.7917);
+  /* 72% of the cell (was 92%; made smaller by Jayanth, 2026-10-17). */
+  --h: min(72cqh, 72cqw / 1.7917);
   display: block;
   width: calc(var(--h) * var(--ratio));
   height: var(--h);
