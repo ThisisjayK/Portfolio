@@ -37,6 +37,7 @@
   --leading-body: 1.5;
   --text-h1: clamp(40px, 4.5vw, 57px);
   --text-h2: 32px;
+  --text-letters: 24px; /* the hero A–Z (Jayanth, 2026-10-17) */
   --leading-heading: 1.1;
 
   --space-1: 4px;

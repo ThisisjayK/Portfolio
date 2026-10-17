@@ -1,15 +1,15 @@
-// A clickable letter with a pink amoeba behind it (after aiu.is). At rest the blob is small,
-// lumpy and a little off-centre, so the letter reads white only where it overlaps. On hover or
-// focus the blob swells where it sits into a circle that covers the letter, and wobbles as it
-// settles. The shape is one SVG path, drawn again as a clip for the white copy
-// of the letter. It only animates while it's moving, then stops (no idle loop).
+// A clickable letter with a pink amoeba behind it (after aiu.is). The blob is small, lumpy
+// and a little off-centre, so the letter reads white only where it overlaps. On hover or focus
+// it stays where it is, at the same size, and only ripples briefly before settling. The shape
+// is one SVG path, drawn again as a clip for the white copy of the letter. It only animates
+// while it's moving, then stops (no idle loop).
 import { useEffect, useId, useMemo, useRef } from 'react'
 import { useReducedMotion } from 'motion/react'
 
 const N = 8 // points around the outline
 const BOX = 100 // viewBox size
 const REST_R = 22
-const OPEN_R = 47
+const OPEN_R = 47 // full circle; unused while hover doesn't grow the blob
 
 type Props = { glyph: string; active: boolean }
 
@@ -69,7 +69,8 @@ export default function BlobLetter({ glyph, active }: Props) {
     // It grows in place: the centre never moves, only the size and shape.
     const tx = rest.x
     const ty = rest.y
-    const tr = active ? OPEN_R : REST_R
+    // The blob keeps its size on hover (Jayanth, 2026-10-17); it only ripples.
+    const tr = REST_R
     if (reduced) {
       Object.assign(st, { x: tx, y: ty, r: tr, vx: 0, vy: 0, vr: 0, wob: 0 })
       paint()
