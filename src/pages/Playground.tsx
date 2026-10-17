@@ -1,9 +1,4 @@
-// Placeholder shell. See output.md build order.
+// Blank for now (Jayanth, 2026-10-16). The heading stays for screen readers only.
 export default function Playground() {
-  return (
-    <section style={{ padding: '200px var(--gutter) var(--space-8)' }}>
-      <h1 className="display" style={{ fontSize: 'clamp(64px, 12vw, 160px)', margin: 0 }}>Playground</h1>
-      <p className="mono" style={{ color: 'var(--muted)' }}>A mood board in progress. Check back soon.</p>
-    </section>
-  )
+  return <h1 className="visually-hidden">Playground</h1>
 }
