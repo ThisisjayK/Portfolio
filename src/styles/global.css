@@ -95,3 +95,22 @@ h1.display {
 .letter--sans-2 { font-family: var(--font-letter-sans-2); font-weight: 500; }
 .letter--serif-1 { font-family: var(--font-letter-serif-1); font-weight: 400; }
 .letter--serif-2 { font-family: var(--font-letter-serif-2); font-weight: 500; }
+
+/* RevealText: each word waits for its line's delay (set inline), then fades in, sharpens from
+   a 10px blur and rises 15px. */
+.reveal-word {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(10px);
+  transform: translateY(15px);
+  transition: opacity var(--dur-slow) var(--ease-out), filter var(--dur-slow) var(--ease-out),
+    transform var(--dur-slow) var(--ease-out);
+}
+.reveal--in .reveal-word {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+.reveal--instant .reveal-word {
+  transition: none;
+}

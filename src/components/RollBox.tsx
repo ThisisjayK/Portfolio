@@ -5,7 +5,7 @@
 // the next one up from below; scrolling up rolls it back. The page keeps scrolling normally; one
 // continuous scroll (including trackpad momentum) counts as one roll. Clicking it always goes to
 // the top of the landing page. It lives on the landing page only: a letter click turns it to
-// vapour with everything else, and letter pages show a drawn cross instead (CloseCross). Unlike
+// pieces with everything else (grid hop), and letter pages show a drawn cross instead (CloseCross). Unlike
 // the letters, scrolling never hides it: it's fixed to the screen for the whole landing page, over the bloom, the flood and the sections after (Jayanth, 2026-10-17).
 import { useEffect, useState, type CSSProperties, type MouseEvent } from 'react'
 import { Link, useLocation } from 'react-router-dom'
@@ -51,8 +51,8 @@ export default function RollBox() {
   return (
     <div className="roll-slot">
       <div className="roll-cell">
-        {/* data-vapor: it turns to vapour with the rest of the page when a letter is clicked. */}
-        <Link to="/" className="roll-link" onClick={toTop} aria-label="jaykay, home" data-vapor>
+        {/* data-hop: it breaks up with the rest of the page when a letter is clicked. */}
+        <Link to="/" className="roll-link" onClick={toTop} aria-label="jaykay, home" data-hop>
           <span className="roll-box" style={{ '--turn': turn } as CSSProperties} aria-hidden="true">
             {FACES.map((src, k) => (
               <span key={k} className="roll-face" style={{ '--k': k } as CSSProperties} data-front={k === front || undefined}>

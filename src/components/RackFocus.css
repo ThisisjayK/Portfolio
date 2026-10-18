@@ -1,0 +1,56 @@
+/* Rack focus (RackFocus.tsx): ink statements on the accent fill, over two soft glows. */
+.rack {
+  position: relative;
+  height: 360svh; /* scroll distance for three statements */
+  background: var(--accent-fill);
+  color: var(--fg);
+}
+.rack-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  display: grid;
+  place-content: center;
+  padding: 0 var(--gutter);
+}
+.rack-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+}
+.rack-glow--a {
+  width: 50vmax;
+  height: 50vmax;
+  left: -10vmax;
+  top: 10vh;
+  background: var(--bloom-powder);
+}
+.rack-glow--b {
+  width: 40vmax;
+  height: 40vmax;
+  right: -8vmax;
+  bottom: -5vh;
+  background: var(--bloom-mist);
+}
+.rack-lines {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+}
+.rack-line {
+  font-size: clamp(36px, 6vw, 88px);
+  line-height: 1.05;
+  text-transform: none;
+  will-change: filter, opacity;
+}
+.rack--static {
+  height: auto;
+}
+.rack--static .rack-stage {
+  position: static;
+  min-height: 100svh;
+}

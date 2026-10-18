@@ -103,7 +103,7 @@ export default function Hero() {
         <ScrollText as="h2" className="display hero-line" text={intro.headline} progress={line} />
         {/* The name and role aren't shown (Jayanth, 2026-10-16); they stay as the page heading for screen readers and search. */}
         <h1 className="visually-hidden">Jayanth Kappagantula, product manager in healthcare</h1>
-        <m.p className="hero-cue mono" style={{ opacity: cueOpacity }} aria-hidden="true" data-vapor>
+        <m.p className="hero-cue mono" style={{ opacity: cueOpacity }} aria-hidden="true" data-hop>
           Scroll ↓
         </m.p>
       </div>

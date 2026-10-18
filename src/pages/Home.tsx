@@ -5,6 +5,9 @@ import { useReducedMotion, useScroll, useTransform } from 'motion/react'
 import * as m from 'motion/react-m'
 import Hero from '../components/Hero'
 import ScrollText from '../components/ScrollText'
+import RollingRoad from '../components/RollingRoad'
+import RackFocus from '../components/RackFocus'
+import AskBox from '../components/AskBox'
 import './Home.css'
 
 const LEAD =
@@ -37,6 +40,10 @@ export default function Home() {
           </m.div>
         </div>
       </section>
+      {/* Still on the blue: the rolling blob, the rack focus, then the Ask box (2026-10-17). */}
+      <RollingRoad />
+      <RackFocus />
+      <AskBox />
     </>
   )
 }

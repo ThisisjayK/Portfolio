@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motion lab</title>
+<!--
+  Prototype (2026-10-17): four ideas borrowed from neutomni.com's mechanisms, rebuilt from
+  scratch in our tokens, fonts and real copy. No libraries, no smooth scrolling, no snapping
+  (design-system.md §6: no scroll-jacking). Not shipped; for deciding what goes into the site.
+  1. Line-by-line blur reveal   2. Rolling blob on a road that smooths out
+  3. Pinned work panels with a corner wipe   4. Rack-focus statements
+  From aiu.is (added 2026-10-17): 5. Highlighter wipe   6. Grid-hop page change
+  7. Ask about Jayanth (mock, fixed answers, no AI)   8. Text version for AI tools, plus a proposed credit
+  Copy: src/content/about.ts and about-me.md only. Panels are colour blocks standing in for images.
+-->
+<style>
+  @font-face { font-family: 'Meshed Display'; src: url('../src/assets/fonts/MeshedDisplay-Bold.woff2') format('woff2'); font-weight: 700; }
+  @font-face { font-family: 'Meshed Display'; src: url('../src/assets/fonts/MeshedDisplay-Black.woff2') format('woff2'); font-weight: 900; }
+
+  /* Token values copied from src/styles/tokens.css. */
+  :root {
+    --bg: #ffffff; --fg: #111111; --muted: #6b6b6b; --border: #e6e6e6;
+    --accent: #2072df; --accent-fill: #8bbdff;
+    --bloom-mist: #e6f1ff; --bloom-powder: #bfdbff; --bloom-cornflower: #5a9bf0; --bloom-navy: #123f7d;
+    --font-body: 'Meshed Display', Georgia, serif;
+    --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+    --text-body: 18px; --text-h1: clamp(40px, 4.5vw, 57px); --text-h2: 32px;
+    --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px; --space-9: 96px;
+    --gutter: var(--space-6); --reading: 62ch;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @media (max-width: 760px) { :root { --gutter: var(--space-4); } }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font-family: var(--font-body); font-weight: 700; font-size: var(--text-body); line-height: 1.5;
+  }
+  .mono { font-family: var(--font-mono); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+  .note { position: fixed; z-index: 50; top: var(--space-4); right: var(--gutter); margin: 0; color: var(--muted); }
+  .label { color: var(--accent); margin: 0 0 var(--space-4); }
+
+  /* 1 · Blur reveal ------------------------------------------------------------- */
+  .intro { min-height: 100svh; display: grid; place-content: center; padding: var(--space-9) var(--gutter); }
+  .intro-inner { width: min(100%, 960px); }
+  .intro h1 { max-width: 20ch; margin: 0 0 var(--space-7); font-weight: 900; font-size: clamp(36px, 5vw, 72px); line-height: 1.02; color: var(--accent); }
+  .intro p { margin: 0 0 var(--space-4); max-width: var(--reading); }
+  [data-reveal] .line { display: block; }
+  .js [data-reveal] .line { opacity: 0; filter: blur(10px); transform: translateY(15px);
+    transition: opacity 0.4s ease-out, filter 0.4s ease-out, transform 0.4s ease-out; }
+  .js [data-reveal].in .line { opacity: 1; filter: blur(0); transform: none; }
+
+  /* 2 · Rolling blob ------------------------------------------------------------ */
+  .roll { height: 400svh; position: relative; }
+  .roll-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+  .roll canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .roll-copy { position: absolute; left: var(--gutter); top: var(--space-8); max-width: 40ch; }
+  .roll-copy h2 { margin: 0; font-weight: 900; font-size: var(--text-h2); line-height: 1.1; color: var(--accent); }
+  .roll-steps { position: absolute; left: 0; right: 0; bottom: var(--space-8); display: flex; justify-content: space-around; margin: 0; padding: 0 var(--gutter); list-style: none; }
+  .roll-steps li { color: var(--muted); transition: color 0.25s var(--ease-out); }
+  .roll-steps li.on { color: var(--accent); }
+
+  /* 3 · Pinned work, corner wipe ------------------------------------------------- */
+  .work { position: relative; }
+  .work-stage { position: sticky; top: 0; height: 100svh; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: var(--space-7); align-items: center; padding: 0 var(--gutter); }
+  .work-list { list-style: none; margin: 0; padding: 0; }
+  .work-list li { padding: var(--space-3) 0; border-top: 1px solid var(--border); opacity: 0.28; transition: opacity 0.28s linear; }
+  .work-list li.on { opacity: 1; }
+  .work-list b { display: block; font-weight: 900; font-size: var(--text-h2); line-height: 1.1; color: var(--accent); }
+  .work-frame { position: relative; aspect-ratio: 4 / 3; overflow: hidden; border-radius: var(--space-4); background: var(--bloom-mist); }
+  .slide { position: absolute; inset: 0; clip-path: polygon(100% 100%, 100% 100%, 100% 100%, 100% 100%); }
+  .slide-art { position: absolute; inset: 0; display: grid; align-content: end; padding: var(--space-6); transform: scale(1.1); color: var(--bg); }
+  .slide-art b { font-weight: 900; font-size: clamp(32px, 4vw, 56px); line-height: 1; }
+  .slide:nth-child(1) .slide-art { background: radial-gradient(circle at 70% 30%, var(--accent-fill), var(--accent) 70%); }
+  .slide:nth-child(2) .slide-art { background: radial-gradient(circle at 30% 40%, var(--bloom-cornflower), var(--bloom-navy) 75%); }
+  .slide:nth-child(3) .slide-art { background: radial-gradient(circle at 60% 70%, var(--bloom-powder), var(--bloom-cornflower) 70%); }
+  .slide:nth-child(4) .slide-art { background: radial-gradient(circle at 40% 30%, var(--accent), var(--bloom-navy) 80%); }
+  @media (max-width: 760px) {
+    .work-stage { grid-template-columns: 1fr; align-content: center; gap: var(--space-5); }
+    .work-list b { font-size: 22px; }
+  }
+
+  /* 4 · Rack focus -------------------------------------------------------------- */
+  .focus { height: 360svh; position: relative; }
+  .focus-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; display: grid; place-content: center; padding: 0 var(--gutter); }
+  .focus-glow { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.8; }
+  .focus-glow.a { width: 50vmax; height: 50vmax; left: -10vmax; top: 10vh; background: var(--bloom-powder); }
+  .focus-glow.b { width: 40vmax; height: 40vmax; right: -8vmax; bottom: -5vh; background: var(--accent-fill); }
+  .focus-lines { position: relative; margin: 0; padding: 0; list-style: none; text-align: center; }
+  .focus-lines li { font-weight: 900; font-size: clamp(36px, 6vw, 88px); line-height: 1.05; color: var(--accent); will-change: filter, opacity; }
+
+  .end { min-height: 60svh; display: grid; place-content: center; text-align: center; color: var(--muted); padding: var(--space-9) var(--gutter); }
+
+
+  /* Shared frame for the demos below. */
+  .demo { padding: var(--space-9) var(--gutter); border-top: 1px solid var(--border); }
+  .demo h2 { margin: 0 0 var(--space-3); font-weight: 900; font-size: var(--text-h2); line-height: 1.1; color: var(--accent); }
+  .demo-note { margin: 0 0 var(--space-6); max-width: var(--reading); color: var(--muted); }
+
+  /* 5 · Highlighter wipe (after aiu.is's nav hover): a fill wipes in left to right in 400ms,
+     ease-out-quart, and leaves to the right. The current item keeps it. */
+  .hl-list { display: flex; flex-wrap: wrap; gap: var(--space-5); margin: 0; padding: 0; list-style: none; }
+  .hl { position: relative; display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-3);
+    color: var(--fg); text-decoration: none; font-size: 22px; isolation: isolate; }
+  .hl::before { content: ''; position: absolute; inset: 6px 0; z-index: -1; border-radius: 6px; background: var(--accent-fill);
+    transform: scaleX(0); transform-origin: right center; transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1); }
+  .hl:hover::before, .hl:focus-visible::before, .hl[aria-current]::before { transform: scaleX(1); transform-origin: left center; }
+  .hl:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+  /* 6 · Grid hop (after aiu.is's page transition): the view is cut into 32px cells; each shows
+     a nearby cell's pixels, then settles at its own random moment. The chrome only twitches. */
+  .hop-wrap { display: grid; gap: var(--space-4); justify-items: start; }
+  .hop { position: relative; width: min(100%, 720px); aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid var(--border); border-radius: var(--space-4); background: var(--bg); }
+  .hop-page { position: absolute; inset: 0; padding: var(--space-6); }
+  .hop-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--space-4) 0; margin-top: var(--space-7); text-align: center; font-size: 22px; color: var(--accent); }
+  .hop-article h3 { margin: var(--space-7) 0 var(--space-3); font-weight: 900; font-size: 34px; color: var(--accent); }
+  .hop-article p { margin: 0 0 var(--space-3); max-width: 46ch; text-align: justify; color: var(--accent); font-size: 15px; }
+  .hop-cells { position: absolute; inset: 0; pointer-events: none; }
+  .hop-cell { position: absolute; overflow: hidden; }
+  .hop-cell > .hop-page { inset: auto; }
+  .hop-chrome { position: absolute; z-index: 2; top: var(--space-4); left: var(--space-4); width: 96px; height: 54px; border-radius: 2px;
+    background: linear-gradient(135deg, var(--bloom-powder), var(--accent-fill)); }
+  .hop-chrome.twitch { animation: twitch 160ms steps(2) 2; }
+  @keyframes twitch { 50% { transform: translate(2px, -1px); } }
+  .btn { min-height: 44px; padding: 0 var(--space-5); border: 1px solid var(--accent); border-radius: 999px; background: var(--bg); color: var(--accent); font: inherit; cursor: pointer; }
+  .btn:hover { background: var(--bloom-mist); }
+
+  /* 7 · Ask about Jayanth (mock) */
+  .ask { width: min(100%, var(--reading)); }
+  .ask-form { display: flex; gap: var(--space-3); }
+  .ask-form input { flex: 1; min-height: 44px; padding: 0 var(--space-4); border: 1px solid var(--border); border-radius: 999px; font: inherit; color: var(--fg); }
+  .ask-form input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .ask-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-4) 0 0; padding: 0; list-style: none; }
+  .ask-chips button { min-height: 32px; padding: 0 var(--space-3); border: 1px solid var(--border); border-radius: 999px; background: none; font: inherit; font-size: 14px; color: var(--muted); cursor: pointer; }
+  .ask-out { min-height: 120px; margin-top: var(--space-5); }
+  .ask-answer { margin: 0 0 var(--space-2); color: var(--accent); text-align: justify; }
+  .ask-source { margin: 0; color: var(--muted); }
+  .ask-none { margin: 0; color: var(--muted); }
+
+  /* 8 · Text version */
+  .md { width: min(100%, var(--reading)); margin: var(--space-4) 0 0; padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--space-4);
+    font-family: var(--font-mono); font-size: 13px; font-weight: 400; line-height: 1.6; white-space: pre-wrap; color: var(--fg); background: var(--bloom-mist); }
+
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .credit { padding: var(--space-7) var(--gutter); border-top: 1px solid var(--border); color: var(--muted); text-align: center; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hl::before { transition: none; }
+    .hop-chrome.twitch { animation: none; }
+    .js [data-reveal] .line { opacity: 1; filter: none; transform: none; transition: none; }
+  }
+</style>
+</head>
+<body>
+<p class="note mono">Prototype · motion lab</p>
+
+<!-- 1 · Blur reveal: real copy from src/content/about.ts -->
+<section class="intro">
+  <div class="intro-inner">
+    <p class="label mono">01 · Line-by-line blur reveal</p>
+    <h1 data-reveal>I'm a product manager who starts with the people using the product.</h1>
+    <p data-reveal>I trained as an engineer in electronics and instrumentation, then moved into enterprise systems, starting as a Pega business architect, then building on Salesforce and Pega as a developer.</p>
+    <p data-reveal>Most recently, I was a technical product manager co-op at Stage Zero Health, an early cancer detection startup, where I helped take the product from zero to one.</p>
+  </div>
+</section>
+
+<!-- 2 · Rolling blob: steps are Stage Zero product areas from about-me.md §3; the heading is Jayanth's reflection ("a little messy") -->
+<section class="roll" id="roll">
+  <div class="roll-stage">
+    <canvas id="roll-canvas" aria-hidden="true"></canvas>
+    <div class="roll-copy">
+      <p class="label mono">02 · Rolling blob, rough road to smooth</p>
+      <h2 data-reveal>Zero to one was a little messy. Every day was different.</h2>
+    </div>
+    <ol class="roll-steps mono" id="roll-steps">
+      <li>Interviews</li><li>Market sizing</li><li>PRDs</li><li>Wireframes</li><li>Testing</li><li>Pilot</li>
+    </ol>
+  </div>
+</section>
+
+<!-- 3 · Pinned work: roles from about-me.md §3 timeline; panels stand in for images -->
+<section class="work" id="work">
+  <div class="work-stage">
+    <div>
+      <p class="label mono">03 · Pinned work, corner wipe</p>
+      <ol class="work-list" id="work-list">
+        <li><b>Stage Zero Health</b><span class="mono">Technical PM co-op · 2025</span></li>
+        <li><b>Northeastern University</b><span class="mono">Graduate TA · 2026</span></li>
+        <li><b>Bluevoir</b><span class="mono">Pega developer · 2024</span></li>
+        <li><b>Bluevoir</b><span class="mono">Pega business architect · 2023</span></li>
+      </ol>
+    </div>
+    <div class="work-frame" aria-hidden="true">
+      <div class="slide"><div class="slide-art"><span class="mono">Image placeholder</span><b>Stage Zero</b></div></div>
+      <div class="slide"><div class="slide-art"><span class="mono">Image placeholder</span><b>INFO 6500</b></div></div>
+      <div class="slide"><div class="slide-art"><span class="mono">Image placeholder</span><b>Microbial detection</b></div></div>
+      <div class="slide"><div class="slide-art"><span class="mono">Image placeholder</span><b>HR on Pega</b></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · Rack focus: the three steps from the intro line -->
+<section class="focus" id="focus">
+  <div class="focus-stage">
+    <div class="focus-glow a"></div><div class="focus-glow b"></div>
+    <p class="label mono" style="position:relative;text-align:center">04 · Rack focus</p>
+    <ol class="focus-lines" id="focus-lines">
+      <li>Engineer by training.</li>
+      <li>Enterprise systems.</li>
+      <li>Now, product.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- 5 · Highlighter wipe -->
+<section class="demo">
+  <p class="label mono">05 · Highlighter wipe</p>
+  <h2>A fill instead of an underline</h2>
+  <p class="demo-note">Hover or tab through. The fill wipes in from the left in 400ms and leaves to the right; the current page keeps it. CSS only: one pseudo-element scaling on x. Candidates: the bottom-left Contact, the letter page cross, the home buttons.</p>
+  <ul class="hl-list">
+    <li><a class="hl" href="#" aria-current="page">About me</a></li>
+    <li><a class="hl" href="#">Cooking</a></li>
+    <li><a class="hl" href="#">Running</a></li>
+    <li><a class="hl" href="#">Contact</a></li>
+  </ul>
+</section>
+
+<!-- 6 · Grid hop -->
+<section class="demo">
+  <p class="label mono">06 · Grid hop, a calmer page change</p>
+  <h2>A mosaic that settles</h2>
+  <p class="demo-note">An alternative to the vapour. The view is cut into 32px cells; each first shows a nearby cell, then snaps into place at its own moment (about half a second in all). The roll box in the corner is chrome: it only twitches, so the frame feels steady.</p>
+  <div class="hop-wrap">
+    <div class="hop" id="hop" aria-live="polite">
+      <div class="hop-page" id="hop-a">
+        <div class="hop-grid" aria-hidden="true"><span>C</span><span>D</span><span>e</span><span>F</span><span>G</span><span>H</span><span>i</span><span>A</span><span>b</span><span>j</span><span>K</span><span>l</span><span>M</span><span>n</span><span>O</span><span>P</span><span>q</span><span>R</span><span>s</span><span>T</span><span>u</span></div>
+      </div>
+      <div class="hop-page hop-article" id="hop-b" hidden>
+        <h3>About me</h3>
+        <p>I'm Jayanth Kappagantula, a product manager. I live in Atlanta now, after two years in Boston, and before that I was in Hyderabad.</p>
+        <p>I started out as an engineer, in Electronics and Instrumentation in Hyderabad, and spent my first years in enterprise systems.</p>
+      </div>
+      <div class="hop-cells" id="hop-cells"></div>
+      <div class="hop-chrome" id="hop-chrome" aria-hidden="true"></div>
+    </div>
+    <button type="button" class="btn" id="hop-go">Open "About me"</button>
+  </div>
+</section>
+
+<!-- 7 · Ask about Jayanth: a MOCK. Fixed answers from about-me.md, matched by keywords. -->
+<section class="demo">
+  <p class="label mono">07 · Ask about Jayanth (mock, no AI)</p>
+  <h2>Answers only from my notes</h2>
+  <p class="demo-note">How the real one would behave: it answers only from about-me.md, names the section, says nothing when the notes don't cover it, and sends anything about work authorization, salary or start dates to me directly. This mock has fixed answers and no model.</p>
+  <div class="ask">
+    <form class="ask-form" id="ask-form">
+      <label class="visually-hidden" for="ask-q">Ask a question about Jayanth</label>
+      <input id="ask-q" type="text" placeholder="Where did you study?" autocomplete="off">
+      <button class="btn" type="submit">Ask</button>
+    </form>
+    <ul class="ask-chips" id="ask-chips">
+      <li><button type="button">What do you do?</button></li>
+      <li><button type="button">Where did you study?</button></li>
+      <li><button type="button">What did you do at Stage Zero?</button></li>
+      <li><button type="button">Do you need sponsorship?</button></li>
+      <li><button type="button">What's your favourite movie?</button></li>
+    </ul>
+    <div class="ask-out" id="ask-out" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- 8 · Text version for AI tools -->
+<section class="demo">
+  <p class="label mono">08 · A text version for AI tools</p>
+  <h2>What a recruiter's AI reads</h2>
+  <p class="demo-note">On the real site: an llms.txt at the root and a .md copy of each page, linked with rel="alternate" type="text/markdown". Plain facts from about-me.md, nothing the site doesn't already say.</p>
+  <button type="button" class="btn" id="md-toggle" aria-expanded="false" aria-controls="md">Show the text version</button>
+  <pre class="md" id="md" hidden></pre>
+</section>
+
+<!-- Proposed footer credit (design-system.md §2: borrow ideas, credit the source) -->
+<p class="credit mono">Proposed credit: Inspired by Huy Phan's huyml.co and Federico's aiu.is.</p>
+
+<p class="end mono">End of prototype</p>
+
+<script>
+document.documentElement.classList.add('js')
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v))
+const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+
+// Progress of a tall section scrolling past its sticky stage: 0 at its top, 1 at its end.
+const progressOf = (el) => {
+  const r = el.getBoundingClientRect()
+  return clamp(-r.top / Math.max(1, el.offsetHeight - innerHeight))
+}
+
+/* 1 · Split into the lines the browser actually laid out, then reveal them 0.12s apart. */
+function splitLines(el) {
+  const words = el.textContent.trim().split(/\s+/)
+  el.setAttribute('aria-label', el.textContent.trim())
+  el.innerHTML = words.map((w) => `<span class="w" aria-hidden="true">${w}</span>`).join(' ')
+  const lines = []
+  let top = null
+  for (const w of el.querySelectorAll('.w')) {
+    if (w.offsetTop !== top) { lines.push([]); top = w.offsetTop }
+    lines[lines.length - 1].push(w.textContent)
+  }
+  el.innerHTML = lines.map((l, i) => `<span class="line" aria-hidden="true" style="transition-delay:${i * 0.12}s">${l.join(' ')}</span>`).join('')
+}
+document.fonts.ready.then(() => {
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target) }
+  }, { rootMargin: '0px 0px -15% 0px' }) // "top 85%"
+  document.querySelectorAll('[data-reveal]').forEach((el) => { splitLines(el); io.observe(el) })
+})
+
+/* 2 · A lumpy blob (the letters' blob shape) rolls left to right. Its lumps and the road's
+   bumps both fade to nothing as you scroll, so it ends as a circle on a flat line. Eases 20%
+   of the way to the scroll position each frame, like the original; draws only while moving. */
+const roll = document.getElementById('roll')
+const canvas = document.getElementById('roll-canvas')
+const ctx = canvas.getContext('2d')
+const steps = [...document.querySelectorAll('#roll-steps li')]
+const LUMPS = [1.08, 0.9, 1.12, 0.94, 1.05, 0.88, 1.1, 0.96]
+let W = 0, H = 0, R = 0, target = 0, shown = 0, raf = 0
+function sizeCanvas() {
+  const dpr = Math.min(devicePixelRatio || 1, 2)
+  W = canvas.clientWidth; H = canvas.clientHeight
+  canvas.width = W * dpr; canvas.height = H * dpr
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+  R = Math.min(W, H) * 0.11
+}
+// The blob's radius at angle t (its own frame): a smooth closed curve through the 8 lumps.
+function radiusAt(t, r, rough) {
+  const turn = ((t % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)
+  const f = (turn / (Math.PI * 2)) * LUMPS.length
+  const k = Math.floor(f), u = f - k
+  const a = LUMPS[k % LUMPS.length], b = LUMPS[(k + 1) % LUMPS.length]
+  const lump = a + (b - a) * (1 - Math.cos(u * Math.PI)) / 2
+  return r * (1 + (lump - 1) * rough)
+}
+function blobPath(r, rough, angle) {
+  const n = 64
+  ctx.beginPath()
+  for (let i = 0; i <= n; i++) {
+    const t = (i / n) * Math.PI * 2
+    const rr = radiusAt(t, r, rough)
+    const x = Math.cos(t + angle) * rr, y = Math.sin(t + angle) * rr
+    i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)
+  }
+  ctx.closePath()
+}
+function drawRoll(p) {
+  const rough = 1 - p * p * (3 - 2 * p) // smoothstep: rough at the start, smooth at the end
+  const groundY = H * 0.68
+  const road = (x) => groundY + Math.sin(x / (R * 0.7)) * R * 0.18 * rough + Math.sin(x / (R * 0.31)) * R * 0.06 * rough
+  const x0 = -R, x1 = W - R * 1.5
+  const cx = x0 + (x1 - x0) * p
+  ctx.clearRect(0, 0, W, H)
+  // Road
+  ctx.beginPath()
+  for (let x = 0; x <= W; x += 4) x ? ctx.lineTo(x, road(x)) : ctx.moveTo(x, road(x))
+  ctx.strokeStyle = css('--accent'); ctx.lineWidth = 1.5; ctx.stroke()
+  // The blob rests on its lowest point: the radius pointing straight down at this rotation.
+  const angle = (cx - x0) / R
+  let lowest = 0
+  for (let i = -6; i <= 6; i++) {
+    const a = Math.PI / 2 + i * 0.08
+    lowest = Math.max(lowest, radiusAt(a - angle, R, rough) * Math.sin(a))
+  }
+  const cy = road(cx) - lowest
+  // Axle guide
+  ctx.save(); ctx.setLineDash([5, 10]); ctx.strokeStyle = css('--bloom-powder'); ctx.lineWidth = 1
+  ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(W, cy); ctx.stroke(); ctx.restore()
+  // Blob, rotating by the distance it has rolled
+  ctx.save(); ctx.translate(cx, cy)
+  blobPath(R, rough, angle)
+  ctx.fillStyle = css('--accent-fill'); ctx.fill()
+  ctx.strokeStyle = css('--accent'); ctx.lineWidth = 1.5; ctx.stroke()
+  ctx.beginPath(); ctx.arc(0, 0, 3, 0, Math.PI * 2); ctx.fillStyle = css('--accent'); ctx.fill()
+  ctx.restore()
+  // The step the blob has reached
+  const at = Math.min(steps.length - 1, Math.floor(p * steps.length))
+  steps.forEach((s, i) => s.classList.toggle('on', i <= at && p > 0.02))
+}
+function tickRoll() {
+  shown += (target - shown) * 0.2
+  if (Math.abs(target - shown) < 0.0005) shown = target
+  drawRoll(shown)
+  raf = shown === target ? 0 : requestAnimationFrame(tickRoll)
+}
+
+/* 3 · One screen-height of scroll per panel. Each new panel wipes in from the bottom-right
+   corner and settles from 110% to 100%; the one before keeps zooming to 120%, and the list
+   dims every role but the current one. Scrubbed straight from scroll; no snapping. */
+const work = document.getElementById('work')
+const slides = [...work.querySelectorAll('.slide')]
+const arts = slides.map((s) => s.querySelector('.slide-art'))
+const roles = [...document.querySelectorAll('#work-list li')]
+work.style.height = `${(slides.length + 1) * 100}svh`
+const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2) // power2.inOut
+function wipe(t) {
+  const k = 100 - 100 * t // the hidden polygon sits in the bottom-right corner
+  return `polygon(${k}% ${k}%, 100% ${k}%, 100% 100%, ${k}% 100%)`
+}
+function drawWork() {
+  const p = progressOf(work) * slides.length
+  slides.forEach((s, i) => {
+    const t = ease(clamp(p - i))
+    s.style.clipPath = t >= 1 ? 'none' : wipe(t)
+    const after = ease(clamp(p - i - 1)) // the next panel arriving over this one
+    arts[i].style.transform = `scale(${1.1 - 0.1 * t + 0.2 * after})`
+  })
+  const cur = clamp(Math.floor(p - 0.1), 0, slides.length - 1)
+  roles.forEach((r, i) => r.classList.toggle('on', i === cur))
+}
+
+/* 4 · Each statement is sharp at its own moment and blurred either side of it. */
+const focus = document.getElementById('focus')
+const focusLines = [...document.querySelectorAll('#focus-lines li')]
+function drawFocus() {
+  const p = progressOf(focus) * (focusLines.length - 1)
+  focusLines.forEach((l, i) => {
+    const d = Math.abs(p - i)
+    l.style.filter = `blur(${Math.min(8, d * 8).toFixed(2)}px)`
+    l.style.opacity = (1 - Math.min(0.75, d * 0.75)).toFixed(2)
+  })
+}
+
+function onScroll() {
+  target = progressOf(roll)
+  if (reduced) { shown = target; drawRoll(shown) } else if (!raf) raf = requestAnimationFrame(tickRoll)
+  drawWork()
+  drawFocus()
+}
+addEventListener('scroll', onScroll, { passive: true })
+addEventListener('resize', () => { sizeCanvas(); drawRoll(shown); onScroll() })
+sizeCanvas(); onScroll(); drawRoll(shown)
+
+/* 6 · Grid hop. Each cell holds a copy of the page, offset so it shows its own square.
+   It first shows a neighbour's square (up to 2 cells away), then settles. */
+const hop = document.getElementById('hop')
+const hopCells = document.getElementById('hop-cells')
+const hopChrome = document.getElementById('hop-chrome')
+const pages = [document.getElementById('hop-a'), document.getElementById('hop-b')]
+let hopOn = 0, hopping = false
+const CELL = 32
+function hopTo(next) {
+  if (hopping) return
+  const from = pages[hopOn], to = pages[next]
+  if (reduced) { from.hidden = true; to.hidden = false; hopOn = next; return }
+  hopping = true
+  const W = hop.clientWidth, H = hop.clientHeight
+  const cols = Math.ceil(W / CELL), rows = Math.ceil(H / CELL)
+  hopCells.innerHTML = ''
+  to.hidden = false
+  const cells = []
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const cell = document.createElement('div')
+    cell.className = 'hop-cell'
+    Object.assign(cell.style, { left: c * CELL + 'px', top: r * CELL + 'px', width: CELL + 'px', height: CELL + 'px' })
+    const copy = from.cloneNode(true)
+    copy.removeAttribute('id')
+    copy.hidden = false
+    Object.assign(copy.style, { width: W + 'px', height: H + 'px' })
+    cell.appendChild(copy)
+    hopCells.appendChild(cell)
+    cells.push({ cell, copy, c, r })
+  }
+  from.hidden = true
+  const place = (copy, c, r) => { copy.style.transform = `translate(${-c * CELL}px, ${-r * CELL}px)` }
+  const near = (v, max) => Math.min(max - 1, Math.max(0, v + Math.round((Math.random() - 0.5) * 4)))
+  for (const { copy, c, r } of cells) place(copy, near(c, cols), near(r, rows)) // scrambled old page
+  // Swap each cell to the new page (still scrambled), then let it settle, at random moments.
+  for (const it of cells) {
+    const swapAt = Math.random() * 260
+    setTimeout(() => {
+      const copy = to.cloneNode(true)
+      copy.removeAttribute('id')
+      Object.assign(copy.style, { width: W + 'px', height: H + 'px' })
+      place(copy, near(it.c, cols), near(it.r, rows))
+      it.cell.replaceChildren(copy)
+      setTimeout(() => place(copy, it.c, it.r), 60 + Math.random() * 220)
+    }, swapAt)
+  }
+  // Chrome: a small twitch instead of dissolving (about 15% of its cells, in the original).
+  hopChrome.classList.remove('twitch'); void hopChrome.offsetWidth; hopChrome.classList.add('twitch')
+  setTimeout(() => { hopCells.innerHTML = ''; hopOn = next; hopping = false }, 620)
+}
+document.getElementById('hop-go').addEventListener('click', (e) => {
+  hopTo(hopOn ? 0 : 1)
+  e.currentTarget.textContent = hopOn ? 'Open "About me"' : 'Back to the letters'
+})
+
+/* 7 · Ask (mock). Keyword match against fixed answers from about-me.md. Questions about work
+   authorization, salary or start dates go to Jayanth directly; anything else unmatched gets
+   no answer at all. */
+const FACTS = [
+  { keys: ['do', 'role', 'job', 'work', 'who', 'what are you'], answer: "I'm a product manager. Most recently I was a Technical Product Manager co-op at Stage Zero Health, an early cancer detection startup.", source: 'about-me.md §3 Experience' },
+  { keys: ['study', 'studied', 'school', 'degree', 'university', 'education', 'master', 'college'], answer: 'An MS in Information Systems at Northeastern University in Boston (2024–2026), and before that a B.Tech in Electronics and Instrumentation Engineering at Keshav Memorial Institute of Technology, Hyderabad (2019–2023).', source: 'about-me.md §5 Education' },
+  { keys: ['live', 'based', 'where are you', 'location', 'city', 'remote', 'relocate'], answer: "Atlanta, GA. I'm open to roles anywhere in the US: on-site, remote or hybrid.", source: 'about-me.md §1 Basics' },
+  { keys: ['stage zero', 'startup', 'cancer', 'pilot', 'co-op'], answer: 'Zero-to-one work on the breast cancer journey: customer interviews, requirements and PRDs, wireframes in Figma and Miro, testing with users, a 6-week paid pilot, and supporting the founder on launch planning, positioning and pricing.', source: 'about-me.md §3 Experience' },
+  { keys: ['tool', 'tools', 'stack', 'software', 'figma', 'jira'], answer: 'Jira, Asana, Miro, Notion, Figma, Salesforce, Pega, GitHub, Vercel, Supabase, GA4 and Claude Code.', source: 'about-me.md §6 Skills' },
+  { keys: ['language', 'languages', 'speak', 'hindi', 'telugu'], answer: 'English, Hindi (fluent) and Telugu (native).', source: 'about-me.md §6 Skills' },
+  { keys: ['certif', 'certified', 'pega', 'salesforce'], answer: 'Certified Salesforce Administrator, Pega Certified Business Architect and Pega Certified System Architect.', source: 'about-me.md §5 Education' },
+]
+const ASK_DIRECT = ['visa', 'sponsor', 'opt', 'authoriz', 'authoris', 'h-1b', 'h1b', 'salary', 'pay', 'start date', 'when can you start', 'citizen']
+const out = document.getElementById('ask-out')
+function ask(q) {
+  const t = ' ' + q.toLowerCase() + ' '
+  if (!q.trim()) { out.innerHTML = ''; return }
+  if (ASK_DIRECT.some((k) => t.includes(k))) {
+    out.innerHTML = '<p class="ask-answer">That\'s one to ask me directly, so you get the exact answer.</p><p class="ask-source mono">Not answered here on purpose · use Contact</p>'
+    return
+  }
+  let best = null, score = 0
+  for (const f of FACTS) {
+    // Longer, more specific phrases count for more ("stage zero" beats "do").
+    const s = f.keys.filter((k) => t.includes(k.length < 4 ? ' ' + k + ' ' : k)).reduce((n, k) => n + k.length, 0)
+    if (s > score) { best = f; score = s }
+  }
+  out.innerHTML = best
+    ? `<p class="ask-answer">${best.answer}</p><p class="ask-source mono">Source · ${best.source}</p>`
+    : '<p class="ask-none mono">Nothing in my notes about that.</p>'
+}
+document.getElementById('ask-form').addEventListener('submit', (e) => { e.preventDefault(); ask(document.getElementById('ask-q').value) })
+document.getElementById('ask-chips').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return
+  document.getElementById('ask-q').value = b.textContent; ask(b.textContent)
+})
+
+/* 8 · Text version: the facts as a recruiter's AI tool would get them. */
+const MD = `# Jayanth Kappagantula
+
+Product manager. Atlanta, GA. Open to roles anywhere in the US (on-site, remote or hybrid).
+
+## Experience
+- Graduate Teaching Assistant, INFO 6500, Northeastern University, Boston, MA (Jan–Apr 2026)
+- Technical Product Manager (co-op), Stage Zero Health, Cambridge, MA (Aug–Dec 2025)
+- Pega Developer, Bluevoir, Hyderabad, India (Feb–Jul 2024)
+- SDE Intern, FormulaQ Solutions, Hyderabad, India (Nov 2023–Jan 2024)
+- Pega Business Architect, Bluevoir, Hyderabad, India (Jan–Jun 2023)
+
+## Education
+- MS, Information Systems, Northeastern University (2024–2026)
+- B.Tech, Electronics and Instrumentation Engineering, Keshav Memorial Institute of Technology (2019–2023)
+
+## Certifications
+- Certified Salesforce Administrator
+- Pega Certified Business Architect
+- Pega Certified System Architect
+
+## Contact
+- Email: jayanthadityaaa@gmail.com
+- LinkedIn: https://www.linkedin.com/in/jayanth-kappagantula/
+`
+const md = document.getElementById('md'), mdToggle = document.getElementById('md-toggle')
+md.textContent = MD
+mdToggle.addEventListener('click', () => {
+  md.hidden = !md.hidden
+  mdToggle.setAttribute('aria-expanded', String(!md.hidden))
+  mdToggle.textContent = md.hidden ? 'Show the text version' : 'Hide the text version'
+})
+</script>
+</body>
+</html>

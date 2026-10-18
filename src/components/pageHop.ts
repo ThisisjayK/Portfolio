@@ -1,27 +1,24 @@
-// The page-to-page transition for the letters (Jayanth, 2026-10-17, in the spirit of React Bits
-// Pro's "Vapor Type", written here from scratch): text turns into vapour and drifts away, and the
-// next page's text condenses back out of it.
-// - Everything marked data-vapor is redrawn on a temporary canvas, sampled into fine dots taken
-//   from the real letter shapes (and the blobs behind the clickable letters), and hidden.
-// - vaporize(): the dots let go in a sweep out from the click and drift up and away, wobbling
-//   and fading. The route changes as soon as the sweep has passed, so the vapour is still
-//   drifting while the next page arrives.
-// - condense(): the new page's dots gather in from a loose cloud, left to right, then the real
-//   text takes over.
-// The canvas lives on <body>, outside React, so it survives the route change. The roll box is
-// never marked, so it stays still as the anchor. Reduced motion skips all of it.
+// The page-to-page transition for the letters: a grid hop (Jayanth, 2026-10-17, after aiu.is's
+// page change; replaces the vapour). The view is cut into 32px cells. Each cell briefly shows a
+// nearby cell's pixels, then settles or clears at its own random moment, so the page reads as a
+// mosaic that comes apart and reassembles. Calmer and more orderly than particles.
+// - Everything marked data-hop that's on screen is redrawn on a temporary canvas (text glyph by
+//   glyph, the letters' blobs, the roll box's front face, the close cross) and hidden.
+// - hopOut(): the cells scramble and clear, spreading out from the click. The route changes
+//   when it's done.
+// - hopIn(): the new page's cells arrive scrambled and settle, then the real page takes over.
+// The canvas lives on <body>, outside React. Reduced motion skips all of it.
 import { useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useReducedMotion } from 'motion/react'
 
 type Point = { x: number; y: number }
-type Dot = { x: number; y: number; color: string }
 
-const SWEEP = 1800 // px/s: how fast the release travels out from the click
-const MAX_DOTS = 14000
+const CELL = 32 // px
+const REACH = 2 // a cell borrows from up to this many cells away
 const rand = (a: number, b: number) => a + Math.random() * (b - a)
 
-// ——— Sampling ————————————————————————————————————————————————————————————————————————————
+// ——— Drawing the page ————————————————————————————————————————————————————————————————————————————
 
 function fontOf(cs: CSSStyleDeclaration) {
   return `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`
@@ -99,14 +96,16 @@ function drawSvg(ctx: CanvasRenderingContext2D, svg: SVGSVGElement, dy: number) 
   ctx.restore()
 }
 
-// Redraws the elements on an offscreen canvas and samples it into dots. dy corrects for a
-// page that is still sliding into place (Page.tsx lifts the page 8px as it fades in).
-function sample(els: HTMLElement[], dy = 0): Dot[] {
+// Redraws the on-screen elements on a viewport-sized canvas at screen resolution. dy corrects
+// for a page that is still sliding into place (Page.tsx lifts the page 8px as it fades in).
+function raster(els: HTMLElement[], dy = 0) {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2)
   const c = document.createElement('canvas')
-  c.width = innerWidth
-  c.height = innerHeight
+  c.width = Math.round(innerWidth * dpr)
+  c.height = Math.round(innerHeight * dpr)
   const ctx = c.getContext('2d', { willReadFrequently: true })
-  if (!ctx) return []
+  if (!ctx) return null
+  ctx.scale(dpr, dpr)
   const range = document.createRange()
 
   for (const el of els) {
@@ -124,7 +123,8 @@ function sample(els: HTMLElement[], dy = 0): Dot[] {
     const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
     for (let node = walk.nextNode(); node; node = walk.nextNode()) {
       const parent = node.parentElement
-      if (!parent || parent.closest('svg')) continue
+      // Skip SVG text (drawn above) and screen-reader-only copies.
+      if (!parent || parent.closest('svg') || parent.closest('.visually-hidden')) continue
       const text = node.textContent ?? ''
       const cs = getComputedStyle(parent)
       ctx.font = fontOf(cs)
@@ -141,23 +141,25 @@ function sample(els: HTMLElement[], dy = 0): Dot[] {
     }
   }
 
+  // The cells that have anything in them (empty ones are skipped while drawing).
+  const cols = Math.ceil(innerWidth / CELL)
+  const rows = Math.ceil(innerHeight / CELL)
   const { data } = ctx.getImageData(0, 0, c.width, c.height)
-  let filled = 0
-  for (let i = 3; i < data.length; i += 16) if (data[i] > 128) filled++
-  // Every 2nd pixel reads as solid text; coarser only if the page has a lot of it.
-  const step = Math.max(2, Math.ceil(Math.sqrt((filled * 4) / MAX_DOTS)))
-  const dots: Dot[] = []
-  for (let y = 0; y < c.height; y += step) {
-    for (let x = 0; x < c.width; x += step) {
-      const i = (y * c.width + x) * 4
-      if (data[i + 3] < 128) continue
-      // Quantised so the draw loop changes fillStyle rarely.
-      const q = (v: number) => Math.round(v / 16) * 16
-      dots.push({ x, y, color: `rgb(${q(data[i])},${q(data[i + 1])},${q(data[i + 2])})` })
+  const cells: { c: number; r: number }[] = []
+  for (let r = 0; r < rows; r++) {
+    for (let col = 0; col < cols; col++) {
+      let ink = false
+      const x0 = Math.floor(col * CELL * dpr), y0 = Math.floor(r * CELL * dpr)
+      const x1 = Math.min(c.width, x0 + CELL * dpr), y1 = Math.min(c.height, y0 + CELL * dpr)
+      for (let y = y0; y < y1 && !ink; y += 3) {
+        for (let x = x0; x < x1; x += 3) {
+          if (data[(y * c.width + x) * 4 + 3] > 16) { ink = true; break }
+        }
+      }
+      if (ink) cells.push({ c: col, r })
     }
   }
-  dots.sort((a, b) => (a.color < b.color ? -1 : 1))
-  return dots
+  return { canvas: c, dpr, cols, rows, cells }
 }
 
 function overlay() {
@@ -176,88 +178,80 @@ function overlay() {
   })
   document.body.appendChild(canvas)
   const ctx = canvas.getContext('2d')
-  ctx?.scale(dpr, dpr)
+  ctx?.setTransform(1, 0, 0, 1, 0, 0)
   return { canvas, ctx }
 }
 
 const targetsIn = (root: ParentNode) =>
-  Array.from(root.querySelectorAll<HTMLElement>('[data-vapor]')).filter((el) => {
+  Array.from(root.querySelectorAll<HTMLElement>('[data-hop]')).filter((el) => {
     const r = el.getBoundingClientRect()
     return r.width >= 1 && r.height >= 1 && r.bottom > 0 && r.top < innerHeight
   })
 
+type Plan = { c: number; r: number; sc: number; sr: number; scrambleAt: number; settleAt: number }
+
+const near = (v: number, max: number) =>
+  Math.min(max - 1, Math.max(0, v + Math.round(rand(-REACH, REACH))))
+
+// Draws one frame: each cell either shows its own square, a neighbour's, or nothing.
+function drawCells(
+  ctx: CanvasRenderingContext2D,
+  src: NonNullable<ReturnType<typeof raster>>,
+  plans: Plan[],
+  t: number,
+  mode: 'out' | 'in',
+) {
+  const s = CELL * src.dpr
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+  for (const p of plans) {
+    // out: own square → neighbour's square → gone.  in: nothing → neighbour's → own square.
+    let from: [number, number] | null
+    if (mode === 'out') from = t < p.scrambleAt ? [p.c, p.r] : t < p.settleAt ? [p.sc, p.sr] : null
+    else from = t < p.scrambleAt ? null : t < p.settleAt ? [p.sc, p.sr] : [p.c, p.r]
+    if (!from) continue
+    ctx.drawImage(src.canvas, from[0] * s, from[1] * s, s, s, p.c * s, p.r * s, s, s)
+  }
+}
+
 // ——— Out ——————————————————————————————————————————————————————————————————————————————————
 
-// Resolves once the sweep has released every dot (time to change the route); the drift keeps
-// going on its own and the canvas removes itself when it's done.
-export function vaporize(origin: Point): Promise<void> {
+// Resolves when the page has come apart (time to change the route).
+export function hopOut(origin: Point): Promise<void> {
   const els = targetsIn(document.querySelector('main') ?? document)
-  const dots = sample(els)
-  const { canvas, ctx } = overlay()
+  const src = raster(els)
   for (const el of els) {
     el.style.transition = 'none'
     el.style.opacity = '0'
   }
-  // The bloom behind the hero fades rather than vaporising.
+  // The bloom behind the hero fades rather than breaking up.
   const backdrop = document.querySelector<HTMLElement>('main .hero-media')
   if (backdrop) {
-    backdrop.style.transition = 'opacity 400ms ease-out'
+    backdrop.style.transition = 'opacity 300ms ease-out'
     backdrop.style.opacity = '0'
   }
-  if (!ctx || !dots.length) {
+  const { canvas, ctx } = overlay()
+  if (!ctx || !src || !src.cells.length) {
     canvas.remove()
     return Promise.resolve()
   }
-
-  const parts = dots.map((d) => {
-    const dx = d.x - origin.x
-    const dy = d.y - origin.y
-    const dist = Math.hypot(dx, dy) || 1
-    return {
-      ...d,
-      delay: dist / SWEEP + rand(0, 0.08),
-      life: rand(0.55, 0.9),
-      // Mostly up and away from the click, with a light breeze to the right.
-      vx: (dx / dist) * rand(10, 50) + rand(10, 50),
-      vy: (dy / dist) * rand(5, 25) - rand(20, 60),
-      lift: rand(80, 200),
-      wobble: rand(4, 14),
-      phase: rand(0, Math.PI * 2),
-      size: Math.random() < 0.7 ? 2 : 1.5,
-    }
+  // Cells near the click go first.
+  const far = Math.hypot(innerWidth, innerHeight)
+  const plans: Plan[] = src.cells.map(({ c, r }) => {
+    const d = Math.hypot((c + 0.5) * CELL - origin.x, (r + 0.5) * CELL - origin.y) / far
+    const scrambleAt = d * 0.18 + rand(0, 0.08)
+    return { c, r, sc: near(c, src.cols), sr: near(r, src.rows), scrambleAt, settleAt: scrambleAt + rand(0.06, 0.16) }
   })
-  const released = Math.max(...parts.map((p) => p.delay))
-  const end = Math.max(...parts.map((p) => p.delay + p.life))
-
+  const end = Math.max(...plans.map((p) => p.settleAt))
   return new Promise((resolve) => {
     const start = performance.now()
-    let handedOff = false
     const frame = (now: number) => {
       const t = (now - start) / 1000
-      ctx.clearRect(0, 0, innerWidth, innerHeight)
-      let fill = ''
-      for (const p of parts) {
-        const s = t - p.delay
-        let x = p.x
-        let y = p.y
-        let a = 1
-        if (s > 0) {
-          const k = s / p.life
-          if (k >= 1) continue
-          x += p.vx * s + Math.sin(p.phase + s * 7) * p.wobble * k
-          y += p.vy * s - 0.5 * p.lift * s * s
-          a = 1 - k ** 1.4
-        }
-        if (p.color !== fill) ctx.fillStyle = fill = p.color
-        ctx.globalAlpha = a
-        ctx.fillRect(x, y, p.size, p.size)
-      }
-      if (!handedOff && t >= released) {
-        handedOff = true
+      drawCells(ctx, src, plans, t, 'out')
+      if (t < end) requestAnimationFrame(frame)
+      else {
+        canvas.remove()
         resolve()
       }
-      if (t < end) requestAnimationFrame(frame)
-      else canvas.remove()
     }
     requestAnimationFrame(frame)
   })
@@ -265,10 +259,10 @@ export function vaporize(origin: Point): Promise<void> {
 
 // ——— In ———————————————————————————————————————————————————————————————————————————————————
 
-// Hide the elements now (call before paint), then condense them in once fonts are ready.
+// Hide the elements now (call before paint), then let them reassemble once fonts are ready.
 // Returns a cancel function for unmounts mid-way.
-export function condense(root: HTMLElement): () => void {
-  const els = Array.from(root.querySelectorAll<HTMLElement>('[data-vapor]'))
+export function hopIn(root: HTMLElement): () => void {
+  const els = Array.from(root.querySelectorAll<HTMLElement>('[data-hop]'))
   for (const el of els) el.style.opacity = '0'
   let cancelled = false
   let raf = 0
@@ -279,49 +273,33 @@ export function condense(root: HTMLElement): () => void {
 
   document.fonts.ready.then(() => {
     if (cancelled) return
-    // Page.tsx is still lifting the page into place; sample where the text will end up.
+    // Page.tsx is still lifting the page into place; draw where it will end up.
     const main = root.closest('main')
     const lift = main ? new DOMMatrixReadOnly(getComputedStyle(main).transform).m42 : 0
-    const dots = sample(els, lift)
+    const src = raster(targetsIn(root), lift)
     const o = overlay()
     canvas = o.canvas
     const ctx = o.ctx
-    if (!ctx || !dots.length) {
+    if (!ctx || !src || !src.cells.length) {
       canvas.remove()
       reveal()
       return
     }
-    const minX = Math.min(...dots.map((d) => d.x))
-    const maxX = Math.max(...dots.map((d) => d.x))
-    const parts = dots.map((d) => ({
-      ...d,
-      // Left to right, like the text is being written out of the cloud.
-      delay: ((d.x - minX) / Math.max(1, maxX - minX)) * 0.35 + rand(0, 0.1),
-      dur: rand(0.45, 0.7),
-      fx: rand(-60, 20),
-      fy: rand(10, 70),
-      size: Math.random() < 0.7 ? 2 : 1.5,
-    }))
-    const end = Math.max(...parts.map((p) => p.delay + p.dur))
-    const ease = (k: number) => 1 - (1 - k) ** 3
-
+    // Top-left first, like the page being set line by line.
+    const plans: Plan[] = src.cells.map(({ c, r }) => {
+      const d = (c / src.cols) * 0.4 + (r / src.rows) * 0.6
+      const scrambleAt = d * 0.22 + rand(0, 0.08)
+      return { c, r, sc: near(c, src.cols), sr: near(r, src.rows), scrambleAt, settleAt: scrambleAt + rand(0.08, 0.2) }
+    })
+    const end = Math.max(...plans.map((p) => p.settleAt))
     const start = performance.now()
     const frame = (now: number) => {
       if (cancelled) return
       const t = (now - start) / 1000
-      ctx.clearRect(0, 0, innerWidth, innerHeight)
-      let fill = ''
-      for (const p of parts) {
-        const k = Math.min(1, Math.max(0, (t - p.delay) / p.dur))
-        if (k <= 0) continue
-        const e = ease(k)
-        if (p.color !== fill) ctx.fillStyle = fill = p.color
-        ctx.globalAlpha = Math.min(1, k * 1.6)
-        ctx.fillRect(p.x + p.fx * (1 - e), p.y + p.fy * (1 - e), p.size, p.size)
-      }
+      drawCells(ctx, src, plans, t, 'in')
       if (t < end) raf = requestAnimationFrame(frame)
       else {
-        // The real text takes over, then the dots go.
+        // The real page takes over, then the mosaic goes.
         reveal()
         requestAnimationFrame(() => canvas?.remove())
       }
@@ -339,8 +317,8 @@ export function condense(root: HTMLElement): () => void {
 
 // ——— Navigation ———————————————————————————————————————————————————————————————————————————
 
-// Navigate through the vapour. Reduced motion skips it (the page's own fade still runs).
-export function useVaporNavigate() {
+// Navigate through the grid hop. Reduced motion skips it (the page's own fade still runs).
+export function usePageHop() {
   const navigate = useNavigate()
   const reduced = useReducedMotion()
   const busy = useRef(false)
@@ -352,7 +330,7 @@ export function useVaporNavigate() {
         return
       }
       busy.current = true
-      vaporize(origin ?? { x: innerWidth / 2, y: innerHeight / 2 }).then(() => {
+      hopOut(origin ?? { x: innerWidth / 2, y: innerHeight / 2 }).then(() => {
         busy.current = false
         navigate(to, { state })
       })

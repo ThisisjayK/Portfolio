@@ -3,14 +3,14 @@
 // picked at random on each visit, are lowercase, and each letter gets one of eight fonts at random. Letters that stand for one of Jayanth's
 // interests are buttons with an accent amoeba behind them (BlobLetter) that ripples on hover or
 // focus, with a small preview of that letter's article beside it (LetterPreview); a click turns
-// the page to vapour and opens the letter's own page (vapor.ts, LetterPage).
+// the page into a grid hop and opens the letter's own page (pageHop.ts, LetterPage).
 // The letters swell gently toward a fine cursor.
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useReducedMotion } from 'motion/react'
 import BlobLetter from './BlobLetter'
 import LetterPreview from './LetterPreview'
-import { useVaporNavigate } from './vapor'
+import { usePageHop } from './pageHop'
 import { LETTER_FONTS, letterPageFor } from '../content/letters'
 import '../styles/letterFonts'
 import './LetterGrid.css'
@@ -62,7 +62,7 @@ export default function LetterGrid({ hidden }: Props) {
   }, [activeKey])
   const lower = useMemo(pickLowercase, [])
   const fonts = useMemo(pickFonts, [])
-  const go = useVaporNavigate()
+  const go = usePageHop()
   const { state } = useLocation()
 
   // Back from a letter page (via the roll box): focus returns to that letter.
@@ -123,7 +123,7 @@ export default function LetterGrid({ hidden }: Props) {
           const shown = lower.has(l) ? l.toLowerCase() : l
           if (!hit) {
             return (
-              <span key={l} className={`letter letter--${fonts[l]}`} style={cell} aria-hidden="true" data-vapor>
+              <span key={l} className={`letter letter--${fonts[l]}`} style={cell} aria-hidden="true" data-hop>
                 {shown}
               </span>
             )
@@ -135,7 +135,7 @@ export default function LetterGrid({ hidden }: Props) {
               className={`letter letter--button letter--${fonts[l]}`}
               style={cell}
               data-key={hit.slug}
-              data-vapor
+              data-hop
               aria-label={`${l}, ${hit.topic}`}
               tabIndex={hidden ? -1 : undefined}
               onClick={(e) => {

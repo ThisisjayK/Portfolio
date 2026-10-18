@@ -53,7 +53,7 @@ export default function LetterPreview({ page, anchor, id }: Props) {
           animate={{ opacity: 1, scale: 1, x: 0 }}
           exit={{ opacity: 0, scale: 0.92, transition: { duration: 0.12 } }}
           transition={{ type: 'spring', bounce: 0.2, duration: 0.35 }}
-          data-vapor
+          data-hop
         >
           <p className="letter-preview-kicker mono">{page.letter} · Read</p>
           <p className="letter-preview-title display">{page.topic}</p>
