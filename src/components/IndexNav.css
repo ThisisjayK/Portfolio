@@ -160,7 +160,7 @@
     position: fixed;
     z-index: 45;
     top: var(--space-4);
-    right: var(--gutter);
+    left: var(--gutter); /* the roll box has the top-right corner */
     display: inline-flex;
     align-items: center;
     min-height: var(--target);
