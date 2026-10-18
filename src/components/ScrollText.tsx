@@ -1,7 +1,7 @@
 // Text whose letters assemble as you scroll (and come apart if you scroll back).
 // Each character rises and sharpens over its own slice of `progress`, staggered
-// left to right: the same feel as the TextReveal "Split" look, but scrubbed by
-// scroll instead of played on a timer.
+// left to right: the same feel as the old TextReveal "Split" look (removed 2026-10-17), but
+// scrubbed by scroll instead of played on a timer.
 import { useTransform, type MotionValue } from 'motion/react'
 import * as m from 'motion/react-m'
 import type { ElementType } from 'react'

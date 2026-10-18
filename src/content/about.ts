@@ -10,24 +10,6 @@ export const intro = {
   ],
 }
 
-// Short lines from about-me.md 1b (Jayanth's wording, trimmed to fit one line on phones).
-// The longer versions go in the head notes.
-export const favorites: string[] = [
-  'London is red',
-  'Drizzy since Take Care',
-  'Kitchen experiments, always',
-  'Indoor jungle, full-time',
-  'High scores & Gomu Gomu',
-  'Building weekly mileage',
-]
-
-export const whatIDo = [
-  'Product manager',
-  'Healthcare · 0 → 1',
-  'Customers first',
-  'Engineer by training',
-]
-
 export const links = {
   email: 'mailto:jayanthadityaaa@gmail.com',
   linkedin: 'https://www.linkedin.com/in/jayanth-kappagantula/',

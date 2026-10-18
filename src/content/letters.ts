@@ -1,5 +1,5 @@
 // The clickable letters of the hero's A–Z. Each one opens its own page at /<slug>
-// (Jayanth, 2026-10-17, after aiu.is). Title, line and doodle come from notes.ts
+// (Jayanth, 2026-10-17, after aiu.is). Title and line come from notes.ts
 // (about-me.md §1b). Longer page text is Jayanth's to write, in ARTICLES; until then a page
 // holds Lorem ipsum filler (below), never invented text about Jayanth.
 import { notes, type Note } from './notes'

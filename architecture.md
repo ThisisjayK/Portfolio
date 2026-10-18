@@ -21,7 +21,7 @@ Status: **stack approved by Jayanth, 2026-10-16.** Vite + React + TypeScript + M
 | Styling | **Plain CSS with the design-system.md tokens** (CSS variables), one CSS file per component | Zero runtime cost. The tokens are already written. | Tailwind (fast, but another layer to learn and configure under a deadline). |
 | Routing | React Router with **hash-free paths** and the GitHub Pages SPA 404 fallback | Clean URLs like `/about`, `/work/stage-zero` | Hash routing (`/#/about`): simpler, but uglier links to forward. |
 | Content | Case study and about text in **TypeScript/MDX files in the repo**, pulled from about-me.md | No CMS to set up. Everything is versioned. | Notion or CMS (overkill for one case study). |
-| Fonts | Self-hosted **Meshed Display (Bold, Black), Mamenchisa, JetBrains Mono**, with Inter as a glyph fallback (`font-display: swap`; files shipped unmodified, so no subsetting). Anton removed 2026-10-17. | Faster and steadier than loading from Google Fonts. | Google Fonts CDN (fine for the specimen, slower in production). |
+| Fonts | Self-hosted **Meshed Display (Bold, Black), JetBrains Mono**, with Inter as a glyph fallback (`font-display: swap`; files shipped unmodified, so no subsetting). Anton removed 2026-10-17; Mamenchisa unloaded 2026-10-17 (file kept). | Faster and steadier than loading from Google Fonts. | Google Fonts CDN (fine for the specimen, slower in production). |
 | Hosting | **GitHub Pages**, repo `ThisisjayK/Portfolio`, deployed by a GitHub Action on push to `main` | Replaces the old site **at the same address**, so every link already sent shows the new site. Free, no badge. | Vercel (great, but a new address, and the old links would still show the old site). |
 | Résumé PDF | TBD | | Generated from about-me.md, or exported by hand |
 
@@ -50,7 +50,7 @@ Rules that keep it smooth:
 ```
 src/
   pages/           # Home, About, Work/StageZero, Playground, Contact
-  components/      # HeadLid, NoteCard, ContactCard, Nav, PageTransition
+  components/      # Hero, LetterGrid, RollBox, Nav, TissueCard (Contact), CloseCross
   content/         # about + case study text (from about-me.md)
   styles/          # tokens.css (from design-system.md), global.css
   assets/          # portrait, doodles, fonts
@@ -95,3 +95,4 @@ prototypes/        # yesterday's experiments; source for HeadLid, not shipped as
 | 2026-10-17 | Letter transition changed from glitch + chip shatter to a vapour effect (`vapor.ts`, replaces `shatter.ts`) | Jayanth wanted it like React Bits Pro's Vapor Type, "not literally". Written from scratch instead of installing the Pro component (needs a license key and an extra registry). Dots are sampled from the real glyphs on a temporary canvas outside React, so the vapour keeps drifting across the route change. |
 | 2026-10-17 | Letter A holds an about-me article at `/about-me` (was Arsenal); articles live in `src/content/letters.ts` and can set their own heading and subheading. Nav matches routes by whole path segment | Jayanth asked for an article about himself on the A page. `/about-me` made the nav think it was on `/about` (prefix match), so it now matches `/about` or `/about/…` only. |
 | 2026-10-17 | Removed the nav menu, the full-screen index, the Work card and the About and Playground pages | Jayanth's call: the A–Z letters and their pages are the navigation now. Old /work, /about and /playground links fall through to the home page; /contact still opens the contact card. The home page's "About me" button opens the /about-me letter page. HeadLid, NoteCard, CrumpleNotes and SilkBall are now unused but kept for now. |
+| 2026-10-17 | Deleted the code left unused by that removal: `HeadLid`, `NoteCard`, `CrumpleNotes`, `SilkBall`, `TextReveal`, `src/content/interests.ts`, `src/content/heroTimeline.ts`, the `favorites`/`whatIDo` exports, `--font-nav` and the Mamenchisa `@font-face`; `notes.ts` no longer imports the eight doodle WebPs | Jayanth confirmed each deletion. Nothing imported these files, but the doodles (via `notes.ts` → `letters.ts`) and the Mamenchisa font were still emitted into the build: output went from 3,312 KB to 1,280 KB (WebP 2,181 KB → 133 KB, −16 KB font, JS −0.6 KB). Image and font files stay in `src/assets/`. |

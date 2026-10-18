@@ -76,7 +76,7 @@ h1.display {
   }
 }
 
-/* TextReveal pieces: inline-block so they can move; words never break mid-word. */
+/* ScrollText pieces: inline-block so they can move; words never break mid-word. */
 .tr-word {
   display: inline-block;
   white-space: nowrap;

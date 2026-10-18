@@ -20,11 +20,9 @@
   --bloom-navy: #123f7d;
 
   /* Type (Jayanth, 2026-10-17): Meshed Display Bold for body, Meshed Display Black for
-     headings, Mamenchisa for navigation at body size. Inter stays as the fallback for
-     glyphs the display fonts lack. */
+     headings. Inter stays as the fallback for glyphs the display fonts lack. */
   --font-body: 'Meshed Display', 'Inter Variable', system-ui, sans-serif;
   --font-display: 'Meshed Display', 'Inter Variable', serif;
-  --font-nav: 'Mamenchisa', 'Inter Variable', sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
   /* The hero A–Z mix (2026-10-17): each letter gets one at random per visit.
      All SIL OFL, self-hosted via Fontsource (Latin subsets only). */
