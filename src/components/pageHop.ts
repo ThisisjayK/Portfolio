@@ -113,6 +113,7 @@ function raster(els: HTMLElement[], dy = 0) {
     const imgs = el instanceof HTMLImageElement ? [el] : Array.from(el.querySelectorAll('img'))
     for (const img of imgs) {
       if (img.closest('.roll-face') && !img.closest('[data-front]')) continue
+      if (parseFloat(getComputedStyle(img).opacity) < 0.5) continue // the hidden one of a cross-fade
       const r = img.getBoundingClientRect()
       if (img.complete && r.width) ctx.drawImage(img, r.left, r.top - dy, r.width, r.height)
     }

@@ -1,8 +1,7 @@
-// The hero's backdrop: five layers of blue bloom out from the middle column as the visitor
+// The hero's backdrop: four layers of blue bloom out from the middle column as the visitor
 // scrolls, on slightly grainy white. Each layer is drawn its own way:
 //   mist        a feathered wash, the widest and palest
 //   powder      contour ripples, like lines on a map
-//   sky         a solid amoeba (the letters' blob shape, --bloom-sky)
 //   cornflower  a halftone dot screen, dots biggest at its centre
 //   cobalt      cut paper, printed slightly off register over a navy shadow (--accent)
 // One fragment shader on a raw WebGL canvas, like SilkBall. Geometry (where each layer is and
@@ -24,7 +23,8 @@ type Layer = {
 const LAYERS: Layer[] = [
   { token: '--bloom-mist', from: 0, to: 0.5, size: 0.62, x: 0.5, y: 0.52, k: 1.1 },
   { token: '--bloom-powder', from: 0.08, to: 0.58, size: 0.5, x: 0.46, y: 0.5, k: 2.3 },
-  { token: '--bloom-sky', from: 0.16, to: 0.66, size: 0.4, x: 0.54, y: 0.55, k: 3.2 },
+  // The solid "sky" amoeba was removed (Jayanth, 2026-10-17): it filled most of the screen for
+  // a long stretch of scroll with nothing changing.
   { token: '--bloom-cornflower', from: 0.26, to: 0.74, size: 0.3, x: 0.47, y: 0.6, k: 4.4 },
   { token: '--accent', from: 0.36, to: 0.8, size: 0.18, x: 0.53, y: 0.46, k: 5.6 },
 ]
@@ -38,7 +38,7 @@ function layersAt(p: number, w: number, h: number) {
   const unit = Math.max(w, h)
   return LAYERS.map((l, i) => {
     const r = easeOut((p - l.from) / (l.to - l.from)) * l.size * unit
-    return { x: l.x * w, y: l.y * h, r: i === 4 ? Math.max(SEED, r) : r, k: l.k + p * 1.5 }
+    return { x: l.x * w, y: l.y * h, r: i === LAYERS.length - 1 ? Math.max(SEED, r) : r, k: l.k + p * 1.5 }
   })
 }
 
@@ -58,7 +58,7 @@ export function bloomCovers(px: number, py: number, p: number, w: number, h: num
     if (l.r <= 0) continue
     const inside = (cx: number, cy: number) => Math.hypot(px - cx, py - cy) < lump(px - cx, py - cy, l.r, l.k)
     if (inside(l.x, l.y)) return true
-    if (i === 4 && inside(l.x + OFFSET[0], l.y + OFFSET[1])) return true
+    if (i === ls.length - 1 && inside(l.x + OFFSET[0], l.y + OFFSET[1])) return true
   }
   return false
 }
@@ -68,10 +68,10 @@ const VERT = `attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}`
 const FRAG = `precision highp float;
 uniform vec2 uRes;
 uniform float uDpr;
-uniform vec2 uC[5];
-uniform float uR[5];
-uniform float uK[5];
-uniform vec3 uCol[6];
+uniform vec2 uC[4];
+uniform float uR[4];
+uniform float uK[4];
+uniform vec3 uCol[5];
 uniform vec2 uOff;
 
 float lump(vec2 d,float r,float k){
@@ -103,24 +103,22 @@ void main(){
     }
     col=mix(col,uCol[1],a);
   }
-  // Sky: one clean amoeba.
-  if(uR[2]>.5) col=mix(col,uCol[2],fill(p-uC[2],uR[2],uK[2]));
   // Cornflower: a fixed 9px dot screen, dots shrinking toward the layer's edge.
-  if(uR[3]>.5){
-    vec2 d=p-uC[3];
-    float m=fill(d,uR[3],uK[3]);
+  if(uR[2]>.5){
+    vec2 d=p-uC[2];
+    float m=fill(d,uR[2],uK[2]);
     if(m>0.){
       vec2 g=(floor(p/9.)+.5)*9.;
-      vec2 dg=g-uC[3];
-      float q=length(dg)/lump(dg,uR[3],uK[3]);
+      vec2 dg=g-uC[2];
+      float q=length(dg)/lump(dg,uR[2],uK[2]);
       float s=max(.6,3.6*(1.-q*.75));
-      col=mix(col,uCol[3],m*clamp(s-length(p-g)+.5,0.,1.));
+      col=mix(col,uCol[2],m*clamp(s-length(p-g)+.5,0.,1.));
     }
   }
   // Cobalt: cut paper over a navy shadow, printed off register.
-  if(uR[4]>.5){
-    col=mix(col,uCol[5],fill(p-uC[4]-uOff,uR[4],uK[4]));
-    col=mix(col,uCol[4],fill(p-uC[4],uR[4],uK[4]));
+  if(uR[3]>.5){
+    col=mix(col,uCol[4],fill(p-uC[3]-uOff,uR[3],uK[3]));
+    col=mix(col,uCol[3],fill(p-uC[3],uR[3],uK[3]));
   }
   // Grain: fixed per CSS pixel, so it never shimmers.
   col+=(hash(floor(p))-.5)*.09;
