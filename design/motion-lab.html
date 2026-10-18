@@ -12,6 +12,7 @@
   3. Pinned work panels with a corner wipe   4. Rack-focus statements
   From aiu.is (added 2026-10-17): 5. Highlighter wipe   6. Grid-hop page change
   7. Ask about Jayanth (mock, fixed answers, no AI)   8. Text version for AI tools, plus a proposed credit
+  9. Square wheel + stamps, in line art (a candidate to replace the rolling blob)
   Copy: src/content/about.ts and about-me.md only. Panels are colour blocks standing in for images.
 -->
 <style>
@@ -143,6 +144,14 @@
     font-family: var(--font-mono); font-size: 13px; font-weight: 400; line-height: 1.6; white-space: pre-wrap; color: var(--fg); background: var(--bloom-mist); }
 
   .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* 9 · Square wheel + stamps (2026-10-17), on the current theme blue. */
+  .sq { position: relative; height: 500svh; background: #1110e4; color: #ffffff; }
+  .sq-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+  .sq canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .sq-copy { position: absolute; left: var(--gutter); top: var(--space-8); max-width: 34ch; }
+  .sq-copy .label { color: #ffffff; }
+  .sq-copy h2 { margin: 0; font-weight: 900; font-size: var(--text-h2); line-height: 1.1; color: #ffffff; }
   .credit { padding: var(--space-7) var(--gutter); border-top: 1px solid var(--border); color: var(--muted); text-align: center; }
 
   @media (prefers-reduced-motion: reduce) {
@@ -277,6 +286,18 @@
   <p class="demo-note">On the real site: an llms.txt at the root and a .md copy of each page, linked with rel="alternate" type="text/markdown". Plain facts from about-me.md, nothing the site doesn't already say.</p>
   <button type="button" class="btn" id="md-toggle" aria-expanded="false" aria-controls="md">Show the text version</button>
   <pre class="md" id="md" hidden></pre>
+</section>
+
+<!-- 9 · Square wheel + stamps. Steps: Stage Zero product areas (about-me.md §3).
+     Heading: Jayanth's reflection ("a little messy", "every day was different"). -->
+<section class="sq" id="sq">
+  <div class="sq-stage">
+    <canvas id="sq-canvas" aria-hidden="true"></canvas>
+    <div class="sq-copy">
+      <p class="label mono">09 · Square wheel + stamps, in line art</p>
+      <h2>Zero to one was a little messy. Every day was different.</h2>
+    </div>
+  </div>
 </section>
 
 <!-- Proposed footer credit (design-system.md §2: borrow ideas, credit the source) -->
@@ -563,6 +584,163 @@ mdToggle.addEventListener('click', () => {
   mdToggle.setAttribute('aria-expanded', String(!md.hidden))
   mdToggle.textContent = md.hidden ? 'Show the text version' : 'Hide the text version'
 })
+/* 9 · Square wheel + stamps.
+   A square rolls perfectly level along a road of hanging-chain (catenary) arches: each arch is
+   y = a·cosh(u/a) with a = the square's apothem and half-width w = a·asinh(tan(π/4)), and while
+   the axle moves along an arch the square turns by atan(sinh(u/a)). After the first three steps
+   its corners round off and the road flattens, until a circle rolls along a straight line.
+   As it passes each step, a hand-drawn icon stamps onto the ground under the road. */
+;(function () {
+  const sec = document.getElementById('sq')
+  const cv = document.getElementById('sq-canvas')
+  const ctx = cv.getContext('2d')
+  const INK = '#ffffff'
+  const STEPS = ['Interviews', 'Market sizing', 'PRDs', 'Wireframes', 'Testing', 'Pilot']
+  const ROUGH_UNTIL = 0.45 // fraction of the scroll spent on the square (first three steps)
+  let W = 0, H = 0, R = 0, a = 0, w = 0, y0 = 0, x0 = 0, x1 = 0
+  let target = 0, shown = 0, raf = 0
+  const popped = STEPS.map(() => ({ on: false, at: 0 }))
+
+  // Deterministic wobble so the line art looks hand drawn but doesn't shimmer frame to frame.
+  const jitter = (i, j) => (Math.sin(i * 12.9898 + j * 78.233) * 43758.5453 % 1) * 1.6 - 0.8
+  function wobbly(points, closed, seed) {
+    ctx.beginPath()
+    points.forEach(([x, y], i) => {
+      const px = x + jitter(seed, i), py = y + jitter(seed + 7, i)
+      i ? ctx.lineTo(px, py) : ctx.moveTo(px, py)
+    })
+    if (closed) ctx.closePath()
+    ctx.stroke()
+  }
+  const rect = (x, y, w2, h2, seed) => wobbly([[x, y], [x + w2, y], [x + w2, y + h2], [x, y + h2]], true, seed)
+  const line = (xa, ya, xb, yb, seed) => wobbly([[xa, ya], [(xa + xb) / 2, (ya + yb) / 2], [xb, yb]], false, seed)
+  function ring(cx, cy, r, seed) {
+    const pts = []
+    for (let i = 0; i < 16; i++) pts.push([cx + Math.cos(i / 16 * Math.PI * 2) * r, cy + Math.sin(i / 16 * Math.PI * 2) * r])
+    wobbly(pts, true, seed)
+  }
+
+  // The six stamps, each drawn in a 28px box centred on (0, 0).
+  const ICONS = [
+    (s) => { rect(-13, -10, 26, 16, s); wobbly([[-6, 6], [-9, 12], [0, 6]], false, s + 1) },                 // speech bubble
+    (s) => { line(-13, 12, 13, 12, s); rect(-10, 2, 5, 10, s + 1); rect(-2, -4, 5, 16, s + 2); rect(6, -11, 5, 23, s + 3) }, // bar chart
+    (s) => { wobbly([[-10, -13], [5, -13], [10, -8], [10, 13], [-10, 13]], true, s); line(-6, -4, 6, -4, s + 1); line(-6, 1, 6, 1, s + 2); line(-6, 6, 3, 6, s + 3) }, // page
+    (s) => { rect(-13, -11, 26, 22, s); line(-13, -5, 13, -5, s + 1); rect(-10, -2, 9, 10, s + 2); rect(2, -2, 8, 4, s + 3); rect(2, 4, 8, 4, s + 4) }, // wireframe
+    (s) => { ring(0, 0, 12, s); wobbly([[-6, 0], [-1, 5], [7, -5]], false, s + 1) },                           // check
+    (s) => { line(-8, 13, -8, -13, s); wobbly([[-8, -13], [10, -9], [-8, -4]], true, s + 1) },                 // flag
+  ]
+
+  function size() {
+    const dpr = Math.min(devicePixelRatio || 1, 2)
+    W = cv.clientWidth; H = cv.clientHeight
+    cv.width = W * dpr; cv.height = H * dpr
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    R = Math.min(W, H) * 0.09                     // the square's circumradius
+    a = R * Math.cos(Math.PI / 4)                 // its apothem: half a side
+    w = a * Math.asinh(Math.tan(Math.PI / 4))     // half the width of one arch
+    y0 = H * 0.5                                  // the axle's height while it's a square
+    x0 = -R; x1 = W - R * 1.6
+  }
+
+  // Road height at x (screen y, down is +), blending the arches into a flat line by q.
+  const archY = (x) => { const u = ((x % (2 * w)) + 2 * w) % (2 * w) - w; return y0 + a * Math.cosh(u / a) }
+  const flatY = () => y0 + a
+  const roadY = (x, q) => archY(x) * (1 - q) + flatY() * q
+  // The square's turn at axle position x on the arches.
+  function roughTurn(x) {
+    const k = Math.floor((x + w) / (2 * w))
+    const u = x - k * 2 * w
+    return k * Math.PI / 2 + Math.atan(Math.sinh(u / a))
+  }
+
+  // Outline of a square (half-side a) with rounded corners (radius cr, up to a = a circle).
+  function shapePoints(cr, turn) {
+    const pts = [], h = a, r = Math.max(0.001, cr)
+    const corners = [[h - r, h - r], [-(h - r), h - r], [-(h - r), -(h - r)], [h - r, -(h - r)]]
+    corners.forEach(([cx, cy], c) => {
+      for (let i = 0; i <= 8; i++) {
+        const t = (c * Math.PI) / 2 + (i / 8) * (Math.PI / 2)
+        pts.push([cx + Math.cos(t) * r, cy + Math.sin(t) * r])
+      }
+    })
+    return pts.map(([x, y]) => [x * Math.cos(turn) - y * Math.sin(turn), x * Math.sin(turn) + y * Math.cos(turn)])
+  }
+
+  function draw(p, now) {
+    const xs = x0 + (x1 - x0) * ROUGH_UNTIL
+    const cx = x0 + (x1 - x0) * p
+    const qRaw = Math.max(0, (p - ROUGH_UNTIL) / (0.9 - ROUGH_UNTIL))
+    const q = Math.min(1, qRaw * qRaw * (3 - 2 * qRaw))
+    const turn = cx <= xs ? roughTurn(cx) : roughTurn(xs) + (cx - xs) / a
+    const pts = shapePoints(q * a, turn)
+    const lowest = Math.max(...pts.map(([, y]) => y))
+    // On the arches the axle stays level (exact); as it rounds off, it rests on the flattening road.
+    const cy = y0 * (1 - q) + (roadY(cx, q) - lowest) * q
+
+    ctx.clearRect(0, 0, W, H)
+    ctx.strokeStyle = INK; ctx.fillStyle = INK; ctx.lineCap = 'round'; ctx.lineJoin = 'round'
+
+    // Road
+    ctx.lineWidth = 1.5
+    ctx.beginPath()
+    for (let x = 0; x <= W; x += 3) x ? ctx.lineTo(x, roadY(x, q)) : ctx.moveTo(x, roadY(x, q))
+    ctx.stroke()
+
+    // Wheel, in outline, with its axle and one spoke so the turning reads
+    ctx.lineWidth = 2
+    ctx.save(); ctx.translate(cx, cy)
+    ctx.beginPath(); pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath(); ctx.stroke()
+    ctx.beginPath(); ctx.arc(0, 0, 3, 0, Math.PI * 2); ctx.fill()
+    ctx.lineWidth = 1.2
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(pts[4][0] * 0.8, pts[4][1] * 0.8); ctx.stroke()
+    ctx.restore()
+
+    // Stamps: pop in once the wheel has passed their spot, go again if you scroll back
+    const groundY = y0 + a + Math.min(H * 0.18, 120)
+    let animating = false
+    STEPS.forEach((label, i) => {
+      const sx = x0 + (x1 - x0) * ((i + 0.5) / STEPS.length) + R
+      const passed = cx >= sx
+      const st = popped[i]
+      if (passed && !st.on) { st.on = true; st.at = now }
+      if (!passed && st.on) { st.on = false; st.at = now }
+      const k = reduced ? 1 : Math.min(1, (now - st.at) / 280)
+      // In: grows from 40% with a small overshoot. Out: shrinks away.
+      const scale = st.on ? 0.4 + 0.6 * Math.min(1, k * 1.4) + 0.15 * Math.sin(k * Math.PI) : 1 - k
+      const shown = st.on ? Math.min(1, k * 1.6) : 1 - k
+      if (k < 1) animating = true
+      if (shown <= 0.01) return
+      ctx.save()
+      ctx.globalAlpha = shown
+      ctx.translate(sx, groundY)
+      ctx.scale(Math.max(0.01, scale), Math.max(0.01, scale))
+      ctx.lineWidth = 1.6
+      ICONS[i](i * 31 + 3)
+      ctx.restore()
+      ctx.save()
+      ctx.globalAlpha = shown
+      ctx.font = '500 12px ui-monospace, Menlo, monospace'
+      ctx.textAlign = 'center'
+      ctx.fillText(label.toUpperCase(), sx, groundY + 34)
+      ctx.restore()
+    })
+    return animating
+  }
+
+  function tick(now) {
+    shown += (target - shown) * 0.2
+    if (Math.abs(target - shown) < 0.0005) shown = target
+    const popping = draw(shown, now)
+    raf = shown === target && !popping ? 0 : requestAnimationFrame(tick)
+  }
+  function onScrollSq() {
+    target = progressOf(sec)
+    if (!raf) raf = requestAnimationFrame(tick)
+  }
+  addEventListener('scroll', onScrollSq, { passive: true })
+  addEventListener('resize', () => { size(); draw(shown, performance.now()) })
+  size(); onScrollSq()
+})()
 </script>
 </body>
 </html>

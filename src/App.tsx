@@ -1,6 +1,5 @@
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence, LazyMotion, MotionConfig, domAnimation } from 'motion/react'
-import Nav from './components/Nav'
 import IndexNav from './components/IndexNav'
 import SiteCards from './components/SiteCards'
 import { CardsProvider, OpenCardOnMount } from './components/Cards'
@@ -17,7 +16,8 @@ export default function App() {
     <LazyMotion features={domAnimation} strict>
       <MotionConfig reducedMotion="user">
         <CardsProvider>
-        <Nav />
+        {/* The bottom-left Contact (Nav.tsx) is off every screen since 2026-10-17 (Jayanth); the file
+            is kept. Contact is the index's "Say hi", the blue screen's button and the Ask box. */}
         {/* Outside the routed pages, so it stays still while they change. */}
         <IndexNav />
         <SiteCards />

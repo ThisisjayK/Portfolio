@@ -21,10 +21,10 @@
   --bloom-cornflower: #3434f4;
   --bloom-navy: #060561;
 
-  /* Type (Jayanth, 2026-10-17): Meshed Display Bold for body, Meshed Display Black for
-     headings. Inter stays as the fallback for glyphs the display fonts lack. */
-  --font-body: 'Meshed Display', 'Inter Variable', system-ui, sans-serif;
-  --font-display: 'Meshed Display', 'Inter Variable', serif;
+  /* Type (Jayanth, 2026-10-18): the index nav's Alte Haas Grotesk Bold everywhere, body and
+     headings (was Meshed Display, 2026-10-17). Inter stays as the fallback for glyphs it lacks. */
+  --font-body: 'Alte Haas Grotesk', 'Inter Variable', system-ui, sans-serif;
+  --font-display: 'Alte Haas Grotesk', 'Inter Variable', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
   /* The hero A–Z mix (2026-10-17): each letter gets one at random per visit.
      All SIL OFL, self-hosted via Fontsource (Latin subsets only). */
@@ -37,7 +37,7 @@
   --font-letter-serif-1: 'DM Serif Display', Georgia, serif;
   --font-letter-serif-2: 'Bodoni Moda Variable', 'Bodoni 72', serif;
   --weight-body: 700;
-  --weight-heading: 900;
+  --weight-heading: 700; /* Alte Haas only comes in Bold; 900 would be a faked, smeared bold */
 
   /* Sizes: body 18px / 1.5 (Butterick: 15–25px on the web; Material 3 Body Large is 16px,
      nudged up because Meshed's hairlines are thin). Headings after Material 3's Display

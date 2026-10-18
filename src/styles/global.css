@@ -63,6 +63,7 @@ a {
   font-family: var(--font-display);
   text-transform: uppercase;
   font-weight: var(--weight-heading);
+  letter-spacing: -0.03em; /* tight, like the index (2026-10-18) */
   line-height: 0.9;
 }
 

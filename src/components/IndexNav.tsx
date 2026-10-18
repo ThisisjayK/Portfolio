@@ -5,15 +5,13 @@
 // - Hover or keyboard focus: a heavy bar wipes in left to right through the middle of the words,
 //   like a thick strikethrough, leaving a gap above and below; the words knock out to white
 //   where it crosses them. It wipes out to the right on leave. The current page keeps the bar.
-// - Hovering an item also shows a preview of its article beside it (LetterPreview).
 // - On the home page each item steps aside as the bloom covers its spot (data-zoom-cover,
-//   Hero.tsx), and the whole index hides on the blue sections, where Contact takes over.
+//   Hero.tsx), and the whole index hides on the blue sections.
 // - Phones: an "Index" button opens the same index full screen, as a proper dialog.
 import { useEffect, useRef, useState, type FocusEvent, type MouseEvent, type PointerEvent } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useCards } from './Cards'
 import { usePageHop } from './pageHop'
-import LetterPreview from './LetterPreview'
 import { letterPages, type LetterPage } from '../content/letters'
 import './IndexNav.css'
 
@@ -39,13 +37,11 @@ function IndexList({
   current,
   onGo,
   onContact,
-  onPreview,
   big,
 }: {
   current: string
   onGo: (page: LetterPage, e: MouseEvent<HTMLAnchorElement>) => void
   onContact: () => void
-  onPreview?: (page: LetterPage | null, el: HTMLElement | null) => void
   big?: boolean
 }) {
   return (
@@ -67,24 +63,11 @@ function IndexList({
                   href={`${import.meta.env.BASE_URL}${p.slug}`}
                   data-label={p.topic}
                   aria-current={current === p.slug ? 'page' : undefined}
-                  aria-describedby={onPreview ? 'index-preview' : undefined}
                   onClick={(e) => onGo(p, e)}
-                  onPointerEnter={(e) => {
-                    strikeIn(e)
-                    onPreview?.(p, e.currentTarget)
-                  }}
-                  onPointerLeave={(e) => {
-                    strikeOut(e)
-                    onPreview?.(null, null)
-                  }}
-                  onFocus={(e) => {
-                    strikeIn(e)
-                    if (e.currentTarget.matches(':focus-visible')) onPreview?.(p, e.currentTarget)
-                  }}
-                  onBlur={(e) => {
-                    strikeOut(e)
-                    onPreview?.(null, null)
-                  }}
+                  onPointerEnter={strikeIn}
+                  onPointerLeave={strikeOut}
+                  onFocus={strikeIn}
+                  onBlur={strikeOut}
                 >
                   {p.topic}
                 </a>
@@ -128,23 +111,10 @@ export default function IndexNav() {
   const toggle = useRef<HTMLButtonElement>(null)
   const dialog = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
-  const [preview, setPreview] = useState<{ page: LetterPage; el: HTMLElement } | null>(null)
   const current = pathname.replace(/^\/+|\/+$/g, '')
-
-  const showPreview = (page: LetterPage | null, el: HTMLElement | null) =>
-    setPreview(page && el ? { page, el } : null)
-
-  // The preview closes as soon as the page scrolls.
-  useEffect(() => {
-    if (!preview) return
-    const close = () => setPreview(null)
-    window.addEventListener('scroll', close, { passive: true, once: true })
-    return () => window.removeEventListener('scroll', close)
-  }, [preview])
 
   const onGo = (page: LetterPage, e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
-    setPreview(null)
     setOpen(false)
     if (current === page.slug) return
     // The index stays put while the page breaks apart; it only twitches.
@@ -191,18 +161,16 @@ export default function IndexNav() {
         ref={nav}
         className={away ? 'index index--away' : 'index'}
         aria-label="Index"
-        data-preview-edge
         aria-hidden={away || undefined}
         inert={away || undefined}
         onAnimationEnd={(e) => e.currentTarget.classList.remove('is-twitching')}
       >
         <p className="index-label mono">Index</p>
-        <IndexList current={current} onGo={onGo} onContact={onContact} onPreview={showPreview} />
+        <IndexList current={current} onGo={onGo} onContact={onContact} />
         <p className="index-count mono" aria-label={`${letterPages.length} pages`}>
           {pad(letterPages.length)}
         </p>
       </nav>
-      <LetterPreview page={preview?.page ?? null} anchor={preview?.el ?? null} id="index-preview" />
 
       {/* Phones */}
       <button

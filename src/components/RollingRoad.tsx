@@ -4,14 +4,34 @@
 // on a flat line, under the steps of the Stage Zero work (about-me.md §3). The heading is
 // Jayanth's own reflection. 2D canvas; eases 20% of the way to the scroll position each frame
 // and draws only while it's moving. Reduced motion: follows the scroll without easing.
-import { useEffect, useRef, useState } from 'react'
-import { useReducedMotion } from 'motion/react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useAnimate, useReducedMotion } from 'motion/react'
 import RevealText from './RevealText'
 import './RollingRoad.css'
 
 const STEPS = ['Interviews', 'Market sizing', 'PRDs', 'Wireframes', 'Testing', 'Pilot']
 const LUMPS = [1.08, 0.9, 1.12, 0.94, 1.05, 0.88, 1.1, 0.96]
 const TAU = Math.PI * 2
+
+// A lumpy closed blob (8 points, smooth Catmull-Rom curve) in a 24×24 box, for the hopper.
+// Every call gives new lumps; the path always has the same commands, so it can morph.
+function amoeba() {
+  const n = 8
+  const pts = Array.from({ length: n }, (_, i) => {
+    const a = (i / n) * TAU
+    const r = 9 * (0.82 + Math.random() * 0.36)
+    return [12 + Math.cos(a) * r, 12 + Math.sin(a) * r]
+  })
+  let d = `M${pts[0][0].toFixed(2)},${pts[0][1].toFixed(2)}`
+  for (let i = 0; i < n; i++) {
+    const p0 = pts[(i - 1 + n) % n], p1 = pts[i], p2 = pts[(i + 1) % n], p3 = pts[(i + 2) % n]
+    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6]
+    const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6]
+    d += `C${c1[0].toFixed(2)},${c1[1].toFixed(2)} ${c2[0].toFixed(2)},${c2[1].toFixed(2)} ${p2[0].toFixed(2)},${p2[1].toFixed(2)}`
+  }
+  return d + 'Z'
+}
+const FIRST_AMOEBA = amoeba()
 
 // The blob's radius at angle t in its own frame: a smooth closed curve through the 8 lumps.
 function radiusAt(t: number, r: number, rough: number) {
@@ -30,6 +50,78 @@ export default function RollingRoad() {
   const canvas = useRef<HTMLCanvasElement>(null)
   const reduced = useReducedMotion()
   const [step, setStep] = useState(-1)
+  const steps = useRef<HTMLOListElement>(null)
+  const [hopper, animateHop] = useAnimate<HTMLSpanElement>()
+  const landed = useRef<number>(-1)
+
+  // A small, slimy amoeba floats centred above the steps and hops onto each new step the big
+  // blob reaches (Jayanth, 2026-10-17): it stretches tall as it leaves, squashes wide as it
+  // lands, wobbles back, and its lumps reshape in flight. Still between hops; reduced motion
+  // moves it without the arc, squash or reshaping.
+  // A blink: the eyes close and open in ~160ms.
+  const blink = () => {
+    const el = hopper.current
+    if (!el || reduced) return
+    el.classList.remove('is-blinking')
+    void el.offsetWidth
+    el.classList.add('is-blinking')
+  }
+
+  // It also blinks now and then on its own, at random 2–6s gaps, but only while the section is on
+  // screen and the tab is visible. Reduced motion: no blinking. (A deliberate exception to the
+  // no-ambient-motion rule, design-system.md §6.)
+  useEffect(() => {
+    const sec = section.current
+    if (!sec || reduced) return
+    let timer = 0
+    let onScreen = false
+    const next = () => {
+      timer = window.setTimeout(() => {
+        if (onScreen && !document.hidden) blink()
+        next()
+      }, 2000 + Math.random() * 4000)
+    }
+    const io = new IntersectionObserver(([e]) => (onScreen = e.isIntersecting))
+    io.observe(sec)
+    next()
+    return () => {
+      clearTimeout(timer)
+      io.disconnect()
+    }
+  }, [reduced])
+
+  useLayoutEffect(() => {
+    const list = steps.current
+    const el = hopper.current
+    const path = el?.querySelector('path')
+    if (!list || !el || !path) return
+    const place = (to: number, jump: boolean) => {
+      const li = list.children[Math.max(0, to)] as HTMLElement | undefined
+      if (!li) return
+      // Centred over the step's label, relative to the steps' wrapper.
+      const x = li.offsetLeft + li.offsetWidth / 2 - el.offsetWidth / 2
+      const shown = to >= 0 ? 1 : 0
+      if (!jump || reduced) {
+        animateHop(el, { x, y: 0, opacity: shown }, { duration: reduced ? 0 : 0.2 })
+        return
+      }
+      const ease = [0.22, 1, 0.36, 1] as const
+      // Arc, with squash and stretch: tall on take-off, wide on landing, a small wobble back.
+      animateHop(
+        el,
+        { x, y: [0, -30, 0, 0, 0], scaleX: [1, 0.8, 1.3, 0.92, 1], scaleY: [1, 1.25, 0.72, 1.08, 1], opacity: shown },
+        { duration: 0.6, times: [0, 0.35, 0.62, 0.82, 1], ease },
+      )
+      // New lumps, morphed by a CSS transition on `d` (Chrome, Firefox; Safari just swaps them).
+      path.style.setProperty('d', `path("${amoeba()}")`)
+    }
+    if (landed.current >= 0 && step >= 0 && step !== landed.current) blink()
+    place(step, landed.current >= 0 && step >= 0 && step !== landed.current)
+    landed.current = step
+    const onResize = () => place(landed.current, false)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [step, reduced, animateHop, hopper])
 
   useEffect(() => {
     const sec = section.current
@@ -149,13 +241,27 @@ export default function RollingRoad() {
       <div className="road-stage">
         <canvas ref={canvas} className="road-canvas" aria-hidden="true" />
         <RevealText as="h2" id="road-title" className="display road-title" text="Zero to one was a little messy. Every day was different." />
-        <ol className="road-steps mono" aria-label="What the work at Stage Zero Health covered">
-          {STEPS.map((s, i) => (
-            <li key={s} className={i <= step ? 'is-on' : undefined}>
+        <div className="road-steps-wrap">
+        <ol ref={steps} className="road-steps mono" aria-label="What the work at Stage Zero Health covered">
+          {STEPS.map((s) => (
+            <li key={s}>
               {s}
             </li>
           ))}
         </ol>
+          {/* Decorative, so it sits beside the list, not in it. */}
+          <span ref={hopper} className="road-hopper" aria-hidden="true">
+            <svg viewBox="0 0 24 24" overflow="visible">
+              <path d={FIRST_AMOEBA} />
+              {/* Three eyes that blink (Jayanth, 2026-10-17). */}
+              <g className="road-hopper-eyes">
+                <circle cx="7.6" cy="10.4" r="1.6" />
+                <circle cx="12" cy="8.6" r="1.8" />
+                <circle cx="16.4" cy="10.4" r="1.6" />
+              </g>
+            </svg>
+          </span>
+        </div>
       </div>
     </section>
   )

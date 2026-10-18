@@ -47,13 +47,19 @@ export default function RollBox() {
   useEffect(() => {
     let lastY = window.scrollY
     let lastAt = 0
+    let lastStep = 0
     const onScroll = () => {
       const y = window.scrollY
       if (y === lastY) return // no movement (e.g. a late duplicate event): not part of a gesture
+      // Ignore Safari's rubber-band bounce past either end of the page (it flips direction).
+      if (y < 0 || y > document.documentElement.scrollHeight - window.innerHeight) return
       const now = performance.now()
       // Work out the direction now: the state updater runs later, after lastY has moved on.
       const step = y > lastY ? 1 : -1
-      if (now - lastAt > GESTURE_GAP) setTurn((t) => t + step)
+      // A new gesture: after a pause, or as soon as the direction flips (trackpad momentum can
+      // still be firing when you reverse, so a pause alone would miss it).
+      if (now - lastAt > GESTURE_GAP || step !== lastStep) setTurn((t) => t + step)
+      lastStep = step
       lastY = y
       lastAt = now
     }

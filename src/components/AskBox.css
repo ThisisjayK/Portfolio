@@ -1,79 +1,111 @@
-/* Ask about me (AskBox.tsx): white on the theme blue; buttons from Home.css. */
+/* Ask about me (AskBox.tsx), redacted version: white on the theme blue; buttons from Home.css. */
 .ask {
   min-height: 100svh;
-  display: grid;
-  place-items: center;
   padding: var(--space-9) var(--gutter);
   --ink: var(--on-accent);
   --surface: var(--accent-fill);
   background: var(--surface);
   color: var(--ink);
+  display: grid;
+  align-items: center;
 }
 .ask-inner {
-  width: min(100%, var(--reading));
+  width: min(100%, 1000px);
+  margin: 0 auto;
 }
-.ask-title {
-  margin: 0 0 var(--space-3);
-  font-size: var(--text-h1);
-  line-height: var(--leading-heading);
-  text-transform: none;
-}
-.ask-note {
-  margin: 0 0 var(--space-6);
-}
+
+/* The question line: big type on one underline. */
 .ask-form {
   display: flex;
-  gap: var(--space-3);
+  border-bottom: 2px solid var(--ink);
+}
+.ask-form:focus-within {
+  border-bottom-style: dashed;
 }
 .ask-form input {
   flex: 1;
   min-width: 0;
-  min-height: var(--target);
-  padding: 0 var(--space-4);
-  border: 1.5px solid var(--ink);
-  border-radius: 999px;
-  background: var(--bg);
-  color: var(--fg);
-  font: inherit;
+  padding: 0 0 var(--space-2);
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: var(--weight-heading) clamp(32px, 4.4vw, 60px) / 1.1 var(--font-display);
+  outline: none;
 }
-.ask-form input:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 2px;
+.ask-form input::placeholder {
+  color: var(--ink);
+  opacity: 0.4;
 }
-.ask-chips {
+
+.ask-tries {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
-  margin: var(--space-4) 0 0;
+  gap: 0 var(--space-4);
+  margin: var(--space-2) 0 0;
   padding: 0;
   list-style: none;
 }
-.ask-chips button {
+.ask-tries button {
   min-height: var(--target);
-  padding: 0 var(--space-4);
-  border: 1px solid var(--ink);
-  border-radius: 999px;
+  padding: 0;
+  border: 0;
   background: none;
   color: var(--ink);
   font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  opacity: 0.7;
   cursor: pointer;
 }
-.ask-chips button:hover {
-  background: var(--ink);
-  color: var(--surface);
+.ask-tries button:hover {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
-.ask-chips button:focus-visible {
+.ask-tries button:focus-visible {
+  opacity: 1;
   outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
-.ask-out {
-  min-height: var(--space-9);
-  margin-top: var(--space-6);
+
+/* The answer and the bars over it. */
+.ask-doc {
+  position: relative;
+  margin-top: var(--space-8);
+  max-width: 28ch;
+  min-height: 3.75em;
+  font: var(--weight-heading) clamp(28px, 3.4vw, 46px) / 1.25 var(--font-display);
 }
-.ask-answer {
-  margin: 0 0 var(--space-3);
-  text-align: justify;
-}
-.ask-source {
+.ask-text {
   margin: 0;
+}
+/* Bars that stay: hide the words under them so nothing peeks out at the edges. */
+.ask-doc--sealed .ask-text {
+  color: transparent;
+}
+.ask-bars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.ask-bar {
+  position: absolute;
+  background: var(--ink);
+}
+.ask-bar--lift {
+  transform-origin: right;
+  animation: ask-lift 650ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 140ms);
+}
+@keyframes ask-lift {
+  to {
+    transform: scaleX(0);
+  }
+}
+
+.ask-private {
+  margin-top: var(--space-5);
+}
+.ask-private .mono {
+  margin: 0 0 var(--space-3);
 }
