@@ -1,6 +1,7 @@
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence, LazyMotion, MotionConfig, domAnimation } from 'motion/react'
 import Nav from './components/Nav'
+import IndexNav from './components/IndexNav'
 import SiteCards from './components/SiteCards'
 import { CardsProvider, OpenCardOnMount } from './components/Cards'
 import Page from './components/Page'
@@ -17,6 +18,8 @@ export default function App() {
       <MotionConfig reducedMotion="user">
         <CardsProvider>
         <Nav />
+        {/* Outside the routed pages, so it stays still while they change. */}
+        <IndexNav />
         <SiteCards />
         <AnimatePresence mode="wait" initial={false}>
           <Routes location={location} key={location.pathname}>

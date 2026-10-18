@@ -10,6 +10,19 @@ html {
 
 /* The head-lid stage is wider than the face; never let it cause sideways scrolling. */
 html,
+/* Every surface sets the ink (text, lines, outlines) and the surface colour that sit on it, so
+   buttons and canvases adapt (2026-10-17). The blue sections and the blue card flip them. */
+:root {
+  --ink: var(--fg);
+  --surface: var(--bg);
+}
+.on-accent {
+  --ink: var(--on-accent);
+  --surface: var(--accent-fill);
+  background: var(--surface);
+  color: var(--ink);
+}
+
 body {
   overflow-x: clip;
 }

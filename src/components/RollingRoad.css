@@ -1,9 +1,11 @@
-/* The rolling blob section (RollingRoad.tsx): on the accent fill, ink lines, a paper blob. */
+/* The rolling blob section (RollingRoad.tsx): on the theme blue, white lines and a white blob. */
 .road {
   position: relative;
   height: 400svh; /* scroll distance for the roll */
-  background: var(--accent-fill);
-  color: var(--fg);
+  --ink: var(--on-accent);
+  --surface: var(--accent-fill);
+  background: var(--surface);
+  color: var(--ink);
 }
 .road-stage {
   position: sticky;

@@ -1,8 +1,8 @@
-/* The hover preview of a letter's article (LetterPreview.tsx). Tokens only. It sits in the hero
-   stage, above the A–Z, its top level with the letter's. */
+/* The hover preview of a letter page's article (LetterPreview.tsx). Tokens only. Fixed to the
+   viewport beside the hovered index item, its top level with the item's. */
 .letter-preview {
-  position: absolute;
-  z-index: 3;
+  position: fixed;
+  z-index: 35; /* above the index nav (30), under the cards (40) */
   width: min(320px, 30vw);
   margin: 0;
   padding: var(--space-4) var(--space-5);

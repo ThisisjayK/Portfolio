@@ -1,8 +1,9 @@
-// A small preview of a letter's article, shown to the right of the hovered (or keyboard-focused)
-// letter in the hero's A–Z (Jayanth, 2026-10-17; in the spirit of React Bits Pro's "Hover
-// Preview", written from scratch, not installed). It springs out from the letter's side: the
-// title, then the first lines of the article, clamped. Its top lines up with the letter's, so it
-// hangs downward and clears the roll box; near the right edge it opens to the left instead. It's only a preview: the letter stays the thing you click.
+// A small preview of a letter page's article, shown beside the hovered (or keyboard-focused)
+// item that links to it: the index nav's items now, the hero's A–Z before (Jayanth, 2026-10-17;
+// in the spirit of React Bits Pro's "Hover Preview", written from scratch, not installed). It
+// springs out from the item's side: the title, then the first lines of the article, clamped.
+// Its top lines up with the item's; near the right edge it opens to the left instead. It's only
+// a preview: the item stays the thing you click. Positioned against the viewport (fixed).
 import { useLayoutEffect, useRef, useState } from 'react'
 import { AnimatePresence } from 'motion/react'
 import * as m from 'motion/react-m'
@@ -24,19 +25,15 @@ export default function LetterPreview({ page, anchor, id }: Props) {
   const card = useRef<HTMLDivElement>(null)
   const [place, setPlace] = useState<{ x: number; y: number; side: 'right' | 'left' } | null>(null)
 
-  // Placed from the letter's box, relative to the hero stage the card lives in.
+  // Placed from the item's box, in viewport coordinates.
   useLayoutEffect(() => {
-    const stage = card.current?.offsetParent ?? anchor?.closest('.hero-stage')
-    if (!anchor || !stage) return
+    if (!anchor) return
     const r = anchor.getBoundingClientRect()
-    const s = stage.getBoundingClientRect()
+    // Inside a column (the index), open beside the whole column so no other item is covered.
+    const edge = anchor.closest('[data-preview-edge]')?.getBoundingClientRect().right ?? r.right
     const width = card.current?.offsetWidth ?? Math.min(320, innerWidth * 0.3)
-    const side = r.right + GAP + width > s.right - 16 ? 'left' : 'right'
-    setPlace({
-      x: side === 'right' ? r.right - s.left + GAP : r.left - s.left - GAP,
-      y: r.top - s.top,
-      side,
-    })
+    const side = edge + GAP + width > innerWidth - 16 ? 'left' : 'right'
+    setPlace({ x: side === 'right' ? edge + GAP : r.left - GAP, y: r.top, side })
   }, [anchor, page])
 
   return (

@@ -57,7 +57,7 @@
   width: min(22ch, 84vw);
   margin: 0;
   text-align: center;
-  color: var(--fg);
+  color: var(--on-accent);
   font-size: clamp(26px, min(3vw, 5vh), 44px);
   line-height: 1.02;
   pointer-events: none;

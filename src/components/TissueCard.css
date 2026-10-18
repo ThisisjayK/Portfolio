@@ -17,8 +17,11 @@
   overflow: auto;
   padding: var(--space-6) var(--space-5) var(--space-5);
   border-radius: 6px;
-  color: var(--fg);
-  background-color: var(--accent-fill);
+  /* The blue card: white on the theme blue. The white card (on the blue sections) flips back. */
+  --ink: var(--on-accent);
+  --surface: var(--accent-fill);
+  color: var(--ink);
+  background-color: var(--surface);
   box-shadow: 0 1px 0 rgb(255 255 255 / 0.35) inset, 0 24px 60px rgb(17 17 17 / 0.22), 0 4px 12px rgb(17 17 17 / 0.12);
   outline: none;
   isolation: isolate;
@@ -39,6 +42,8 @@
 }
 
 .tissue--white {
+  --ink: var(--fg);
+  --surface: var(--paper);
   background-color: var(--paper);
 }
 .tissue--white::before {
@@ -46,7 +51,7 @@
 }
 
 .tissue:focus-visible {
-  outline: 2px solid var(--fg);
+  outline: 2px solid var(--ink);
   outline-offset: 4px;
 }
 
@@ -58,7 +63,7 @@
   padding: 0 var(--space-3);
   border: 0;
   background: none;
-  color: var(--fg);
+  color: var(--ink);
   cursor: pointer;
 }
 
@@ -102,7 +107,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--fg);
+  background: var(--ink);
 }
 
 .tissue-links {

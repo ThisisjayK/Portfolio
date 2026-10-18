@@ -2,7 +2,7 @@
 // scrolls, on slightly grainy white. Each layer is drawn its own way:
 //   mist        a feathered wash, the widest and palest
 //   powder      contour ripples, like lines on a map
-//   sky         a solid amoeba (the letters' blob shape, --accent-fill)
+//   sky         a solid amoeba (the letters' blob shape, --bloom-sky)
 //   cornflower  a halftone dot screen, dots biggest at its centre
 //   cobalt      cut paper, printed slightly off register over a navy shadow (--accent)
 // One fragment shader on a raw WebGL canvas, like SilkBall. Geometry (where each layer is and
@@ -24,7 +24,7 @@ type Layer = {
 const LAYERS: Layer[] = [
   { token: '--bloom-mist', from: 0, to: 0.5, size: 0.62, x: 0.5, y: 0.52, k: 1.1 },
   { token: '--bloom-powder', from: 0.08, to: 0.58, size: 0.5, x: 0.46, y: 0.5, k: 2.3 },
-  { token: '--accent-fill', from: 0.16, to: 0.66, size: 0.4, x: 0.54, y: 0.55, k: 3.2 },
+  { token: '--bloom-sky', from: 0.16, to: 0.66, size: 0.4, x: 0.54, y: 0.55, k: 3.2 },
   { token: '--bloom-cornflower', from: 0.26, to: 0.74, size: 0.3, x: 0.47, y: 0.6, k: 4.4 },
   { token: '--accent', from: 0.36, to: 0.8, size: 0.18, x: 0.53, y: 0.46, k: 5.6 },
 ]

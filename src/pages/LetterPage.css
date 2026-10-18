@@ -69,3 +69,10 @@
   font-size: var(--text-body);
   line-height: var(--leading-body);
 }
+
+/* Desktop: leave room for the index on the left, and centre the column in what's left. */
+@media (min-width: 761px) {
+  .lp {
+    padding-left: calc(var(--index-w) + var(--gutter) * 2);
+  }
+}

@@ -1,9 +1,12 @@
-/* Rack focus (RackFocus.tsx): ink statements on the accent fill, over two soft glows. */
+/* Rack focus (RackFocus.tsx): white statements on the theme blue, over two soft glows in
+   shades white stays readable on (cornflower 6.25:1, navy 16.6:1). */
 .rack {
   position: relative;
   height: 360svh; /* scroll distance for three statements */
-  background: var(--accent-fill);
-  color: var(--fg);
+  --ink: var(--on-accent);
+  --surface: var(--accent-fill);
+  background: var(--surface);
+  color: var(--ink);
 }
 .rack-stage {
   position: sticky;
@@ -25,14 +28,14 @@
   height: 50vmax;
   left: -10vmax;
   top: 10vh;
-  background: var(--bloom-powder);
+  background: var(--bloom-cornflower);
 }
 .rack-glow--b {
   width: 40vmax;
   height: 40vmax;
   right: -8vmax;
   bottom: -5vh;
-  background: var(--bloom-mist);
+  background: var(--bloom-navy);
 }
 .rack-lines {
   position: relative;

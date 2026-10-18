@@ -4,20 +4,22 @@
   --fg: #111111;
   --muted: #6b6b6b;
   --border: #e6e6e6;
-  /* Blue replaced pink on 2026-10-17 (Jayanth). --accent-fill is #8BBDFF for fills and large
-     areas (blobs, the flood, the nav ball): only 1.94:1 on white, so never for text. --accent is
-     the same hue darkened to pass AA for text, links and focus (4.63:1 on white). Ink on
-     --accent-fill is 9.7:1. */
-  --accent: #2072df;
-  --accent-fill: #8bbdff;
+  /* Theme blue (Jayanth, 2026-10-17): #1110E4, a vivid violet-leaning blue (replaced #002FA7,
+     which replaced #2072DF / #8BBDFF). It's 9.47:1 on white, so it serves as text, lines and the
+     strike, and as the fill of the blue sections. Ink (#111) on it is only 1.99:1, so on the blue
+     the text is white (--on-accent, 9.47:1). */
+  --accent: #1110e4;
+  --accent-fill: #1110e4;
+  --on-accent: #ffffff;
   --paper: #fbfaf8; /* off-white paper: the white tissue card and the interest notes */
-  /* The hero's blue bloom (2026-10-17): shades of the accent's own hue (~214°), lightest to
-     darkest. Sky is --accent-fill and cobalt is --accent. Navy is only the cobalt layer's
-     off-register shadow. Fills only, never text. */
-  --bloom-mist: #e6f1ff;
-  --bloom-powder: #bfdbff;
-  --bloom-cornflower: #5a9bf0;
-  --bloom-navy: #123f7d;
+  /* The hero's blue bloom: shades of the theme's own hue (~240°), lightest to darkest. Cobalt
+     is --accent. Navy is the cobalt layer's off-register shadow. Fills only, never text, except
+     as backdrops that white text stays readable on (cornflower 7.13:1, navy 17.5:1). */
+  --bloom-mist: #e8e8fc;
+  --bloom-powder: #bfbff8;
+  --bloom-sky: #7271f4;
+  --bloom-cornflower: #3434f4;
+  --bloom-navy: #060561;
 
   /* Type (Jayanth, 2026-10-17): Meshed Display Bold for body, Meshed Display Black for
      headings. Inter stays as the fallback for glyphs the display fonts lack. */
@@ -45,6 +47,12 @@
   --text-h1: clamp(40px, 4.5vw, 57px);
   --text-h2: 32px;
   --text-letters: 24px; /* the hero A–Z (Jayanth, 2026-10-17) */
+  /* The index nav (2026-10-17, after aiu.is): Alte Haas Grotesk Bold (Jayanth, 2026-10-17),
+     items 28px, group titles 32px. Self-hosted in fonts.css. */
+  --font-index: 'Alte Haas Grotesk', 'Inter Variable', system-ui, sans-serif;
+  --text-index-group: 32px;
+  --text-index: 28px;
+  --index-w: 264px;
   --leading-heading: 1.1;
 
   --space-1: 4px;

@@ -1,11 +1,13 @@
-/* Ask about me (AskBox.tsx): on the accent fill, ink text; buttons from Home.css. */
+/* Ask about me (AskBox.tsx): white on the theme blue; buttons from Home.css. */
 .ask {
   min-height: 100svh;
   display: grid;
   place-items: center;
   padding: var(--space-9) var(--gutter);
-  background: var(--accent-fill);
-  color: var(--fg);
+  --ink: var(--on-accent);
+  --surface: var(--accent-fill);
+  background: var(--surface);
+  color: var(--ink);
 }
 .ask-inner {
   width: min(100%, var(--reading));
@@ -28,14 +30,14 @@
   min-width: 0;
   min-height: var(--target);
   padding: 0 var(--space-4);
-  border: 1.5px solid var(--fg);
+  border: 1.5px solid var(--ink);
   border-radius: 999px;
   background: var(--bg);
   color: var(--fg);
   font: inherit;
 }
 .ask-form input:focus-visible {
-  outline: 2px solid var(--fg);
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
 .ask-chips {
@@ -49,19 +51,19 @@
 .ask-chips button {
   min-height: var(--target);
   padding: 0 var(--space-4);
-  border: 1px solid var(--fg);
+  border: 1px solid var(--ink);
   border-radius: 999px;
   background: none;
-  color: var(--fg);
+  color: var(--ink);
   font: inherit;
   cursor: pointer;
 }
 .ask-chips button:hover {
-  background: var(--fg);
-  color: var(--accent-fill);
+  background: var(--ink);
+  color: var(--surface);
 }
 .ask-chips button:focus-visible {
-  outline: 2px solid var(--fg);
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
 .ask-out {

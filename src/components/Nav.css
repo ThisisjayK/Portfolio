@@ -10,7 +10,7 @@
   padding: 0;
   border: 0;
   background: none;
-  color: var(--fg);
+  color: var(--on-accent); /* only shown on the blue */
   /* Meshed Display Bold, like the body text (Jayanth, 2026-10-17; was Mamenchisa). */
   font-family: var(--font-body);
   font-weight: var(--weight-body);

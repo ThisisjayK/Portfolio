@@ -1,7 +1,9 @@
 .handoff {
   height: 220svh; /* scroll distance for the pinned stage below */
-  background: var(--accent-fill);
-  color: var(--fg);
+  --ink: var(--on-accent);
+  --surface: var(--accent-fill);
+  background: var(--surface);
+  color: var(--ink);
 }
 
 .handoff-stage {
@@ -39,7 +41,8 @@
   gap: var(--space-3);
 }
 
-/* Buttons on the accent fill: ink fill and ink outline (ink on #8BBDFF is 9.7:1). */
+/* Buttons take their colours from the surface they sit on (--ink, --surface): on the blue,
+   a white button with blue text, and a white outline. */
 .btn--ink,
 .btn--outline {
   display: inline-flex;
@@ -47,13 +50,13 @@
   min-height: var(--target);
   padding: 0 var(--space-5);
   border-radius: 999px;
-  border: 1.5px solid var(--fg);
+  border: 1.5px solid var(--ink);
   font: 500 15px/1 var(--font-body);
   text-decoration: none;
   transition: transform var(--dur-fast) var(--ease-out), background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
 }
-.btn--ink { background: var(--fg); color: var(--accent-fill); }
-.btn--outline { background: transparent; color: var(--fg); }
-.btn--outline:hover { background: var(--fg); color: var(--accent-fill); }
+.btn--ink { background: var(--ink); color: var(--surface); }
+.btn--outline { background: transparent; color: var(--ink); }
+.btn--outline:hover { background: var(--ink); color: var(--surface); }
 .btn--ink:hover, .btn--outline:hover { transform: translateY(-2px); }
-.handoff :focus-visible { outline-color: var(--fg); }
+.handoff :focus-visible { outline-color: var(--ink); }

@@ -37,8 +37,10 @@ export default function RollingRoad() {
     const ctx = cv?.getContext('2d')
     if (!sec || !cv || !ctx) return
     const token = (name: string) => getComputedStyle(cv).getPropertyValue(name).trim()
-    const ink = token('--fg')
-    const paper = token('--bg')
+    // Colours of the surface it sits on (white on the theme blue).
+    const ink = token('--ink')
+    const surface = token('--surface')
+    const guide = token('--bloom-sky')
     let W = 0, H = 0, R = 0, target = 0, shown = 0, raf = 0
 
     const size = () => {
@@ -78,7 +80,7 @@ export default function RollingRoad() {
 
       ctx.save()
       ctx.setLineDash([5, 10])
-      ctx.strokeStyle = paper
+      ctx.strokeStyle = guide
       ctx.lineWidth = 1
       ctx.beginPath()
       ctx.moveTo(0, cy)
@@ -97,14 +99,14 @@ export default function RollingRoad() {
         i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)
       }
       ctx.closePath()
-      ctx.fillStyle = paper
+      ctx.fillStyle = ink
       ctx.fill()
       ctx.strokeStyle = ink
       ctx.lineWidth = 1.5
       ctx.stroke()
       ctx.beginPath()
       ctx.arc(0, 0, 3, 0, TAU)
-      ctx.fillStyle = ink
+      ctx.fillStyle = surface
       ctx.fill()
       ctx.restore()
 

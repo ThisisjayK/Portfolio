@@ -17,3 +17,14 @@
   font-display: swap;
   unicode-range: U+0000-002C, U+002E-2012, U+2015-FFFF;
 }
+
+/* Alte Haas Grotesk Bold, for the index (Jayanth, 2026-10-17), by Yann Le Coroller. Freeware:
+   "can be distributed as long as they are together with this text file", so the licence ships
+   beside it (src/assets/fonts/ and public/fonts/AlteHaasGrotesk-licence.txt). Downloaded from
+   dafont.com on 2026-10-17; shipped as downloaded (TTF). Only Bold is used. */
+@font-face {
+  font-family: 'Alte Haas Grotesk';
+  src: url('../assets/fonts/AlteHaasGrotesk-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}

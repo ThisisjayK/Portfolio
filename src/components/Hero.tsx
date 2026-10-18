@@ -6,7 +6,6 @@ import { useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useTr
 import * as m from 'motion/react-m'
 import { intro } from '../content/about'
 import ScrollText from './ScrollText'
-import LetterGrid from './LetterGrid'
 import RollBox from './RollBox'
 import BlueBloom, { bloomCovers } from './BlueBloom'
 import { useCards } from './Cards'
@@ -77,16 +76,14 @@ export default function Hero() {
   const flood = useTransform(scrollYProgress, FLOOD, [0, 1])
   const line = useTransform(scrollYProgress, LINE, [0, 1])
   const cueOpacity = useTransform(scrollYProgress, [0, 0.03], [1, 0])
-  // Belt and braces: once on the blue flood, no letter takes clicks or focus.
-  const [lettersGone, setLettersGone] = useState(false)
-  useMotionValueEvent(scrollYProgress, 'change', (p) => setLettersGone(p >= 0.86))
 
   if (reduced) {
     return (
       <section className="hero hero--static" aria-label="Introduction">
         {/* Reduced motion: one still frame, before any scroll (white grain and the cobalt drop). */}
         <BlueBloom className="hero-media" progress={still} />
-        <LetterGrid />
+        {/* The A–Z letters are off the landing page for now (Jayanth, 2026-10-17); the index
+            nav (IndexNav) leads to the letter pages instead. LetterGrid.tsx is kept. */}
         <RollBox />
         {/* The name and role aren't shown (Jayanth, 2026-10-16); they stay as the page heading for screen readers and search. */}
         <h1 className="visually-hidden">Jayanth Kappagantula, product manager in healthcare</h1>
@@ -98,7 +95,6 @@ export default function Hero() {
     <section ref={track} className="hero" aria-label="Introduction">
       <div ref={stage} className="hero-stage">
         <BlueBloom className="hero-media" progress={scrollYProgress} onReady={setBloomOk} />
-        <LetterGrid hidden={lettersGone} />
         <m.div className="hero-flood" style={{ opacity: flood }} aria-hidden="true" />
         <ScrollText as="h2" className="display hero-line" text={intro.headline} progress={line} />
         {/* The name and role aren't shown (Jayanth, 2026-10-16); they stay as the page heading for screen readers and search. */}
