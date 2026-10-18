@@ -30,8 +30,13 @@ export default function Hero() {
   const [bloomOk, setBloomOk] = useState(false)
 
   // Once the blue is flat, the site is "on blue": the nav steps aside and cards turn white.
+  // 'change' only fires on a change, so a page that loads already past the hero (reload,
+  // back navigation) starts at 1 and never hears one: read the value on mount too.
   useMotionValueEvent(scrollYProgress, 'change', (p) => setOnPink(p >= 0.86))
-  useEffect(() => () => setOnPink(false), [setOnPink])
+  useEffect(() => {
+    setOnPink(scrollYProgress.get() >= 0.86)
+    return () => setOnPink(false)
+  }, [scrollYProgress, setOnPink])
 
   // The A–Z stays put while the bloom grows, and the bloom passes over it: on every scroll,
   // each letter (and the nav, data-zoom-cover; the roll box always stays) whose spot is under a dark enough layer
