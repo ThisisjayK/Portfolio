@@ -5,14 +5,14 @@
   background: rgb(17 17 17 / 0.08);
 }
 
-/* Floating card, right side, vertically centred. */
+/* Floating card, bottom-anchored in the gap just right of the index column (Jayanth,
+   2026-10-18), on every page. It rises in from below. */
 .tissue {
   position: fixed;
   z-index: 41;
-  right: var(--gutter);
-  top: 50%;
-  translate: 0 -50%;
-  width: min(420px, calc(100vw - 2 * var(--gutter)));
+  left: calc(var(--gutter) + var(--index-w));
+  bottom: var(--space-8);
+  width: min(380px, calc(100vw - 2 * var(--gutter)));
   max-height: min(78svh, 680px);
   overflow: auto;
   padding: var(--space-6) var(--space-5) var(--space-5);
@@ -135,11 +135,11 @@
   justify-content: center;
 }
 
+/* Phones: no index column, so the card sits at the bottom, full width. */
 @media (max-width: 760px) {
   .tissue {
-    top: auto;
+    left: var(--gutter);
     bottom: var(--gutter);
-    translate: 0 0;
     max-height: 72svh;
   }
 }

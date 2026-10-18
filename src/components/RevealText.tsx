@@ -38,6 +38,15 @@ export default function RevealText({ text, as: Tag = 'p', className, id, ...rest
       })
     }
     place()
+    // Already on screen when it mounts: show it now, in the same frame. Waiting for the observer
+    // left the words 15px low for a frame, and the grid hop captured them there, so the text
+    // jumped up when the real page took over (Jayanth saw it, 2026-10-18).
+    const r = el.getBoundingClientRect()
+    if (r.top < window.innerHeight * 0.85 && r.bottom > 0) {
+      el.classList.add('reveal--instant', 'reveal--in')
+      window.addEventListener('resize', place)
+      return () => window.removeEventListener('resize', place)
+    }
     let first = true
     const io = new IntersectionObserver(
       ([entry]) => {

@@ -274,7 +274,8 @@ export function hopIn(root: HTMLElement): () => void {
 
   document.fonts.ready.then(() => {
     if (cancelled) return
-    // Page.tsx is still lifting the page into place; draw where it will end up.
+    // Draw where the page will end up, in case main is still transformed (Page.tsx no longer
+    // lifts it, so this is normally 0).
     const main = root.closest('main')
     const lift = main ? new DOMMatrixReadOnly(getComputedStyle(main).transform).m42 : 0
     const src = raster(targetsIn(root), lift)

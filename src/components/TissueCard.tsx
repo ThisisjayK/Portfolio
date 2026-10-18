@@ -1,4 +1,4 @@
-// A floating card that slides in from the right, textured like crumpled tissue paper
+// A floating card that rises in from the bottom, textured like crumpled tissue paper
 // (opaque). Pink over the white silhouette screen; white once you're on the pink.
 import { useEffect, useRef, type ReactNode } from 'react'
 import { AnimatePresence } from 'motion/react'
@@ -48,9 +48,9 @@ export default function TissueCard({ open, title, onClose, children }: Props) {
             aria-modal="true"
             aria-label={title}
             tabIndex={-1}
-            initial={{ x: '120%', rotate: 4 }}
-            animate={{ x: 0, rotate: -1.5 }}
-            exit={{ x: '120%', rotate: 4 }}
+            initial={{ y: '110vh', rotate: 4 }}
+            animate={{ y: 0, rotate: -1.5 }}
+            exit={{ y: '110vh', rotate: 4 }}
             transition={{ type: 'spring', bounce: 0.12, duration: 0.6 }}
           >
             <button type="button" className="tissue-close mono" onClick={onClose} aria-label={`Close ${title}`}>
