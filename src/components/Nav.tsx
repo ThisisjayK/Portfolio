@@ -11,16 +11,20 @@ import SilkBall from './SilkBall'
 import IndexMenu from './IndexMenu'
 import './Nav.css'
 
+// True on /name or /name/…, but not on /name-something (e.g. the /about-me letter page).
+const onPage = (pathname: string, name: string) =>
+  pathname === `/${name}` || pathname.startsWith(`/${name}/`)
+
 export default function Nav() {
   const { card, openCard, onPink } = useCards()
   const { pathname } = useLocation()
   const off = onPink ? -1 : undefined
   const [indexOpen, setIndexOpen] = useState(false)
-  const onLanding = !pathname.startsWith('/about') && !pathname.startsWith('/playground')
+  const onLanding = !onPage(pathname, 'about') && !onPage(pathname, 'playground')
 
   // The arrow rests on the open card, or else on the current page.
   const current = (name: CardName | 'about' | 'playground') =>
-    card ? card === name : pathname.startsWith(`/${name}`)
+    card ? card === name : onPage(pathname, name)
   const cls = (name: Parameters<typeof current>[0]) => (current(name) ? 'nav-item is-current' : 'nav-item')
 
   return (

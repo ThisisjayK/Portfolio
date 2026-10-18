@@ -2,12 +2,14 @@
 // over the whole stage, leaving the nav's corner and the silhouette's column empty. Ten letters,
 // picked at random on each visit, are lowercase, and each letter gets one of eight fonts at random. Letters that stand for one of Jayanth's
 // interests are buttons with an accent amoeba behind them (BlobLetter) that ripples on hover or
-// focus; a click turns the page to vapour and opens that letter's own page (vapor.ts, LetterPage).
+// focus, with a small preview of that letter's article beside it (LetterPreview); a click turns
+// the page to vapour and opens the letter's own page (vapor.ts, LetterPage).
 // The letters swell gently toward a fine cursor.
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useReducedMotion } from 'motion/react'
 import BlobLetter from './BlobLetter'
+import LetterPreview from './LetterPreview'
 import { useVaporNavigate } from './vapor'
 import { LETTER_FONTS, letterPageFor } from '../content/letters'
 import '../styles/letterFonts'
@@ -48,6 +50,16 @@ export default function LetterGrid({ hidden }: Props) {
   const reduced = useReducedMotion()
   const grid = useRef<HTMLDivElement>(null)
   const [activeKey, setActiveKey] = useState<string | null>(null)
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null)
+  const activePage = activeKey && !hidden ? letterPageFor(activeKey.toUpperCase()) ?? null : null
+
+  // The preview closes as soon as the page scrolls (the bloom may be about to cover the letter).
+  useEffect(() => {
+    if (!activeKey) return
+    const close = () => setActiveKey(null)
+    window.addEventListener('scroll', close, { passive: true, once: true })
+    return () => window.removeEventListener('scroll', close)
+  }, [activeKey])
   const lower = useMemo(pickLowercase, [])
   const fonts = useMemo(pickFonts, [])
   const go = useVaporNavigate()
@@ -132,16 +144,25 @@ export default function LetterGrid({ hidden }: Props) {
                   origin: { x: r.left + r.width / 2, y: r.top + r.height / 2 },
                 })
               }}
-              onPointerEnter={() => setActiveKey(hit.slug)}
-              onPointerLeave={() => setActiveKey((k) => (k === hit.slug ? null : k))}
-              onFocus={(e) => e.currentTarget.matches(':focus-visible') && setActiveKey(hit.slug)}
-              onBlur={() => setActiveKey((k) => (k === hit.slug ? null : k))}
+              aria-describedby={activeKey === hit.letter ? 'letter-preview' : undefined}
+              onPointerEnter={(e) => {
+                setAnchor(e.currentTarget)
+                setActiveKey(hit.letter)
+              }}
+              onPointerLeave={() => setActiveKey((k) => (k === hit.letter ? null : k))}
+              onFocus={(e) => {
+                if (!e.currentTarget.matches(':focus-visible')) return
+                setAnchor(e.currentTarget)
+                setActiveKey(hit.letter)
+              }}
+              onBlur={() => setActiveKey((k) => (k === hit.letter ? null : k))}
             >
-              <BlobLetter glyph={shown} active={activeKey === hit.slug} />
+              <BlobLetter glyph={shown} active={activeKey === hit.letter} />
             </button>
           )
         })}
       </div>
+      <LetterPreview page={activePage} anchor={anchor} id="letter-preview" />
     </>
   )
 }

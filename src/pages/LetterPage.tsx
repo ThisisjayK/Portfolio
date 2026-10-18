@@ -25,7 +25,6 @@ export default function LetterPage({ page }: { page: Entry }) {
     return condense(shell.current)
   }, [page, reduced])
 
-  const paragraphs = [page.note.body, ...page.more]
 
   return (
     <div ref={shell} className="lp-shell">
@@ -37,10 +36,12 @@ export default function LetterPage({ page }: { page: Entry }) {
           </h1>
           <CloseCross slug={page.slug} />
         </div>
-        <h2 className="display lp-sub" data-vapor>
-          {page.note.title}
-        </h2>
-        {paragraphs.map((p, k) => (
+        {page.subtitle && (
+          <h2 className="display lp-sub" data-vapor>
+            {page.subtitle}
+          </h2>
+        )}
+        {page.body.map((p, k) => (
           <p key={k} className="lp-text" data-vapor>
             {p}
           </p>
