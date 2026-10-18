@@ -1,9 +1,9 @@
 // Site-wide UI state shared by the nav, the hero and the cards:
-//  - which floating card is open (Work or Contact), if any
+//  - whether the Contact card is open
 //  - whether the visitor has "zoomed into" the pink (the nav and card colour change)
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 
-export type CardName = 'work' | 'contact'
+export type CardName = 'contact'
 
 type Ctx = {
   card: CardName | null
@@ -30,7 +30,7 @@ export function useCards() {
   return ctx
 }
 
-/** Old /work and /contact links: show the home page with that card open. */
+/** Old /contact links: show the home page with that card open. */
 export function OpenCardOnMount({ name, children }: { name: CardName; children: ReactNode }) {
   const { openCard } = useCards()
   useEffect(() => {

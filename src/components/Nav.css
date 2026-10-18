@@ -1,138 +1,4 @@
-/* The mark and the menu are fixed separately (the header itself isn't positioned), so the
-   menu can blend with the page under it: white with "difference" reads black on white and
-   white over the black silhouette, like the hero name. */
-.nav-mark,
-.nav-menu {
-  position: fixed;
-  z-index: 30;
-  top: var(--space-5);
-  transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
-}
-
-/* The site mark, far left. Without WebGL the canvas shows a gradient ball instead. */
-.nav-mark {
-  left: var(--gutter);
-  display: block;
-  border-radius: 50%;
-}
-.silk-ball {
-  display: block;
-  border-radius: 50%;
-  transition: transform var(--dur-base) var(--ease-out);
-}
-.nav-mark:hover .silk-ball {
-  transform: scale(1.08);
-}
-.silk-ball[data-fallback] {
-  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--accent-fill), white 45%), var(--accent-fill) 45%, color-mix(in srgb, var(--accent-fill), black 40%));
-}
-
-/* The menu sits further in, not against the edge. */
-.nav-menu {
-  left: calc(var(--gutter) + clamp(var(--space-8), 14vw, 250px));
-  color: var(--bg); /* white, shown black on the white page by the blend */
-  mix-blend-mode: difference;
-}
-
-.nav-label {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--target);
-  margin: calc(-1 * var(--space-3)) 0 var(--space-2);
-  padding: 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  font-family: var(--font-nav);
-  font-weight: 400;
-  font-size: var(--text-body);
-  opacity: 0.6;
-  cursor: pointer;
-  transition: opacity var(--dur-fast) var(--ease-out);
-}
-.nav-label:hover,
-.nav-label:focus-visible {
-  opacity: 1;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-.nav-menu ul {
-  display: grid;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font-family: var(--font-nav);
-  font-weight: 400;
-  font-size: var(--text-body);
-  line-height: 1.3;
-}
-
-.nav-item {
-  display: inline-flex;
-  align-items: center;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  letter-spacing: 0.01em;
-  text-transform: inherit;
-  text-decoration: none;
-  cursor: pointer;
-  transition: filter var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out);
-}
-
-/* The arrow slides in front of the word it points at. */
-.nav-item::before {
-  content: '→';
-  display: inline-block;
-  width: 0;
-  overflow: hidden;
-  opacity: 0;
-  font-family: var(--font-body);
-  font-weight: 300;
-  transition: width var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out);
-}
-.nav-item.is-current::before,
-.nav-item:hover::before,
-.nav-item:focus-visible::before {
-  width: 1.4em;
-  opacity: 1;
-}
-
-/* While one word is hovered or focused, the arrow leaves the current one and the rest blur. */
-.nav-menu ul:has(.nav-item:hover, .nav-item:focus-visible) .nav-item:not(:hover, :focus-visible) {
-  filter: blur(4px);
-  opacity: 0.5;
-}
-.nav-menu ul:has(.nav-item:hover, .nav-item:focus-visible) .nav-item.is-current:not(:hover, :focus-visible)::before {
-  width: 0;
-  opacity: 0;
-}
-
-.nav-item:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
-}
-
-/* On touch screens each word keeps a full-size tap target. */
-@media (pointer: coarse) {
-  .nav-item {
-    min-height: var(--target);
-  }
-}
-
-/* On pink: the nav steps aside... */
-.nav--away .nav-mark,
-.nav--away .nav-menu {
-  opacity: 0;
-  transform: translateY(-8px);
-  pointer-events: none;
-}
-
-/* ...and Contact waits at the bottom-left. */
+/* What's left of the nav: Contact, bottom-left, once the hero has turned blue (Nav.tsx). */
 .nav-contact {
   position: fixed;
   z-index: 30;
@@ -145,7 +11,9 @@
   border: 0;
   background: none;
   color: var(--fg);
-  font-family: var(--font-nav);
+  /* Meshed Display Bold, like the body text (Jayanth, 2026-10-17; was Mamenchisa). */
+  font-family: var(--font-body);
+  font-weight: var(--weight-body);
   font-size: var(--text-body);
   cursor: pointer;
   opacity: 0;
@@ -161,11 +29,4 @@
 .nav-contact:hover {
   text-decoration: underline;
   text-underline-offset: 4px;
-}
-
-/* Covered by the hero's zoom (set from Hero.tsx): out of the way until the zoom moves off. */
-.nav-mark[data-covered],
-.nav-menu[data-covered] {
-  opacity: 0;
-  pointer-events: none;
 }

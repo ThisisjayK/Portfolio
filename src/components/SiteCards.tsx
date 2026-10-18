@@ -1,5 +1,5 @@
-// The Work and Contact cards. Copy uses only lines Jayanth has confirmed; the full
-// case study (with the lines still under review) comes later.
+// The Contact card (the Work card was removed, Jayanth, 2026-10-17). Copy uses only lines
+// Jayanth has confirmed.
 import { useState } from 'react'
 import TissueCard from './TissueCard'
 import { useCards } from './Cards'
@@ -11,33 +11,9 @@ export default function SiteCards() {
   const { card, closeCard } = useCards()
   return (
     <>
-      <TissueCard open={card === 'work'} title="Work" onClose={closeCard}>
-        <WorkCard />
-      </TissueCard>
       <TissueCard open={card === 'contact'} title="Contact" onClose={closeCard}>
         <ContactCard />
       </TissueCard>
-    </>
-  )
-}
-
-function WorkCard() {
-  return (
-    <>
-      <span className="mono meta">Case study · Technical PM co-op · Aug–Dec 2025</span>
-      <h2 className="display">Stage Zero Health</h2>
-      <p>
-        I joined an early cancer detection startup as a technical product manager co-op and worked across the
-        whole breast cancer journey, from discovery to a paid pilot.
-      </p>
-      <ul>
-        <li>In customer interviews, people were aware of their health, but most were skeptical of digital health.</li>
-        <li>I proposed calm, non-alarming risk scores, with links to original sources wherever people needed to check.</li>
-        <li>I wrote the requirements, designed the wireframes and tested them with users.</li>
-        <li>Most users were over 40 and struggled to find the links, so we reworked focus, raised contrast and made every tap target 44 px.</li>
-        <li>We shipped to the waitlist and beta cohorts, then ran a 6-week paid pilot.</li>
-      </ul>
-      <p className="mono">Full case study coming soon</p>
     </>
   )
 }

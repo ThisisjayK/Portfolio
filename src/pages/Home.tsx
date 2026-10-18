@@ -32,8 +32,7 @@ export default function Home() {
             <ScrollText className="handoff-lead" text={LEAD} progress={lead} splitBy="word" overlap={0.3} />
           )}
           <m.div className="handoff-actions" style={reduced ? undefined : { opacity: actionsOpacity, y: actionsY }}>
-            <button type="button" className="btn btn--ink" onClick={() => openCard('work')}>See how I work →</button>
-            <Link className="btn btn--outline" to="/about">About me</Link>
+            <Link className="btn btn--ink" to="/about-me">About me →</Link>
             <button type="button" className="btn btn--outline" onClick={() => openCard('contact')}>Say hi</button>
           </m.div>
         </div>

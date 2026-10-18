@@ -53,14 +53,6 @@ a {
   line-height: 0.9;
 }
 
-/* Mamenchisa has one weight; never let the browser fake a bold version of it. */
-.nav-label,
-.nav-contact,
-.index-chapter-title {
-  font-weight: 400;
-  font-synthesis: none;
-}
-
 h1.display {
   font-size: var(--text-h1);
   line-height: var(--leading-heading);
