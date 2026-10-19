@@ -2,7 +2,7 @@
    shades white stays readable on (cornflower 6.25:1, navy 16.6:1). */
 .rack {
   position: relative;
-  height: 360svh; /* scroll distance for three statements */
+  height: 420svh; /* scroll distance for four statements (was 360svh for three) */
   --ink: var(--on-accent);
   --surface: var(--accent-fill);
   background: var(--surface);
@@ -19,6 +19,7 @@
 }
 .rack-glow {
   position: absolute;
+  opacity: 0; /* faded in and out with the scroll (RackFocus.tsx) */
   border-radius: 50%;
   filter: blur(70px);
   pointer-events: none;
@@ -52,6 +53,10 @@
 }
 .rack--static {
   height: auto;
+}
+/* Reduced motion: no fade to hide the glows' cut-off edges, so no glows. */
+.rack--static .rack-glow {
+  display: none;
 }
 .rack--static .rack-stage {
   position: static;

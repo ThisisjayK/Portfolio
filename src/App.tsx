@@ -2,6 +2,7 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence, LazyMotion, MotionConfig, domAnimation } from 'motion/react'
 import IndexNav from './components/IndexNav'
 import SiteCards from './components/SiteCards'
+import TalkLink from './components/TalkLink'
 import { CardsProvider, OpenCardOnMount } from './components/Cards'
 import Page from './components/Page'
 import Home from './pages/Home'
@@ -23,6 +24,7 @@ export default function App() {
         {/* Outside the routed pages, so it stays still while they change. */}
         <IndexNav />
         <SiteCards />
+        <TalkLink />
         <AnimatePresence mode="wait" initial={false}>
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<Page><Home /></Page>} />

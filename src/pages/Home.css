@@ -60,3 +60,84 @@
 .btn--outline:hover { background: var(--ink); color: var(--surface); }
 .btn--ink:hover, .btn--outline:hover { transform: translateY(-2px); }
 .handoff :focus-visible { outline-color: var(--ink); }
+
+/* The small label over each story screen ("Education", "What's next"; 2026-10-19). Alte Haas
+   Grotesk Bold in sentence case, like the Ask box's question label (Jayanth: change the font;
+   was mono capitals). */
+.handoff-label {
+  margin: 0;
+  font: var(--weight-heading) var(--text-body) / var(--leading-heading) var(--font-display);
+  opacity: 0.8;
+}
+
+/* What's next (2026-10-19): Jayanth's aspirations and the buttons, one screen on the blue,
+   after the rack focus. Not pinned; the lines reveal as they come into view. */
+.next {
+  --ink: var(--on-accent);
+  --surface: var(--accent-fill);
+  min-height: 100svh;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--space-5);
+  /* Top padding clears the pinned roll box, which fills the top fifth (RollBox.css). */
+  padding: calc(20svh + var(--space-5)) var(--gutter) var(--space-9);
+  background: var(--surface);
+  color: var(--ink);
+  text-align: center;
+}
+/* Its two blurred glows (2026-10-19), the rack focus's colours and blur. Faded with the scroll
+   (Home.tsx) and feathered at the top and bottom, so the section never shows a hard edge. */
+.next {
+  position: relative;
+  overflow: hidden;
+  /* Overlap the Ask box by 1px: without it a hairline seam shows where the two blues meet. */
+  margin-bottom: -1px;
+}
+.next > :not(.next-glows) {
+  position: relative;
+}
+.next-glows {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(transparent, #000 25%, #000 75%, transparent);
+  mask-image: linear-gradient(transparent, #000 25%, #000 75%, transparent);
+}
+.next-glows-grow {
+  position: absolute;
+  inset: 0;
+}
+.next-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+}
+.next-glow--a {
+  width: 50vmax;
+  height: 50vmax;
+  right: -12vmax;
+  top: 5%;
+  background: var(--bloom-cornflower);
+}
+.next-glow--b {
+  width: 40vmax;
+  height: 40vmax;
+  left: -8vmax;
+  bottom: 0;
+  background: var(--bloom-navy);
+}
+.next-text {
+  max-width: 34ch;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-h2);
+  line-height: var(--leading-heading);
+}
+.next :focus-visible { outline-color: var(--ink); }
+@media (max-width: 760px) {
+  .next-text {
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+  }
+}

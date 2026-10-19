@@ -1,9 +1,9 @@
-// The hero's backdrop: four layers of blue bloom out from the middle column as the visitor
+// The hero's backdrop: three layers of blue bloom out from the middle column as the visitor
 // scrolls, on slightly grainy white. Each layer is drawn its own way:
 //   mist        a feathered wash, the widest and palest
 //   powder      contour ripples, like lines on a map
-//   cornflower  a halftone dot screen, dots biggest at its centre
 //   cobalt      cut paper, printed slightly off register over a navy shadow (--accent)
+// The cornflower halftone dot screen was removed (Jayanth, 2026-10-19).
 // One fragment shader on a raw WebGL canvas, like SilkBall. Geometry (where each layer is and
 // how big) is worked out here in JS and shared with Hero.tsx, which uses bloomCovers() to hide
 // the letters the bloom passes over. Nothing moves unless the page scrolls; the grain is fixed.
@@ -25,7 +25,6 @@ const LAYERS: Layer[] = [
   { token: '--bloom-powder', from: 0.08, to: 0.58, size: 0.5, x: 0.46, y: 0.5, k: 2.3 },
   // The solid "sky" amoeba was removed (Jayanth, 2026-10-17): it filled most of the screen for
   // a long stretch of scroll with nothing changing.
-  { token: '--bloom-cornflower', from: 0.26, to: 0.74, size: 0.3, x: 0.47, y: 0.6, k: 4.4 },
   { token: '--accent', from: 0.36, to: 0.8, size: 0.18, x: 0.53, y: 0.46, k: 5.6 },
 ]
 const SEED = 12 // px: the cobalt drop visible before any scroll, the page's focal point
@@ -68,10 +67,10 @@ const VERT = `attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}`
 const FRAG = `precision highp float;
 uniform vec2 uRes;
 uniform float uDpr;
-uniform vec2 uC[4];
-uniform float uR[4];
-uniform float uK[4];
-uniform vec3 uCol[5];
+uniform vec2 uC[3];
+uniform float uR[3];
+uniform float uK[3];
+uniform vec3 uCol[4];
 uniform vec2 uOff;
 
 float lump(vec2 d,float r,float k){
@@ -103,22 +102,10 @@ void main(){
     }
     col=mix(col,uCol[1],a);
   }
-  // Cornflower: a fixed 9px dot screen, dots shrinking toward the layer's edge.
-  if(uR[2]>.5){
-    vec2 d=p-uC[2];
-    float m=fill(d,uR[2],uK[2]);
-    if(m>0.){
-      vec2 g=(floor(p/9.)+.5)*9.;
-      vec2 dg=g-uC[2];
-      float q=length(dg)/lump(dg,uR[2],uK[2]);
-      float s=max(.6,3.6*(1.-q*.75));
-      col=mix(col,uCol[2],m*clamp(s-length(p-g)+.5,0.,1.));
-    }
-  }
   // Cobalt: cut paper over a navy shadow, printed off register.
-  if(uR[3]>.5){
-    col=mix(col,uCol[4],fill(p-uC[3]-uOff,uR[3],uK[3]));
-    col=mix(col,uCol[3],fill(p-uC[3],uR[3],uK[3]));
+  if(uR[2]>.5){
+    col=mix(col,uCol[3],fill(p-uC[2]-uOff,uR[2],uK[2]));
+    col=mix(col,uCol[2],fill(p-uC[2],uR[2],uK[2]));
   }
   // Grain: fixed per CSS pixel, so it never shimmers.
   col+=(hash(floor(p))-.5)*.09;

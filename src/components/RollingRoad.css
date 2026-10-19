@@ -45,10 +45,30 @@
   padding: 0 var(--gutter);
   list-style: none;
 }
-/* No rings (removed 2026-10-17): the hopping amoeba above marks where the blob has got to. */
+/* No rings (removed 2026-10-17): the hopping amoeba above marks where the blob has got to.
+   Each step is a role (2026-10-19): dates, title, company, stacked and centred. */
 .road-steps li {
-  display: inline-flex;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
   align-items: center;
+  gap: var(--space-1);
+  max-width: 18ch;
+  text-align: center;
+}
+.road-role {
+  font-size: var(--text-body);
+  line-height: var(--leading-heading);
+}
+.road-when,
+.road-org {
+  opacity: 0.8;
+}
+@media (max-width: 760px) {
+  /* Two or three roles to a row on phones. */
+  .road-steps li {
+    flex: 1 1 40%;
+  }
 }
 
 /* The small blob that hops from step to step above the labels (RollingRoad.tsx). */

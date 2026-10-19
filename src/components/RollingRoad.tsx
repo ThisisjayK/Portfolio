@@ -1,15 +1,17 @@
-// "Zero to one" on the home page (Jayanth, 2026-10-17; after neutomni.com's rolling shape,
+// "The road so far" on the home page (Jayanth, 2026-10-17; after neutomni.com's rolling shape,
 // written from scratch): a lumpy blob, the letters' blob shape, rolls left to right along a
 // bumpy road as you scroll. Its lumps and the road's bumps fade together, so it ends as a circle
-// on a flat line, under the steps of the Stage Zero work (about-me.md §3). The heading is
-// Jayanth's own reflection. 2D canvas; eases 20% of the way to the scroll position each frame
+// on a flat line, under Jayanth's work timeline, oldest first (about.ts `timeline`, from
+// about-me.md §3; was the steps of the Stage Zero work until 2026-10-19). 2D canvas; eases 20% of the way to the scroll position each frame
 // and draws only while it's moving. Reduced motion: follows the scroll without easing.
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useAnimate, useReducedMotion } from 'motion/react'
 import RevealText from './RevealText'
+import { timeline } from '../content/about'
 import './RollingRoad.css'
 
-const STEPS = ['Interviews', 'Market sizing', 'PRDs', 'Wireframes', 'Testing', 'Pilot']
+const STEPS = timeline
+const HOP_ROOM = 40 // px above the list for the hopper (24px, plus its gap and its arc's start)
 const LUMPS = [1.08, 0.9, 1.12, 0.94, 1.05, 0.88, 1.1, 0.96]
 const TAU = Math.PI * 2
 
@@ -147,7 +149,11 @@ export default function RollingRoad() {
 
     const draw = (p: number) => {
       const rough = 1 - p * p * (3 - 2 * p) // rough at the start, smooth at the end
-      const groundY = H * 0.68
+      // At 68% of the screen, or higher when the roles wrap into several rows (phones), so the
+      // road and the hopper above the list never overlap it. The wrap sits in the stage.
+      const wrap = steps.current?.parentElement
+      const clear = wrap ? wrap.offsetTop - HOP_ROOM - R * 0.3 : H
+      const groundY = Math.min(H * 0.68, clear)
       const road = (x: number) =>
         groundY + Math.sin(x / (R * 0.7)) * R * 0.18 * rough + Math.sin(x / (R * 0.31)) * R * 0.06 * rough
       const x0 = -R
@@ -240,12 +246,14 @@ export default function RollingRoad() {
     <section ref={section} className="road" aria-labelledby="road-title">
       <div className="road-stage">
         <canvas ref={canvas} className="road-canvas" aria-hidden="true" />
-        <RevealText as="h2" id="road-title" className="display road-title" text="Zero to one was a little messy. Every day was different." />
+        <RevealText as="h2" id="road-title" className="display road-title" text="The road so far." />
         <div className="road-steps-wrap">
-        <ol ref={steps} className="road-steps mono" aria-label="What the work at Stage Zero Health covered">
+        <ol ref={steps} className="road-steps" aria-label="Where Jayanth has worked, oldest first">
           {STEPS.map((s) => (
-            <li key={s}>
-              {s}
+            <li key={s.when}>
+              <span className="road-when mono">{s.when}</span>
+              <span className="road-role">{s.role}</span>
+              <span className="road-org mono">{s.org}</span>
             </li>
           ))}
         </ol>

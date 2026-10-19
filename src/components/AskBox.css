@@ -1,4 +1,4 @@
-/* Ask about me (AskBox.tsx), redacted version: white on the theme blue; buttons from Home.css. */
+/* Ask about me (AskBox.tsx), takeover version (2026-10-19): white on the theme blue; buttons from Home.css. */
 .ask {
   min-height: 100svh;
   padding: var(--space-9) var(--gutter);
@@ -68,44 +68,63 @@
   outline-offset: 2px;
 }
 
-/* The answer and the bars over it. */
-.ask-doc {
-  position: relative;
-  margin-top: var(--space-8);
-  max-width: 28ch;
-  min-height: 3.75em;
-  font: var(--weight-heading) clamp(28px, 3.4vw, 46px) / 1.25 var(--font-display);
+/* The answer takes over (2026-10-19): the question as a small label, the answer in big type. */
+/* The question keeps the field's font (Alte Haas Grotesk Bold, as typed) and zooms out from
+   the field's size (--from, set in AskBox.tsx) to body size, from its top-left corner. */
+.ask-q {
+  margin: 0 0 var(--space-4);
+  font: var(--weight-heading) var(--text-body) / var(--leading-heading) var(--font-display);
+  opacity: 0.7;
+  transform-origin: left top;
+  animation: ask-q-out var(--dur-slow) var(--ease-out) both;
 }
-.ask-text {
-  margin: 0;
-}
-/* Bars that stay: hide the words under them so nothing peeks out at the edges. */
-.ask-doc--sealed .ask-text {
-  color: transparent;
-}
-.ask-bars {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-.ask-bar {
-  position: absolute;
-  background: var(--ink);
-}
-.ask-bar--lift {
-  transform-origin: right;
-  animation: ask-lift 650ms var(--ease-out) both;
-  animation-delay: calc(var(--i, 0) * 140ms);
-}
-@keyframes ask-lift {
-  to {
-    transform: scaleX(0);
+@keyframes ask-q-out {
+  from {
+    transform: scale(var(--from, 1));
+    opacity: 1;
   }
 }
-
-.ask-private {
-  margin-top: var(--space-5);
+.ask-a {
+  max-width: 28ch;
+  margin: 0;
+  font: var(--weight-heading) clamp(28px, 3.4vw, 46px) / 1.25 var(--font-display);
 }
-.ask-private .mono {
-  margin: 0 0 var(--space-3);
+/* Each word fades up after the one before it. */
+.ask-word {
+  display: inline-block;
+  white-space: pre;
+  animation: ask-word var(--dur-slow) var(--ease-out) both;
+}
+@keyframes ask-word {
+  from {
+    opacity: 0;
+    transform: translateY(0.3em);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ask-word,
+  .ask-q {
+    animation: none;
+  }
+}
+.ask-next {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5);
+  margin-top: var(--space-6);
+}
+.ask-again {
+  min-height: var(--target);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.ask-again:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
 }

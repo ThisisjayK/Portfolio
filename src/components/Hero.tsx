@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from 'react'
 import { useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import * as m from 'motion/react-m'
 import { intro } from '../content/about'
-import ScrollText from './ScrollText'
 import RollBox from './RollBox'
 import BlueBloom, { bloomCovers } from './BlueBloom'
 import { useCards } from './Cards'
@@ -13,9 +12,6 @@ import './Hero.css'
 
 // Scroll budget (fractions of the hero's scroll distance), unchanged from the video version.
 const FLOOD = [0.8, 0.9] // flat blue takes over from the bloom
-// The line on blue starts assembling as the flood is nearly flat and is fully formed just
-// before the hero scrolls away.
-const LINE = [0.85, 0.97]
 // A letter counts as covered once any of its sample spots is under the bloom.
 const STEPS = [0.05, 0.35, 0.65, 0.95]
 const SPOTS = STEPS.flatMap((fx) => STEPS.map((fy) => [fx, fy] as const))
@@ -79,8 +75,6 @@ export default function Hero() {
   }, [reduced, bloomOk, scrollYProgress])
 
   const flood = useTransform(scrollYProgress, FLOOD, [0, 1])
-  const line = useTransform(scrollYProgress, LINE, [0, 1])
-  const cueOpacity = useTransform(scrollYProgress, [0, 0.03], [1, 0])
 
   if (reduced) {
     return (
@@ -90,8 +84,7 @@ export default function Hero() {
         {/* The A–Z letters are off the landing page for now (Jayanth, 2026-10-17); the index
             nav (IndexNav) leads to the letter pages instead. LetterGrid.tsx is kept. */}
         <RollBox />
-        {/* The name and role aren't shown (Jayanth, 2026-10-16); they stay as the page heading for screen readers and search. */}
-        <h1 className="visually-hidden">Jayanth Kappagantula, product manager in healthcare</h1>
+        <Hello />
       </section>
     )
   }
@@ -101,15 +94,23 @@ export default function Hero() {
       <div ref={stage} className="hero-stage">
         <BlueBloom className="hero-media" progress={scrollYProgress} onReady={setBloomOk} />
         <m.div className="hero-flood" style={{ opacity: flood }} aria-hidden="true" />
-        <ScrollText as="h2" className="display hero-line" text={intro.headline} progress={line} />
-        {/* The name and role aren't shown (Jayanth, 2026-10-16); they stay as the page heading for screen readers and search. */}
-        <h1 className="visually-hidden">Jayanth Kappagantula, product manager in healthcare</h1>
-        <m.p className="hero-cue mono" style={{ opacity: cueOpacity }} aria-hidden="true" data-hop>
-          Scroll ↓
-        </m.p>
+        {/* The line on blue ("Atlanta, by way of…") moved to the globe after the hero (GlobeRoute, 2026-10-19). */}
+        <Hello />
+        {/* The "Scroll ↓" cue was replaced by the email link on every page (TalkLink, 2026-10-19). */}
       </div>
       {/* Outside the sticky stage, so it stays pinned above the sections after the hero. */}
       <RollBox />
     </section>
+  )
+}
+
+// The hello beside the index (Jayanth, 2026-10-19; replaces the hidden name heading from
+// 2026-10-16). It steps aside like the index items once the bloom reaches it.
+function Hello() {
+  return (
+    <div className="hero-hello" data-zoom-cover="" data-hop>
+      <h1 className="hero-hello-title">{intro.greeting}</h1>
+      <p className="hero-hello-summary">{intro.summary}</p>
+    </div>
   )
 }
