@@ -64,17 +64,20 @@ const ARTICLES: Record<string, Article> = {
   cooking: {
     topic: 'Cooking',
     body: [
-      "Only about a quarter of Indian men do any unpaid housework, going by India's 2019 Time Use Survey. I cook every day.",
-      'I learned by watching my mom. I started by chopping vegetables, then moved up to stirring, which she said I did when there was no need whatsoever. Once I lived alone in the US, the kitchen became mine.',
-      "I've made some great meals, ruined a few authentic recipes, and make a very good mocktail. Recipes are coming.",
+      "Only about a quarter of Indian men do any unpaid housework at all, going by India's 2019 Time Use Survey. I cook every day, and I'm glad to be on that side of the number.",
+      'I have my mom to thank for it. As a kid I watched her cook, and over time I started helping: chopping vegetables first, then stirring. She always complained that I stirred when there was no need whatsoever.',
+      'MasterChef was my show. I watched it while I ate, almost every day.',
+      'When I moved to the US and lived on my own, that was when I started cooking every single day. Some of it has been genuinely delicious. I have also killed a few authentic recipes along the way.',
+      "I make a good mocktail too. I'll be adding some of my dishes here, each with its backstory, the ingredients and the recipe.",
     ],
   },
   drake: {
     topic: 'Drake',
     body: [
-      'Summer 2012, Hyderabad. My cousin, visiting from the US, sat down next to me and played Marvins Room. First time I heard Drake.',
-      "I went through all of Take Care in the next few weeks, and that was it. (There was also a lot of Justin Bieber until 2016. I'm not hiding it.) His music still makes me hopeful.",
-      'My playlists: [Needs your answer: playlist link].',
+      'Summer 2012, back home in Hyderabad. My cousins were visiting from the US, and I asked one of them what he was listening to. He came over, sat down next to me and played Marvins Room. That was the first time I heard Drake\'s voice.',
+      "Something about that moment stuck. Over the next few weeks I listened to all of Take Care, and that settled it. (I'll be honest, there was also a lot of Justin Bieber in my life until about 2016.) I've been a huge Drizzy fan ever since. Who doesn't love some Drake? He always turns the party up.",
+      'His music has kept inspiring me since. It makes me imaginative, and hopeful about a successful life, a bit of luxury, and peace.',
+      "I've made a few Drake playlists for myself, and I'll share them here: [Needs your answer: playlist link].",
     ],
   },
   // F stays Football as the letter; the page is about Arsenal. The match year is left out:
@@ -83,16 +86,20 @@ const ARTICLES: Record<string, Article> = {
     topic: 'Football',
     subtitle: 'Arsenal',
     body: [
-      'As a kid, football looked like stick figures chasing a ball. Then I watched Germany play Belgium and saw Mesut Özil score. I didn\'t know his name or his position. He was just my favorite player.',
-      'When he signed for Arsenal in 2013, I followed him and fell for the club. Last season we won the league for the first time in 22 years. This season, I want the quadruple.',
+      "I didn't like football as a kid. Most of the game looked like stick figures running after a ball, and goals hardly ever came. The World Cup was the one thing I followed, and I followed it fondly.",
+      "Then I watched Germany play Belgium, and a player I didn't know scored. I couldn't have told you his name or his position. I just knew he was my favorite player. It was Mesut Özil.",
+      'In 2013 he moved to Arsenal, and that is when I fell for the club. I watched every highlight I could find, including the Invincibles playing some properly good football, and the love only grew.',
+      'When we won the Premier League in the 2025/26 season, our first in 22 years, I was more than elated. This season I want the quadruple.',
     ],
   },
   ocean: {
     topic: 'The ocean',
     body: [
-      "My dad taught me to swim when I was somewhere between 10 and 12. Water has felt like home ever since. I'm a Pisces, so maybe that explains it.",
-      'In 2021, at Chirala on the Bay of Bengal, I swam out past the shore for the first time, lay back and watched the sky while the waves moved me. My parents panicked when I told them.',
-      'The best word I have for it is peace.',
+      'Where do I start. I loved the water as a child. I learned to swim when I was somewhere between 10 and 12. My dad did most of the teaching, though the hours in the pool were mine, and I am really grateful to him for it.',
+      "Waterparks, pools, anywhere with water: I feel at home there. My thoughts go still, like ripples settling, and I feel at peace. I'm a Pisces, so maybe that's part of it.",
+      'In 2021 I went on a trip with friends to Chirala, a town on the Bay of Bengal coast in Andhra Pradesh. That was the first time I swam out well past the shoreline. My parents panicked when I told them afterwards.',
+      'I remember floating there, the waves gently moving over me, looking up at the sky. Life has never felt more peaceful than that.',
+      "I've always been pulled toward water. I can't fully put it into words. The closest I get is peace, and trust me, it's more than that.",
     ],
   },
 }
