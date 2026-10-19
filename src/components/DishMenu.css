@@ -94,7 +94,7 @@
 }
 .dish-float-img {
   position: absolute;
-  width: clamp(200px, 20vw, 300px);
+  width: clamp(160px, 15vw, 230px);
   max-width: none; /* the global img rule caps at 100% of this zero-size box */
   height: auto;
   transform: translate(var(--space-5), -50%) scale(0.92);
