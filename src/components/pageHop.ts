@@ -40,6 +40,10 @@ function drawPaths(ctx: CanvasRenderingContext2D, svg: SVGSVGElement, dy: number
     const d = path.getAttribute('d')
     if (!m || !d) continue
     const cs = getComputedStyle(path)
+    // A line that draws itself in (the circles and arrows on the Ocean page and the dish
+    // figures) isn't there yet while its dash offset is above zero: leave it out, or the
+    // transition would flash it fully drawn before it appears (2026-10-19).
+    if (parseFloat(cs.strokeDashoffset) > 0.01) continue
     const shape = new Path2D(d)
     ctx.save()
     ctx.setTransform(m.a, m.b, m.c, m.d, m.e, m.f - dy)
@@ -98,6 +102,18 @@ function drawSvg(ctx: CanvasRenderingContext2D, svg: SVGSVGElement, dy: number) 
 
 // Redraws the on-screen elements on a viewport-sized canvas at screen resolution. dy corrects
 // for a page that is still sliding into place (Page.tsx lifts the page 8px as it fades in).
+// Pictures from another site (e.g. Apple's cover art on the Drake page) would taint the canvas,
+// and reading it back then throws, which used to stop the page change altogether (2026-10-19).
+// They are left out of the transition instead.
+function sameOrigin(img: HTMLImageElement) {
+  try {
+    const u = new URL(img.currentSrc || img.src, location.href)
+    return u.origin === location.origin || u.protocol === 'data:' || u.protocol === 'blob:' || !!img.crossOrigin
+  } catch {
+    return false
+  }
+}
+
 function raster(els: HTMLElement[], dy = 0) {
   const dpr = Math.min(window.devicePixelRatio || 1, 2)
   const c = document.createElement('canvas')
@@ -115,7 +131,12 @@ function raster(els: HTMLElement[], dy = 0) {
       if (img.closest('.roll-face') && !img.closest('[data-front]')) continue
       if (parseFloat(getComputedStyle(img).opacity) < 0.5) continue // the hidden one of a cross-fade
       const r = img.getBoundingClientRect()
-      if (img.complete && r.width) ctx.drawImage(img, r.left, r.top - dy, r.width, r.height)
+      if (!img.complete || !r.width || !sameOrigin(img)) continue
+      try {
+        ctx.drawImage(img, r.left, r.top - dy, r.width, r.height)
+      } catch {
+        // an image that can't be drawn is simply left out of the transition
+      }
     }
     for (const svg of Array.from(el.querySelectorAll('svg'))) {
       if (svg.querySelector('path.blob-fill')) drawSvg(ctx, svg, dy)
@@ -219,7 +240,12 @@ function drawCells(
 // Resolves when the page has come apart (time to change the route).
 export function hopOut(origin: Point): Promise<void> {
   const els = targetsIn(document.querySelector('main') ?? document)
-  const src = raster(els)
+  let src: ReturnType<typeof raster> = null
+  try {
+    src = raster(els)
+  } catch {
+    src = null // the transition is decoration: if it can't be drawn, just change the page
+  }
   for (const el of els) {
     el.style.transition = 'none'
     el.style.opacity = '0'
@@ -244,15 +270,23 @@ export function hopOut(origin: Point): Promise<void> {
   })
   const end = Math.max(...plans.map((p) => p.settleAt))
   return new Promise((resolve) => {
+    let finished = false
+    const finish = () => {
+      if (finished) return
+      finished = true
+      canvas.remove()
+      resolve()
+    }
+    // Safety net (2026-10-19): animation frames can be throttled (a background tab, a busy
+    // page), and the page change waits for this promise. Never wait longer than 1.2s.
+    setTimeout(finish, 1200)
     const start = performance.now()
     const frame = (now: number) => {
+      if (finished) return
       const t = (now - start) / 1000
       drawCells(ctx, src, plans, t, 'out')
       if (t < end) requestAnimationFrame(frame)
-      else {
-        canvas.remove()
-        resolve()
-      }
+      else finish()
     }
     requestAnimationFrame(frame)
   })
@@ -278,7 +312,12 @@ export function hopIn(root: HTMLElement): () => void {
     // lifts it, so this is normally 0).
     const main = root.closest('main')
     const lift = main ? new DOMMatrixReadOnly(getComputedStyle(main).transform).m42 : 0
-    const src = raster(targetsIn(root), lift)
+    let src: ReturnType<typeof raster> = null
+    try {
+      src = raster(targetsIn(root), lift)
+    } catch {
+      src = null
+    }
     const o = overlay()
     canvas = o.canvas
     const ctx = o.ctx
@@ -332,10 +371,16 @@ export function usePageHop() {
         return
       }
       busy.current = true
-      hopOut(origin ?? { x: innerWidth / 2, y: innerHeight / 2 }).then(() => {
+      const done = () => {
         busy.current = false
         navigate(to, { state })
-      })
+      }
+      // Whatever happens in the transition, the page always changes.
+      try {
+        hopOut(origin ?? { x: innerWidth / 2, y: innerHeight / 2 }).then(done, done)
+      } catch {
+        done()
+      }
     },
     [navigate, reduced],
   )

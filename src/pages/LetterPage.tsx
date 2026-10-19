@@ -12,6 +12,8 @@ import DishMenu from '../components/DishMenu'
 import WorldCup from '../components/WorldCup'
 import PlaylistPlayer from '../components/PlaylistPlayer'
 import DrakeArtifacts from '../components/DrakeArtifacts'
+import MapFigure from '../components/MapFigure'
+import { chiralaMap, phiPhiMap, snorkelPhoto } from '../content/ocean'
 import arsenalKeyring from '../assets/football/arsenal-keyring.webp'
 import RevealText from '../components/RevealText'
 import { hopIn } from '../components/pageHop'
@@ -51,9 +53,27 @@ export default function LetterPage({ page }: { page: Entry }) {
         {page.body.map((p, k) => (
           <Fragment key={k}>
             <RevealText className="lp-text" text={p} data-hop />
-            {/* Football: Jayanth's Arsenal keyring right after the title-win line (paragraph 4),
+            {/* Arsenal F.C: Jayanth's Arsenal keyring right after the title-win line (paragraph 4),
                 before the World Cup part (Jayanth, 2026-10-19). */}
-            {page.slug === 'football' && p.includes('first in 22 years') && (
+            {/* Ocean: the Thailand photo (I'm pointed out) and the Phi Phi map after their paragraphs. */}
+            {page.slug === 'ocean' && p.includes('first time snorkelling') && (
+              <MapFigure {...snorkelPhoto} headAt="target" />
+            )}
+            {page.slug === 'ocean' && p.includes('Phi Phi') && <MapFigure {...phiPhiMap} />}
+            {/* Ocean: the satellite map with Chirala circled, right after the Chirala paragraph. */}
+            {page.slug === 'ocean' && p.includes('Chirala') && (
+              <MapFigure
+                src={chiralaMap.src}
+                alt={chiralaMap.alt}
+                width={chiralaMap.width}
+                height={chiralaMap.height}
+                at={chiralaMap.at}
+                r={chiralaMap.r}
+                circle={chiralaMap.circle}
+                label={chiralaMap.label}
+              />
+            )}
+            {page.slug === 'arsenal' && p.includes('first in 22 years') && (
               <figure className="lp-figure" data-hop>
                 <img src={arsenalKeyring} alt="Jayanth holding his Arsenal crest keyring, clipped to his backpack" />
               </figure>
@@ -62,8 +82,8 @@ export default function LetterPage({ page }: { page: Entry }) {
         ))}
         {/* Cooking also gets the menu of dishes (Jayanth, 2026-10-18). */}
         {page.slug === 'cooking' && <DishMenu />}
-        {/* Football ends with the World Cup photos (Jayanth, 2026-10-19). */}
-        {page.slug === 'football' && <WorldCup />}
+        {/* Arsenal F.C ends with the World Cup photos (Jayanth, 2026-10-19). */}
+        {page.slug === 'arsenal' && <WorldCup />}
         {/* Drake: a custom player for Jayanth's two Apple Music playlists (30-second previews),
             then his copy of Drake's book (photo by Jayanth, 2026-10-19). */}
         {page.slug === 'drake' && <PlaylistPlayer />}

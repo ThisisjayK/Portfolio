@@ -1,19 +1,16 @@
 // Drake things Jayanth owns, shown at the end of the Drake page (2026-10-19): the book, the OVO
 // owl chain and the Nocta shoes. The chain picture is a product photo of the silver OVO owl
-// pendant (not Jayanth's own photo), cut out and shown flat; the shoes are four product
-// photos from different angles in a turning viewer (his own earlier photo, nocta-shoes.webp, is
-// kept in assets, unused). Details name only what the pictures show.
+// pendant (not Jayanth's own photo), cut out and shown flat; the shoes are Jayanth's own
+// photo, cut out (2026-10-19; the four product-photo angles and the turning viewer were dropped
+// at his request; ShoeSpin was deleted). Details name only what the pictures show.
 import titlesRuinEverythingCover from '../assets/drake/titles-ruin-everything-cover.webp'
 import titlesRuinEverythingBack from '../assets/drake/titles-ruin-everything-back.webp'
 import titlesRuinEverythingSpine from '../assets/drake/titles-ruin-everything-spine.webp'
+import noctaShoe from '../assets/drake/nocta-shoe.webp'
 import ovoOwlChain from '../assets/drake/ovo-owl-silver-chain.webp'
-import noctaAngle1 from '../assets/drake/nocta-angle-1.webp'
-import noctaAngle2 from '../assets/drake/nocta-angle-2.webp'
-import noctaAngle3 from '../assets/drake/nocta-angle-3.webp'
-import noctaAngle4 from '../assets/drake/nocta-angle-4.webp'
 
 // `spin`: show the picture as a floating, turning 3D book (Book3D) instead of a flat image.
-export type Artifact = { name: string; detail: string; img: string; alt: string; spin?: { back: string; spine: string }; frames?: string[] }
+export type Artifact = { name: string; detail: string; img: string; alt: string; spin?: { back: string; spine: string } }
 
 export const artifacts: Artifact[] = [
   {
@@ -31,9 +28,8 @@ export const artifacts: Artifact[] = [
   },
   {
     name: 'Nocta shoes',
-    detail: 'Four angles. Drag or tap a number to turn it.',
-    img: noctaAngle1,
-    alt: 'The Nocta shoes in cream leather with a gold detail, shown from four sides',
-    frames: [noctaAngle1, noctaAngle2, noctaAngle3, noctaAngle4], // product photos, cut out
+    detail: 'White, with reflective laces',
+    img: noctaShoe,
+    alt: 'A white Nocta sneaker with reflective laces, seen from below, worn with black trousers',
   },
 ]

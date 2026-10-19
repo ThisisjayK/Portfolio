@@ -2,7 +2,6 @@
 // list, each with its picture. 01 is the book; the owl chain and Nocta shoes come next.
 import { artifacts } from '../content/drake'
 import Book3D from './Book3D'
-import ShoeSpin from './ShoeSpin'
 import './DrakeArtifacts.css'
 
 export default function DrakeArtifacts() {
@@ -23,8 +22,6 @@ export default function DrakeArtifacts() {
             </p>
             {a.spin ? (
               <Book3D cover={a.img} back={a.spin.back} spine={a.spin.spine} alt={a.alt} />
-            ) : a.frames ? (
-              <ShoeSpin frames={a.frames} alt={a.alt} />
             ) : (
               <img className="artifact-img" src={a.img} alt={a.alt} />
             )}

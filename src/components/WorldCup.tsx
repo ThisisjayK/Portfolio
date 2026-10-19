@@ -1,4 +1,4 @@
-// The World Cup on the Football page (Jayanth, 2026-10-19): his photos from Boston Stadium in a
+// The World Cup on the Arsenal F.C page (Jayanth, 2026-10-19): his photos from Boston Stadium in a
 // bending carousel (click a photo to open it), vendored from React Bits (FlexCarousel). The
 // holo-card selfie that sat above it was removed the same day at his request. The carousel
 // leaves vertical scrolling to the page (captureWheel off), since the text column scrolls
