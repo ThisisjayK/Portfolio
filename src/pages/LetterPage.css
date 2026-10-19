@@ -76,3 +76,14 @@
     padding-left: calc(var(--index-w) + var(--gutter) * 2);
   }
 }
+
+/* A picture under a letter page's text (Drake's book, 2026-10-19). */
+.lp-figure {
+  margin: var(--space-7) 0 var(--space-5);
+  text-align: center;
+}
+.lp-figure img {
+  width: min(100%, 280px);
+  height: auto;
+  margin: 0 auto var(--space-3);
+}

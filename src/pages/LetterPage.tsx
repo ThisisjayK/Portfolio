@@ -9,6 +9,9 @@ import { useLayoutEffect, useRef } from 'react'
 import { useReducedMotion } from 'motion/react'
 import CloseCross from '../components/CloseCross'
 import DishMenu from '../components/DishMenu'
+import WorldCup from '../components/WorldCup'
+import titlesRuinEverything from '../assets/drake/titles-ruin-everything.webp'
+import arsenalKeyring from '../assets/football/arsenal-keyring.webp'
 import RevealText from '../components/RevealText'
 import { hopIn } from '../components/pageHop'
 import type { LetterPage as Entry } from '../content/letters'
@@ -49,6 +52,21 @@ export default function LetterPage({ page }: { page: Entry }) {
         ))}
         {/* Cooking also gets the menu of dishes (Jayanth, 2026-10-18). */}
         {page.slug === 'cooking' && <DishMenu />}
+        {/* Football ends with the World Cup photos (Jayanth, 2026-10-19). */}
+        {/* Football: Jayanth's Arsenal keyring (photo by Jayanth, 2026-10-19), then the World Cup. */}
+        {page.slug === 'football' && (
+          <figure className="lp-figure" data-hop>
+            <img src={arsenalKeyring} alt="Jayanth holding his Arsenal crest keyring, clipped to his backpack" />
+          </figure>
+        )}
+        {page.slug === 'football' && <WorldCup />}
+        {/* Drake ends with Jayanth's copy of Drake's book (photo by Jayanth, 2026-10-19). */}
+        {page.slug === 'drake' && (
+          <figure className="lp-figure" data-hop>
+            <img src={titlesRuinEverything} alt="The blue cover of Titles Ruin Everything, A Stream of Consciousness by Aubrey Graham and Kenza Samir, published by Phaidon" />
+            <figcaption className="mono">Titles Ruin Everything · Aubrey Graham &amp; Kenza Samir · Phaidon</figcaption>
+          </figure>
+        )}
       </div>
       </article>
     </div>

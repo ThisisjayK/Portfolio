@@ -90,6 +90,11 @@ const ARTICLES: Record<string, Article> = {
       "Then I watched Germany play Belgium, and a player I didn't know scored. I couldn't have told you his name or his position. I just knew he was my favorite player. It was Mesut Özil.",
       'In 2013 he moved to Arsenal, and that is when I fell for the club. I watched every highlight I could find, including the Invincibles playing some properly good football, and the love only grew.',
       'When we won the Premier League in the 2025/26 season, our first in 22 years, I was more than elated. This season I want the quadruple.',
+      // Jayanth, 2026-10-19 (about-me.md §1c). "More than 60,000": he remembers 62k; Boston.com
+      // reported more than 64,000 at France vs Norway, so the page uses a figure both support.
+      'The World Cup I used to follow from a distance came to the US in 2026, and this time I was part of it. I volunteered as a Fan Operations volunteer at Boston Stadium in Foxborough, for every match played there.',
+      'I was on the Fan ID team, handing out Fan IDs to fans as they arrived. At France vs Norway, our team handed them to a crowd of more than 60,000.',
+      'The best part was the people. Fans from every corner of the world, and a team I loved working with. I met so many amazing people.',
     ],
   },
   ocean: {
