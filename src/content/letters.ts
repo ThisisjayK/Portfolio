@@ -1,7 +1,7 @@
 // The clickable letters of the hero's A–Z. Each one opens its own page at /<slug>
 // (Jayanth, 2026-10-17, after aiu.is). Title and line come from notes.ts
-// (about-me.md §1b). Longer page text is Jayanth's to write, in ARTICLES; until then a page
-// holds Lorem ipsum filler (below), never invented text about Jayanth.
+// (about-me.md §1b). Longer page text is in ARTICLES (about-me.md §1c for interests); a page
+// without one holds Lorem ipsum filler (below), never invented text about Jayanth.
 import { notes, type Note } from './notes'
 
 export type LetterPage = {
@@ -9,7 +9,7 @@ export type LetterPage = {
   slug: string
   topic: string // the heading
   subtitle?: string // the subheading, if any
-  note: Note
+  note?: Note // only the interest pages have one
   body: string[] // the paragraphs under the subheading
 }
 
@@ -31,25 +31,68 @@ const LOREM = [
 // note's title as subheading, and the filler.
 type Article = { topic?: string; subtitle?: string; body: string[] }
 const ARTICLES: Record<string, Article> = {
-  // A · About me (Jayanth, 2026-10-17), rewritten in the shape portfolio guides recommend: a hook,
-  // who I am, what drives me, one real story instead of a list of roles, how I work, life
-  // outside work, what's next and a call to action. Facts from about-me.md §1, §1b, §3, §5, §6
-  // and the site's existing intro (src/content/about.ts). "[Needs your answer: …]" marks the
-  // parts only Jayanth can write; they show on the page until replaced.
-  // Kept off on purpose: visa and OPT details, counts and metrics (§8), the fuller family
-  // story (§6b, public use TBD), the GPA.
+  // About Me, Work and the four interest pages (Jayanth, 2026-10-18): written with Jayanth in
+  // chat and approved, from about-me.md §1, §1c, §3, §5. Stage Zero follows the §8 disclosure
+  // policy (no counts, no vendors). The family story stays at the one approved line (§6b).
+  // No em or en dashes, at Jayanth's request. "[Needs your answer: …]" marks what only
+  // Jayanth can supply; it shows on the page until replaced.
   'about-me': {
     topic: 'About me',
     body: [
-      "Most of the people I interviewed at a cancer detection startup didn't trust digital health. [Needs your answer: is this the right opening? It's true, but whether it's what shaped you most is yours to say.] I'm Jayanth Kappagantula, a product manager, and I start with the people using the product.",
-      "Cancer has touched my family closely, so healthcare is where I most want to be useful. [Needs your answer: do you want to share more of why, such as your parents caring for your grandparents? Only if you want it public.]",
-      "I trained as an engineer, in Electronics and Instrumentation in Hyderabad, and spent my first years in enterprise systems: turning hiring, onboarding and leave into Pega workflows, then building a case-management app for microbial detection that reported to the WHO in real time. [Needs your answer: what made you move from building systems to product?] In 2024 I moved to Boston for a master's in Information Systems at Northeastern.",
-      "At Stage Zero Health, working on the breast cancer journey, US healthcare was new to me, and the interviews were a culture shock. People were careful about their health and made deliberate choices, and most of them were skeptical of digital health. So I proposed showing risk scores and recommendations calmly, without alarm, with links to the original data and verified facts behind them. I wrote the requirements, designed the wireframes and tested them with users.",
-      "Testing showed me what I'd missed. Most of our users were over 40, and they had trouble finding and opening those links, even though they understood what they read once they got there. So we reworked focus management, improved color contrast and made every click target at least 44 by 44 pixels. The lesson I took: good information isn't enough if people can't get to it.",
-      "That job changed how I work. I started taking responsibility more seriously, worked more closely across teams, and learned what it takes to build a company from the ground up. I loved the pace, even when it was messy, because no two days were the same.",
-      "[Needs your answer: how do you work? Two or three habits or beliefs in your own words, for example how you run an interview, how you decide what to build first, or how you work with engineers and designers.]",
-      "Outside work, I'm a Gooner raised on Invincibles highlights and a Drizzy fan since Take Care. I'm always experimenting in the kitchen, I'm a full-time indoor jungle dad, I'm chasing high scores and Gomu Gomu, and I'm building my weekly mileage.",
-      "Now I'm looking for full-time product roles anywhere in the US, and Stage Zero left me curious about insurance and claims. [Needs your answer: what kind of team or problem do you want next?] If that sounds like your team, say hi.",
+      "Hi, I'm Jayanth. I'm a product manager in Atlanta, by way of Hyderabad and Boston.",
+      'I trained as an electronics and instrumentation engineer, worked on enterprise systems in Pega and Salesforce, then moved into product. I finished an MS in Information Systems at Northeastern in August 2026.',
+      "Most recently I was the technical product manager co-op at Stage Zero Health, an early cancer detection startup, where I owned the breast cancer journey end to end. Most of the people I interviewed didn't trust digital health. So we showed risk scores calmly, with links back to the original sources. Then testing showed the real problem: a lot of users couldn't find those links. So we fixed that next.",
+      "Cancer has touched my family closely, so healthcare is where I most want to be useful. I'm looking for a full-time product manager role anywhere in the US, and I'm open to other sectors too.",
+      "Outside work, I cook every day and make a very good mocktail. I've been a Drake fan since a cousin played me Marvins Room in the summer of 2012. I'm a Gooner because of Mesut Özil. And the ocean is where I feel most at peace.",
+      'My work is on the Work page, and the rest of me is on the interest pages. Hiring, building something, or just want to talk Arsenal? Say hi.',
+    ],
+  },
+  // W · Work, newest first. The NGO entry waits on its name, dates and role.
+  work: {
+    topic: 'Work',
+    body: [
+      'Graduate Teaching Assistant, Northeastern University. Jan 2026 to Apr 2026, Boston, MA. TA for Managing Operational Risk for Engineers. I was the main point of contact for graduate engineering students, turning risk frameworks and failure modes into guidance that made sense whatever their background.',
+      "Technical Product Manager (Co-op), Stage Zero Health. Aug 2025 to Dec 2025, Cambridge, MA. I owned the breast cancer journey end to end at an early cancer detection startup. I interviewed customers, wrote the requirements, designed wireframes and tested them with users. With our engineers, I built an AI assistant that explained each user's risk results, and I evaluated it for groundedness, tone, safety, accuracy and PHI/PII handling, under HIPAA. It led to a 6-week paid pilot, with weekly user feedback shaping the backlog and pilot users signing off before release.",
+      'Pega Developer, Bluevoir. Feb 2024 to Jul 2024, Hyderabad, India. I built a microbial detection and case-management app on Pega that reported to the WHO in real time. I defined the case lifecycle, role-based access and decision rules, built a portal for each type of user, and resolved user issues through tickets.',
+      'SDE Intern, FormulaQ Solutions. Nov 2023 to Jan 2024, Hyderabad, India. I built, tested and deployed web pages through Salesforce AppExchange and WordPress. They lifted user engagement 10%.',
+      'Pega Business Architect, Bluevoir. Jan 2023 to Jun 2023, Hyderabad, India. I turned HR processes like hiring, onboarding and leave into Pega configurations. The solution architect and product owner signed off my BRDs, and I earned both Pega certifications along the way.',
+      'Graphic Designer, [Needs your answer: NGO name]. [Needs your answer: dates, and volunteer or paid.] [Needs your answer: what you designed, and for whom.]',
+    ],
+  },
+  // Interests (§1c). The cooking figure is the NSS Time Use Survey 2019 (26.1% of men did any
+  // unpaid domestic work, via IndiaSpend), not Jayanth's unverified 6 to 10% cooking figure.
+  cooking: {
+    topic: 'Cooking',
+    body: [
+      "Only about a quarter of Indian men do any unpaid housework, going by India's 2019 Time Use Survey. I cook every day.",
+      'I learned by watching my mom. I started by chopping vegetables, then moved up to stirring, which she said I did when there was no need whatsoever. Once I lived alone in the US, the kitchen became mine.',
+      "I've made some great meals, ruined a few authentic recipes, and make a very good mocktail. Recipes are coming.",
+    ],
+  },
+  drake: {
+    topic: 'Drake',
+    body: [
+      'Summer 2012, Hyderabad. My cousin, visiting from the US, sat down next to me and played Marvins Room. First time I heard Drake.',
+      "I went through all of Take Care in the next few weeks, and that was it. (There was also a lot of Justin Bieber until 2016. I'm not hiding it.) His music still makes me hopeful.",
+      'My playlists: [Needs your answer: playlist link].',
+    ],
+  },
+  // F stays Football as the letter; the page is about Arsenal. The match year is left out:
+  // Jayanth remembers 2012, the Germany 3 to 1 Belgium game with an Özil goal was Oct 2011.
+  football: {
+    topic: 'Football',
+    subtitle: 'Arsenal',
+    body: [
+      'As a kid, football looked like stick figures chasing a ball. Then I watched Germany play Belgium and saw Mesut Özil score. I didn\'t know his name or his position. He was just my favorite player.',
+      'When he signed for Arsenal in 2013, I followed him and fell for the club. Last season we won the league for the first time in 22 years. This season, I want the quadruple.',
+    ],
+  },
+  ocean: {
+    topic: 'The ocean',
+    body: [
+      "My dad taught me to swim when I was somewhere between 10 and 12. Water has felt like home ever since. I'm a Pisces, so maybe that explains it.",
+      'In 2021, at Chirala on the Bay of Bengal, I swam out past the shore for the first time, lay back and watched the sky while the waves moved me. My parents panicked when I told them.',
+      'The best word I have for it is peace.',
     ],
   },
 }
@@ -58,29 +101,30 @@ const ARTICLES: Record<string, Article> = {
 const filler = (i: number) => LOREM.map((_, k) => LOREM[(k + i) % LOREM.length])
 
 // Alphabetical.
-const ENTRIES: [letter: string, slug: string, topic: string, noteKey: string][] = [
+const ENTRIES: [letter: string, slug: string, topic: string, noteKey?: string][] = [
   // A was Arsenal; it holds the about-me article now (Jayanth, 2026-10-17).
   ['A', 'about-me', 'About me', 'arsenal'],
   ['C', 'cooking', 'Cooking', 'cooking'],
   ['D', 'drake', 'Drake', 'drake'],
   ['F', 'football', 'Football', 'football'],
-  ['G', 'gaming', 'Gaming', 'gaming'],
-  ['O', 'one-piece', 'One Piece', 'anime'],
-  ['P', 'plants', 'Plants', 'plants'],
-  ['R', 'running', 'Running', 'running'],
+  // O was One Piece; it's the ocean now. Plants (P), running (R) and gaming (G) are
+  // dropped from the interests (Jayanth, 2026-10-18).
+  ['O', 'ocean', 'The ocean'],
+  // W is Work, listed under About in the index (Jayanth, 2026-10-18). No note: it's an article.
+  ['W', 'work', 'Work'],
 ]
 
 export const letterPages: LetterPage[] = ENTRIES.map(([letter, slug, topic, noteKey], i) => {
-  const note = notes.find((n) => n.key === noteKey)!
+  const note = noteKey ? notes.find((n) => n.key === noteKey) : undefined
   const article = ARTICLES[slug]
   return {
     letter,
     slug,
     topic: article?.topic ?? topic,
-    subtitle: article ? article.subtitle : note.title,
+    subtitle: article ? article.subtitle : note?.title,
     note,
     // An article replaces the note's one line; otherwise the line, then PLACEHOLDER filler.
-    body: article?.body ?? [note.body, ...filler(i)],
+    body: article?.body ?? [note?.body ?? '', ...filler(i)],
   }
 })
 

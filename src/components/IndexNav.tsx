@@ -17,9 +17,11 @@ import './IndexNav.css'
 
 type Group = { marker: string; title: string; pages: LetterPage[] }
 
+// About me and Work sit under About (Work added 2026-10-18, Jayanth); the rest are interests.
+const ABOUT = ['about-me', 'work']
 const GROUPS: Group[] = [
-  { marker: '01', title: 'About', pages: letterPages.filter((p) => p.slug === 'about-me') },
-  { marker: '02', title: 'Interests', pages: letterPages.filter((p) => p.slug !== 'about-me') },
+  { marker: '01', title: 'About', pages: ABOUT.map((s) => letterPages.find((p) => p.slug === s)!) },
+  { marker: '02', title: 'Interests', pages: letterPages.filter((p) => !ABOUT.includes(p.slug)) },
 ]
 
 const pad = (n: number) => String(n).padStart(3, '0')
