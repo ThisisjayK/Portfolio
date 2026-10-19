@@ -2,18 +2,21 @@
 // not a button with an "X" in it. One long stroke falls from top-left to bottom-right; a
 // shorter one crosses it from bottom-left, both with slightly curled ends. Click or Esc breaks
 // the page apart (grid hop, pageHop.ts) and goes back to the landing page, where focus returns to the letter.
+// A dish page passes `to` and `state` so the cross goes back to the cooking menu instead.
 import { useEffect, useRef } from 'react'
 import { usePageHop } from './pageHop'
 import './CloseCross.css'
 
-export default function CloseCross({ slug }: { slug: string }) {
+type Props = { slug: string; to?: string; label?: string; state?: unknown }
+
+export default function CloseCross({ slug, to = '/', label = 'Close, back to the start', state }: Props) {
   const go = usePageHop()
   const btn = useRef<HTMLButtonElement>(null)
 
   const close = (x?: number, y?: number) => {
     const r = btn.current?.getBoundingClientRect()
     const origin = x !== undefined && y !== undefined ? { x, y } : r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : undefined
-    go('/', { origin, state: { fromSlug: slug } })
+    go(to, { origin, state: state ?? { fromSlug: slug } })
   }
 
   useEffect(() => {
@@ -29,7 +32,7 @@ export default function CloseCross({ slug }: { slug: string }) {
       ref={btn}
       type="button"
       className="close-cross"
-      aria-label="Close, back to the start"
+      aria-label={label}
       onClick={(e) => close(e.detail ? e.clientX : undefined, e.detail ? e.clientY : undefined)}
       data-hop
     >

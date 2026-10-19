@@ -6,7 +6,9 @@ import { CardsProvider, OpenCardOnMount } from './components/Cards'
 import Page from './components/Page'
 import Home from './pages/Home'
 import LetterPage from './pages/LetterPage'
+import DishPage from './pages/DishPage'
 import { letterPages } from './content/letters'
+import { dishes } from './content/dishes'
 
 export default function App() {
   const location = useLocation()
@@ -30,6 +32,10 @@ export default function App() {
             {/* One page per clickable letter of the hero's A–Z (src/content/letters.ts). */}
             {letterPages.map((p) => (
               <Route key={p.slug} path={`/${p.slug}`} element={<Page><LetterPage page={p} /></Page>} />
+            ))}
+            {/* One page per dish on the cooking menu (src/content/dishes.ts). */}
+            {dishes.map((d) => (
+              <Route key={d.key} path={`/cooking/${d.key}`} element={<Page><DishPage dish={d} /></Page>} />
             ))}
             <Route path="*" element={<Page><Home /></Page>} />
           </Routes>

@@ -8,6 +8,7 @@
 import { useLayoutEffect, useRef } from 'react'
 import { useReducedMotion } from 'motion/react'
 import CloseCross from '../components/CloseCross'
+import DishMenu from '../components/DishMenu'
 import RevealText from '../components/RevealText'
 import { hopIn } from '../components/pageHop'
 import type { LetterPage as Entry } from '../content/letters'
@@ -46,6 +47,8 @@ export default function LetterPage({ page }: { page: Entry }) {
         {page.body.map((p, k) => (
           <RevealText key={k} className="lp-text" text={p} data-hop />
         ))}
+        {/* Cooking also gets the menu of dishes (Jayanth, 2026-10-18). */}
+        {page.slug === 'cooking' && <DishMenu />}
       </div>
       </article>
     </div>

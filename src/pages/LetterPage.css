@@ -27,7 +27,7 @@
   display: none;
 }
 .lp:focus {
-  outline: none; /* focused only so the keys scroll it; nothing in it is interactive */
+  outline: none; /* focused only so the keys scroll it; the cooking menu has its own focus ring */
 }
 
 .lp-column {

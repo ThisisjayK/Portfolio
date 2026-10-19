@@ -1,0 +1,54 @@
+/* A dish page (Jayanth, 2026-10-18). Builds on the letter page's frame (LetterPage.css); these
+   are the parts only a recipe has. All --accent on --bg; the photo is the only colour. */
+.dish-photo {
+  width: min(100%, 420px);
+  height: auto;
+  margin: 0 auto var(--space-5);
+}
+
+.dish-meta {
+  margin: 0 0 var(--space-6);
+  text-align: center;
+}
+
+/* Section labels in mono, over a 1px rule, like the menu. */
+.dish-section {
+  margin: var(--space-7) 0 0;
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--accent);
+  font-weight: 400;
+}
+
+.dish-ingredients,
+.dish-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Amount in a narrow mono column, the item beside it. */
+.dish-ingredients li {
+  display: grid;
+  grid-template-columns: var(--space-9) 1fr;
+  gap: var(--space-4);
+  align-items: baseline;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--accent);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+
+/* Steps numbered 01, 02 … like the menu. */
+.dish-steps li {
+  display: grid;
+  grid-template-columns: var(--space-7) 1fr;
+  align-items: baseline;
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--accent);
+}
+.dish-step-text {
+  margin: 0;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  text-align: justify;
+}
