@@ -1,0 +1,284 @@
+/* The Drake page's playlist player (2026-10-19). Site ink and type only; the cover art is the
+   one patch of colour. Strike hover and rules as on the index, cooking menu and dish pages. */
+.pp {
+  margin: var(--space-6) 0 var(--space-5);
+  color: var(--accent);
+}
+
+/* Playlist switch: big names; the current one keeps the full strike, the others strike on hover. */
+.pp-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin-bottom: var(--space-5);
+}
+.pp-tab {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+.pp-tab-name,
+.pp-row-title {
+  --band: calc(50% - 0.23em);
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.pp-tab-name {
+  font-size: var(--text-h2);
+  line-height: var(--leading-heading);
+  opacity: 0.55;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+.pp-tab[aria-selected='true'] .pp-tab-name,
+.pp-tab:hover .pp-tab-name,
+.pp-tab:focus-visible .pp-tab-name {
+  opacity: 1;
+}
+.pp-tab-name::before,
+.pp-tab-name::after,
+.pp-row-title::before,
+.pp-row-title::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  clip-path: inset(var(--band) 100% var(--band) 0);
+  transition: clip-path 400ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+.pp-tab-name::before,
+.pp-row-title::before {
+  content: '';
+  background: currentColor;
+}
+.pp-tab-name::after,
+.pp-row-title::after {
+  content: attr(data-label);
+  color: var(--bg);
+}
+.pp-tab:hover .pp-tab-name::before,
+.pp-tab:hover .pp-tab-name::after,
+.pp-tab:focus-visible .pp-tab-name::before,
+.pp-tab:focus-visible .pp-tab-name::after,
+.pp-tab[aria-selected='true'] .pp-tab-name::before,
+.pp-tab[aria-selected='true'] .pp-tab-name::after,
+.pp-row:hover .pp-row-title::before,
+.pp-row:hover .pp-row-title::after,
+.pp-row:focus-visible .pp-row-title::before,
+.pp-row:focus-visible .pp-row-title::after,
+.pp-row[aria-current='true'] .pp-row-title::before,
+.pp-row[aria-current='true'] .pp-row-title::after {
+  clip-path: inset(var(--band) 0 var(--band) 0);
+}
+.pp-tab:focus-visible,
+.pp-row:focus-visible,
+.pp-btn:focus-visible,
+.pp-play:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* Now playing: cover left, title and artist right (stacked on phones). */
+.pp-now {
+  display: grid;
+  grid-template-columns: minmax(120px, 200px) 1fr;
+  gap: var(--space-5);
+  align-items: end;
+}
+.pp-art {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+.pp-title {
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-h2);
+  line-height: var(--leading-heading);
+  text-transform: none;
+}
+.pp-artist {
+  margin: 0;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+
+/* Seek: a 1px line, filled to the playhead, with a small round thumb. */
+.pp-bar {
+  margin-top: var(--space-5);
+}
+.pp-seek {
+  display: block;
+  width: 100%;
+  height: 20px;
+  margin: 0;
+  background: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  color: var(--accent);
+}
+.pp-seek::-webkit-slider-runnable-track {
+  height: 1px;
+  background: linear-gradient(to right, var(--accent) var(--pp-progress, 0%), color-mix(in srgb, var(--accent) 30%, transparent) 0);
+}
+.pp-seek::-moz-range-track {
+  height: 1px;
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.pp-seek::-moz-range-progress {
+  height: 1px;
+  background: var(--accent);
+}
+.pp-seek::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.pp-seek::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.pp-seek:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.pp-times {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-1);
+}
+
+/* Controls: thin drawn icons; play is an outlined circle that fills while hovered. */
+.pp-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  margin: var(--space-4) 0 var(--space-6);
+}
+.pp-btn,
+.pp-play {
+  display: grid;
+  place-items: center;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  background: none;
+  color: var(--accent);
+  cursor: pointer;
+  transition: background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
+}
+.pp-btn {
+  width: 44px;
+  height: 44px;
+  border-color: transparent;
+}
+.pp-play {
+  width: 64px;
+  height: 64px;
+}
+.pp-btn:hover,
+.pp-play:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+.pp-icon {
+  width: 26px;
+  height: 26px;
+}
+.pp-icon path {
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Song list: numbered rows between 1px rules, like the cooking menu. */
+.pp-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--accent);
+}
+.pp-list li {
+  border-bottom: 1px solid var(--accent);
+}
+.pp-row {
+  display: grid;
+  grid-template-columns: var(--space-7) 1fr auto;
+  align-items: baseline;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-3) 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.pp-row-title {
+  justify-self: start;
+  font-size: var(--text-body);
+  line-height: var(--leading-heading);
+}
+.pp-row-artist {
+  font-size: 14px;
+  opacity: 0.7;
+}
+.pp-more {
+  display: block;
+  margin: var(--space-3) 0 0;
+  padding: var(--space-2) 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.pp-more:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.pp-foot {
+  margin: var(--space-4) 0 0;
+}
+.pp-foot a {
+  color: inherit;
+}
+
+@media (max-width: 760px) {
+  .pp-now {
+    grid-template-columns: 1fr;
+  }
+  .pp-art {
+    max-width: 240px;
+  }
+  .pp-row {
+    grid-template-columns: var(--space-6) 1fr;
+  }
+  .pp-row-artist {
+    grid-column: 2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pp-tab-name::before,
+  .pp-tab-name::after,
+  .pp-row-title::before,
+  .pp-row-title::after {
+    transition-duration: 1ms;
+  }
+}

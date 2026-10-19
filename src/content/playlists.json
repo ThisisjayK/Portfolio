@@ -1,0 +1,232 @@
+{
+  "playlists": [
+    {
+      "name": "peel",
+      "appleUrl": "https://music.apple.com/us/playlist/peel/pl.u-mJy8gd7tYzGzWZl",
+      "tracks": [
+        {
+          "title": "Quebec",
+          "artist": "Drake",
+          "album": "HABIBTI (FOMO)",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/de/ba/11/deba1133-4d82-9002-6970-831a06844ba0/mzaf_8527713785479954759.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/62/58/98/62589807-decc-d418-eb07-5060de9a2d3e/26UMGIM63617.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/quebec/6818059268?i=6818059598&uo=4"
+        },
+        {
+          "title": "Yebba’s Heartbreak",
+          "artist": "Drake & Yebba",
+          "album": "Certified Lover Boy",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/f1/eb/66/f1eb660c-8335-4761-dbe0-fac994f6b385/mzaf_8031817006696158671.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/cb/6b/5f/cb6b5fc3-8d35-908a-18e6-6f8eda46ce11/21UM1IM07521.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/yebbas-heartbreak/1584449196?i=1584449218&uo=4"
+        },
+        {
+          "title": "Jumbotron Shit Poppin",
+          "artist": "Drake",
+          "album": "Her Loss",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/9c/16/b9/9c16b9f4-8039-291a-7468-8155c135cf41/mzaf_3474608791464740457.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/e1/6e/6a/e16e6a89-3e6d-1936-1a9c-b51680bcd4c1/22UM1IM29132.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/jumbotron-shit-poppin/1653012564?i=1653012715&uo=4"
+        },
+        {
+          "title": "Bria's Interlude (feat. Omarion)",
+          "artist": "Drake",
+          "album": "So Far Gone",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/0a/46/97/0a4697e4-fb74-4c50-da91-1f50d79ff1be/mzaf_8079220423762243947.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/50/7f/3b/507f3b71-c606-5a59-06ee-22be3e1e6ca5/00602577542602.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/brias-interlude-feat-omarion/1453336206?i=1453336220&uo=4"
+        },
+        {
+          "title": "I’m Spent",
+          "artist": "Drake & Loe Shimmy",
+          "album": "HABIBTI",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/72/bb/a0/72bba02c-ad2a-b2df-b65e-8da9a3af61a1/mzaf_18393726502854099173.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/c4/90/c4/c490c447-65be-b0d5-c4ae-869fc3e21a85/26UMGIM63617.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/im-spent/6769647917?i=6769648027&uo=4"
+        },
+        {
+          "title": "Currents",
+          "artist": "Drake",
+          "album": "Honestly, Nevermind",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/05/7c/04/057c0446-e318-b3a7-0a99-2b9c7f2559d2/mzaf_14969325485598992957.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/84/2c/b4/842cb419-243c-b3f4-4da9-b6b980996062/22UMGIM67371.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/currents/1630230040?i=1630230433&uo=4"
+        },
+        {
+          "title": "That's How You Feel",
+          "artist": "Drake",
+          "album": "Scorpion",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/1a/3d/78/1a3d783f-1360-98f0-fafb-c7b81f45456e/mzaf_1157157294541961817.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/bb/6d/8f/bb6d8f67-6d04-10b5-dd62-eb5809ac54fc/00602567879152.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/thats-how-you-feel/1406109769?i=1406109899&uo=4"
+        },
+        {
+          "title": "Another Late Night (feat. Lil Yachty)",
+          "artist": "Drake",
+          "album": "For All The Dogs",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/66/73/d7/6673d71f-a7ac-34b0-c210-55bc4497f837/mzaf_13308336887840620131.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/fa/9e/e6/fa9ee672-0880-2b5b-a69d-981e8fcb807e/23UM1IM09863.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/another-late-night-feat-lil-yachty/1710694554?i=1710694760&uo=4"
+        },
+        {
+          "title": "WNBA",
+          "artist": "Drake",
+          "album": "HABIBTI",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/86/73/cf/8673cf4e-4919-2753-e546-d2f9577ed79b/mzaf_16644255680745046140.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/c4/90/c4/c490c447-65be-b0d5-c4ae-869fc3e21a85/26UMGIM63617.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/wnba/6769647917?i=6769648018&uo=4"
+        },
+        {
+          "title": "Classic PT2",
+          "artist": "Drake",
+          "album": "HABIBTI (FOMO)",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/34/bf/18/34bf1898-cc51-c915-a00a-05bd8febaeaa/mzaf_12302555311102118914.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/62/58/98/62589807-decc-d418-eb07-5060de9a2d3e/26UMGIM63617.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/classic-pt2/6818059268?i=6818059601&uo=4"
+        },
+        {
+          "title": "Finesse",
+          "artist": "Drake",
+          "album": "Scorpion",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/44/53/68/4453680c-94f1-5f97-bcb9-8147f2cb56b0/mzaf_4259939450411566361.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1f/37/43/1f374304-2e04-2be3-53ea-41dd6f0b6fb8/00602567892410.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/finesse/1418213110?i=1418213392&uo=4"
+        },
+        {
+          "title": "SOMEBODY LOVES ME",
+          "artist": "PARTYNEXTDOOR & Drake",
+          "album": "$ome $exy $ongs 4 U",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/0b/93/8a/0b938aec-0475-fd87-10ed-ecf8050191c9/mzaf_5755854175030680927.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/65/a1/d8/65a1d809-dede-adf4-d85e-964070e77f58/808391285897.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/somebody-loves-me/6814097810?i=6814098338&uo=4"
+        },
+        {
+          "title": "Bahamas Promises",
+          "artist": "Drake",
+          "album": "For All The Dogs",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/df/26/a9/df26a9bb-e21c-ceee-863e-9157fac23915/mzaf_7932907614496622919.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/fa/9e/e6/fa9ee672-0880-2b5b-a69d-981e8fcb807e/23UM1IM09863.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/bahamas-promises/1710694554?i=1710694698&uo=4"
+        },
+        {
+          "title": "4422 (feat. Sampha)",
+          "artist": "Drake",
+          "album": "More Life",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/ac/4b/37/ac4b37dc-fbe0-e6e3-c1b5-4af0029e9ff6/mzaf_547664658298136920.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/71/97/d0/7197d021-de0f-9548-3f31-40b8294d3242/17UMGIM85032.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/4422-feat-sampha/1440890708?i=1440891689&uo=4"
+        }
+      ]
+    },
+    {
+      "name": "plottwisttt",
+      "appleUrl": "https://music.apple.com/us/playlist/plottwisttt/pl.u-38oWZplFZP3PKyq",
+      "tracks": [
+        {
+          "title": "BRIAN STEEL",
+          "artist": "Drake",
+          "album": "$ome $exy $ongs 4 U",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/42/51/4e/42514e9a-2ad4-bdaf-9d27-21bfe753d788/mzaf_11103964797323079157.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/65/a1/d8/65a1d809-dede-adf4-d85e-964070e77f58/808391285897.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/brian-steel/6814097810?i=6814098015&uo=4"
+        },
+        {
+          "title": "No Face",
+          "artist": "Drake",
+          "album": "No Face - Single",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/d1/e0/a1/d1e0a111-7c06-1c20-ed95-556ef79cf067/mzaf_8482233676635550455.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/e3/4f/f3/e34ff31a-01f0-fd76-c566-405646bce3c8/24UMGIM87152.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/no-face/1765843041?i=1765843064&uo=4"
+        },
+        {
+          "title": "B’s On The Table",
+          "artist": "Drake & 21 Savage",
+          "album": "ICEMAN",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/e7/cb/74/e7cb749b-2b9c-3b27-b45a-8e5da2493a49/mzaf_15494222518134088783.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/7f/39/61/7f396123-be56-bc11-eaab-976441808e58/26UMGIM63622.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/bs-on-the-table/6769649287?i=6769649586&uo=4"
+        },
+        {
+          "title": "Landed",
+          "artist": "Drake",
+          "album": "Dark Lane Demo Tapes",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/2e/bb/ba/2ebbba76-7917-c2f4-ffc7-d9ec5809e7a1/mzaf_11146168887770074091.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/00/70/0b/00700b6f-2b06-c986-c7ec-445d95b28e74/20UMGIM34467.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/landed/1511049637?i=1511050002&uo=4"
+        },
+        {
+          "title": "Red Button",
+          "artist": "Drake",
+          "album": "For All The Dogs Scary Hours Edition",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/43/56/4b/43564b39-0ff2-6143-fc28-339593232250/mzaf_1357779469085620671.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/68/8b/a9/688ba9aa-4c90-c630-63c3-b6a7a0d945c2/23UM1IM56239.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/red-button/1716986138?i=1716986987&uo=4"
+        },
+        {
+          "title": "Kmt (feat. Giggs)",
+          "artist": "Drake",
+          "album": "More Life",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/93/93/aa/9393aa73-4b3a-1907-337d-56e6eb84c2a8/mzaf_10549381899232947449.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/18/9d/b8/189db80b-bfa8-89d1-1514-5fcb7e5cf8f4/00602557611526.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/kmt-feat-giggs/1440891750?i=1440892742&uo=4"
+        },
+        {
+          "title": "6 Man",
+          "artist": "Drake",
+          "album": "If You're Reading This It's Too Late",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/b3/2a/d0/b32ad08a-cab9-8dae-5028-e603126b632e/mzaf_4190504055268112357.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/f7/7d/bb/f77dbbb4-e8a2-855d-cc5c-79804a297599/00602547261908.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/6-man/1440830885?i=1440831769&uo=4"
+        },
+        {
+          "title": "Which One",
+          "artist": "Drake & Central Cee",
+          "album": "MAID OF HONOUR",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/e2/f8/b7/e2f8b791-685b-39d6-f8c1-db29f304d577/mzaf_1289359524548735605.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/81/de/93/81de93ef-07f5-7f71-99ed-7ed35e58480a/26UMGIM63623.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/which-one/6769648970?i=6769649191&uo=4"
+        },
+        {
+          "title": "Back To Back",
+          "artist": "Drake",
+          "album": "Back To Back - Single",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/a4/08/2d/a4082dad-06be-ed75-ce83-0761cbbc0438/mzaf_11872599359481063789.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music128/v4/b0/f5/74/b0f57436-0224-b075-7555-5e65517eea31/00602547534903.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/back-to-back/1445029811?i=1445029814&uo=4"
+        },
+        {
+          "title": "Started From the Bottom",
+          "artist": "Drake",
+          "album": "Nothing Was the Same",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/8a/a9/ad/8aa9ad46-cd3a-a72f-c325-f6d4be150d95/mzaf_13219736619442703133.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music118/v4/5f/30/6d/5f306d67-bff8-2595-9d41-51be895d3208/00602537542321.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/started-from-the-bottom/1440820956?i=1440821277&uo=4"
+        },
+        {
+          "title": "Little Birdie",
+          "artist": "Drake",
+          "album": "ICEMAN",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/1d/89/dc/1d89dcf3-b67c-1381-23f9-65b81d213648/mzaf_4925677266435083316.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/7f/39/61/7f396123-be56-bc11-eaab-976441808e58/26UMGIM63622.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/little-birdie/6769649287?i=6769649672&uo=4"
+        },
+        {
+          "title": "War",
+          "artist": "Drake",
+          "album": "Dark Lane Demo Tapes",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/33/22/f9/3322f9c1-ae8f-3874-20fc-1e272aa84ed9/mzaf_14290091006665916144.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/00/70/0b/00700b6f-2b06-c986-c7ec-445d95b28e74/20UMGIM34467.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/war/1511049637?i=1511050429&uo=4"
+        },
+        {
+          "title": "Treacherous Twins",
+          "artist": "Drake & 21 Savage",
+          "album": "Her Loss",
+          "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/05/15/0f/05150f8c-5849-0f66-f1cb-18fba253a9a0/mzaf_7307190641955287918.plus.aac.p.m4a",
+          "art": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/e1/6e/6a/e16e6a89-3e6d-1936-1a9c-b51680bcd4c1/22UM1IM29132.rgb.jpg/600x600bb.jpg",
+          "apple": "https://music.apple.com/us/album/treacherous-twins/1653012564?i=1653012709&uo=4"
+        }
+      ]
+    }
+  ]
+}

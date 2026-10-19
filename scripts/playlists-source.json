@@ -1,0 +1,125 @@
+{
+  "_note": "Jayanth's Apple Music playlists for the Drake page (2026-10-19). Edit the tracks here, then run: npm run playlists. Both lists are from Jayanth's screenshots, sorted by length (not the playlists' own order). The player shows the first 10 of each.",
+  "playlists": [
+    {
+      "name": "peel",
+      "appleUrl": "https://music.apple.com/us/playlist/peel/pl.u-mJy8gd7tYzGzWZl",
+      "tracks": [
+        {
+          "title": "Quebec",
+          "artist": "Drake"
+        },
+        {
+          "title": "Yebba's Heartbreak",
+          "artist": "Drake & Yebba"
+        },
+        {
+          "title": "Jumbotron Shit Poppin",
+          "artist": "Drake"
+        },
+        {
+          "title": "Bria's Interlude (feat. Omarion)",
+          "artist": "Drake"
+        },
+        {
+          "title": "I'm Spent",
+          "artist": "Drake & Loe Shimmy"
+        },
+        {
+          "title": "Currents",
+          "artist": "Drake"
+        },
+        {
+          "title": "That's How You Feel",
+          "artist": "Drake"
+        },
+        {
+          "title": "Another Late Night (feat. Lil Yachty)",
+          "artist": "Drake"
+        },
+        {
+          "title": "WNBA",
+          "artist": "Drake"
+        },
+        {
+          "title": "Classic PT2",
+          "artist": "Drake"
+        },
+        {
+          "title": "Finesse",
+          "artist": "Drake"
+        },
+        {
+          "title": "SOMEBODY LOVES ME",
+          "artist": "PARTYNEXTDOOR & Drake"
+        },
+        {
+          "title": "Bahamas Promises",
+          "artist": "Drake"
+        },
+        {
+          "title": "4422 (feat. Sampha)",
+          "artist": "Drake"
+        }
+      ]
+    },
+    {
+      "name": "plottwisttt",
+      "appleUrl": "https://music.apple.com/us/playlist/plottwisttt/pl.u-38oWZplFZP3PKyq",
+      "tracks": [
+        {
+          "title": "BRIAN STEEL",
+          "artist": "Drake"
+        },
+        {
+          "title": "No Face",
+          "artist": "Drake"
+        },
+        {
+          "title": "B's On The Table",
+          "artist": "Drake & 21 Savage"
+        },
+        {
+          "title": "Landed",
+          "artist": "Drake"
+        },
+        {
+          "title": "Red Button",
+          "artist": "Drake"
+        },
+        {
+          "title": "KMT (feat. Giggs)",
+          "artist": "Drake"
+        },
+        {
+          "title": "6 Man",
+          "artist": "Drake"
+        },
+        {
+          "title": "Which One",
+          "artist": "Drake & Central Cee"
+        },
+        {
+          "title": "Back To Back",
+          "artist": "Drake"
+        },
+        {
+          "title": "Started From the Bottom",
+          "artist": "Drake"
+        },
+        {
+          "title": "Little Birdie",
+          "artist": "Drake"
+        },
+        {
+          "title": "War",
+          "artist": "Drake"
+        },
+        {
+          "title": "Treacherous Twins",
+          "artist": "Drake & 21 Savage"
+        }
+      ]
+    }
+  ]
+}

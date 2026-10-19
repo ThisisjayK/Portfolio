@@ -77,7 +77,8 @@ const ARTICLES: Record<string, Article> = {
       'Summer 2012, back home in Hyderabad. My cousins were visiting from the US, and I asked one of them what he was listening to. He came over, sat down next to me and played Marvins Room. That was the first time I heard Drake\'s voice.',
       "Something about that moment stuck. Over the next few weeks I listened to all of Take Care, and that settled it. (I'll be honest, there was also a lot of Justin Bieber in my life until about 2016.) I've been a huge Drizzy fan ever since. Who doesn't love some Drake? He always turns the party up.",
       'His music has kept inspiring me since. It makes me imaginative, and hopeful about a successful life, a bit of luxury, and peace.',
-      "I've made a few Drake playlists for myself, and I'll share them here: [Needs your answer: playlist link].",
+      "Drake announced the Freeze the World tour, and I'm super excited for it. I've already started saving up.",
+      "I've made a few Drake playlists for myself. Two of them are below. Pick one and press play.",
     ],
   },
   // F stays Football as the letter; the page is about Arsenal. The match year is left out:
