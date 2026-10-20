@@ -82,3 +82,18 @@
     --nav-h: 108px;
   }
 }
+
+/* Short screens (laptops at 720px and below 760px): the index's type steps down so its eight
+   pages, Say hi and Résumé fit above its counter (2026-10-19). */
+@media (max-height: 760px) {
+  :root {
+    --text-index-group: 26px;
+    --text-index: 23px;
+  }
+}
+@media (max-height: 700px) {
+  :root {
+    --text-index-group: 22px;
+    --text-index: 20px;
+  }
+}

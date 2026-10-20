@@ -100,6 +100,23 @@ function IndexList({
               Say hi
             </button>
           </li>
+          {/* The résumé PDF, in a new tab (Jayanth, 2026-10-19). A plain link, so no page hop. */}
+          <li data-zoom-cover={big ? undefined : ''}>
+            <span className="index-key mono" aria-hidden="true">R</span>
+            <a
+              className="index-link"
+              data-label="Résumé"
+              href={`${import.meta.env.BASE_URL}resume.pdf`}
+              target="_blank"
+              rel="noopener"
+              onPointerEnter={strikeIn}
+              onPointerLeave={strikeOut}
+              onFocus={strikeIn}
+              onBlur={strikeOut}
+            >
+              Résumé
+            </a>
+          </li>
         </ul>
       </section>
     </div>

@@ -208,3 +208,11 @@
     animation: none;
   }
 }
+
+/* Very short windows: the list can't fit above the page counter, so the counter (decoration
+   only) steps aside (2026-10-19). */
+@media (max-height: 640px) {
+  .index-count {
+    display: none;
+  }
+}
