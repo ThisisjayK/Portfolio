@@ -3,7 +3,8 @@
 // each [GP] item, and §5 for certifications. Workday is left off on purpose (§6: end user only).
 // No dashes, at Jayanth's request.
 
-export type SkillGroup = { name: string; items: string[] }
+// tags: short items shown as outlined tags instead of a list (Jayanth: more readable, 2026-10-19).
+export type SkillGroup = { name: string; items: string[]; tags?: boolean }
 
 export const skillGroups: SkillGroup[] = [
   {
@@ -40,6 +41,7 @@ export const skillGroups: SkillGroup[] = [
   },
   {
     name: 'Platforms',
+    tags: true,
     items: ['Salesforce (CRM)', 'Pega (BPM)', 'Enterprise systems (B2B)', 'Consumer product (B2C)'],
   },
   {
@@ -56,13 +58,15 @@ export const skillGroups: SkillGroup[] = [
   },
   {
     name: 'Tools',
+    tags: true,
     items: ['Jira', 'Asana', 'Miro', 'Notion', 'Figma', 'Salesforce', 'Pega', 'GitHub', 'Vercel', 'Supabase', 'GA4', 'Claude Code'],
   },
   {
     name: 'Certifications',
+    tags: true,
     items: ['Certified Salesforce Administrator', 'Pega Certified Business Architect', 'Pega Certified System Architect'],
   },
 ]
 
 // Spoken languages sit with the skills, as in about-me.md §6.
-export const languages = { name: 'Languages', items: ['English', 'Hindi (fluent)', 'Telugu (native)'] }
+export const languages: SkillGroup = { name: 'Languages', tags: true, items: ['English', 'Hindi (fluent)', 'Telugu (native)'] }

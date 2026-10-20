@@ -12,7 +12,7 @@
   grid-template-columns: var(--space-7) 1fr;
   gap: 0;
   align-items: baseline;
-  padding: var(--space-4) 0;
+  padding: var(--space-6) 0;
   border-bottom: 1px solid var(--accent);
 }
 .skills-name {
@@ -23,22 +23,40 @@
   line-height: var(--leading-heading);
   letter-spacing: -0.03em;
 }
-/* The items sit under the name, in two columns (one on phones). */
+/* The items sit under the name: one per line with room between them and a small square
+   marker (2026-10-19, for readability; was two dense columns). */
 .skills-items {
   grid-column: 2;
+  display: grid;
+  gap: var(--space-2);
+  max-width: var(--reading);
   list-style: none;
-  margin: var(--space-3) 0 0;
+  margin: var(--space-4) 0 0;
   padding: 0;
-  columns: 2;
-  column-gap: var(--space-6);
   font-size: var(--text-body);
-  line-height: var(--leading-body);
+  line-height: var(--leading-heading);
 }
-.skills-items li {
-  break-inside: avoid;
+.skills-items:not(.skills-items--tags) li {
+  position: relative;
+  padding-left: var(--space-5);
 }
-@media (max-width: 760px) {
-  .skills-items {
-    columns: 1;
-  }
+.skills-items:not(.skills-items--tags) li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: var(--space-2);
+  height: var(--space-2);
+  background: currentColor;
+}
+/* Short items as outlined tags that wrap. */
+.skills-items--tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.skills-items--tags li {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid currentColor;
+  border-radius: 999px;
 }
