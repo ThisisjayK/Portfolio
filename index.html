@@ -1,85 +1,16 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Jay · Product Manager portfolio</title>
-<meta name="description" content="Early-career product manager. Case studies, product teardowns, and the way I work: run the task first, tie every claim to evidence, name the counter-metric up front." />
-<meta name="theme-color" content="#00663a" />
-<link rel="icon" href="favicon.svg" type="image/svg+xml" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<!-- Geist gets its own request with display=optional rather than swap: the
-     case study heading measures the monkey's grip off Geist's specific
-     x-height/baseline, so a mid-session swap to the fallback font's metrics
-     would jerk the hook off the letter. optional keeps whichever font wins
-     the very first race for the rest of the load instead of swapping later. -->
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&display=optional" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
-<!-- Bold script faces for the boot loader's rotating "perseverance" word. Saint
-     Regus is Latin-only, so each non-Latin script falls through to its Noto face.
-     Each request is subset (text=) to just the word shown, so the download is a
-     few hundred bytes rather than a full CJK/Indic family. -->
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@700&text=%E0%B0%AA%E0%B0%9F%E0%B1%8D%E0%B0%9F%E0%B1%81%E0%B0%A6%E0%B0%B2&display=swap" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@700&text=%E0%A4%A6%E0%A5%83%E0%A4%A2%E0%A4%BC%E0%A4%A4%E0%A4%BE&display=swap" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&text=%E5%BF%8D%E8%80%90%E5%8A%9B&display=swap" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@700&text=%E6%AF%85%E5%8A%9B&display=swap" rel="stylesheet" />
-<script>
-  // Set the theme before first paint so there is no flash of the wrong colours.
-  // Dark is the default: the site is a two-ink print job designed green-first,
-  // so a visitor arriving on a light-mode OS should still land on the intended
-  // version rather than the inverted one. prefers-color-scheme is deliberately
-  // not consulted; only an explicit choice via the toggle switches to light.
-  (function () {
-    try {
-      var t = localStorage.getItem("teardowns-theme");
-      document.documentElement.setAttribute(
-        "data-theme",
-        t === "light" ? "light" : "dark"
-      );
-    } catch (e) {}
-  })();
-  // Same again for the reader text size, so the page does not reflow a beat
-  // after load. Large is the default; "default" is the old id for what is now
-  // "sm", mapped across so an earlier choice survives the rename.
-  (function () {
-    try {
-      var s = localStorage.getItem("teardowns-text-size");
-      if (s === "default") s = "sm";
-      document.documentElement.setAttribute(
-        "data-text",
-        s === "sm" || s === "lg" || s === "xl" ? s : "lg"
-      );
-    } catch (e) {}
-  })();
-</script>
-
-<!-- Boot flash-guard. Lives in the static HTML (not the bundle) so it paints the
-     theme's paper colour the instant the document arrives, covering the blank
-     screen while the ~325 KB JS chunk downloads. The React <Loader> (rotating
-     word + counter) then takes over on the same paper ground, so the handoff is
-     seamless; main.tsx clears this once React has painted. -->
-<style>
-  #boot{
-    position:fixed; inset:0; z-index:2147483647;
-    background:#00663a;                            /* dark (default): green paper */
-    transition:opacity .4s cubic-bezier(.22,.68,.24,1);
-  }
-  html[data-theme="light"] #boot{ background:#ffccfd; }  /* light: pink paper */
-  #boot.boot--done{ opacity:0; pointer-events:none; }
-</style>
-</head>
-<body>
-<div id="boot" aria-hidden="true"></div>
-<div id="root"></div>
-<script type="module" src="/src/main.tsx"></script>
-<script>
-  // Safety net: main.tsx clears the loader on mount. This only fires if the
-  // bundle fails to boot, so a broken load never traps the visitor on it.
-  setTimeout(function () {
-    var b = document.getElementById("boot");
-    if (b) b.classList.add("boot--done");
-  }, 10000);
-</script>
-</body>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jayanth Kappagantula · Product Manager</title>
+    <meta name="description" content="Product manager who starts with the people using the product. Healthcare, 0→1, engineer by training." />
+    <!-- Link preview tags (og:image etc.) are added in the launch step. -->
+    <!-- A plain-text version for AI tools and search (public/jayanth-kappagantula.md, public/llms.txt). -->
+    <link rel="alternate" type="text/markdown" href="/Portfolio/jayanth-kappagantula.md" title="About Jayanth (Markdown)" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

@@ -1,0 +1,120 @@
+/* The cooking page's menu (Jayanth, 2026-10-18). Same ink and strike as the index. */
+.dish-menu {
+  margin: var(--space-8) 0 var(--space-5);
+}
+
+.dish-menu-title {
+  margin: 0 0 var(--space-4);
+  font-weight: 400;
+  color: var(--accent);
+}
+
+.dish-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--accent);
+}
+
+.dish {
+  border-bottom: 1px solid var(--accent);
+}
+
+/* A row: the number in mono, then the name. The strike runs over the name only. */
+.dish-row {
+  display: grid;
+  grid-template-columns: var(--space-7) 1fr;
+  align-items: baseline;
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-3) 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.dish-name {
+  --band: calc(50% - 0.23em);
+  position: relative;
+  justify-self: start;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-h2);
+  line-height: var(--leading-heading);
+  letter-spacing: -0.03em;
+}
+.dish-name::before,
+.dish-name::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  clip-path: inset(var(--band) 100% var(--band) 0);
+}
+.dish-name::before {
+  content: '';
+  background: currentColor;
+}
+.dish-name::after {
+  content: attr(data-label);
+  color: var(--bg);
+}
+.dish-row[data-strike='in'] .dish-name::before,
+.dish-row[data-strike='in'] .dish-name::after {
+  animation: dish-strike-in 400ms cubic-bezier(0.25, 1, 0.5, 1) forwards; /* ease-out-quart */
+}
+.dish-row[data-strike='out'] .dish-name::before,
+.dish-row[data-strike='out'] .dish-name::after {
+  animation: dish-strike-out 400ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+@keyframes dish-strike-in {
+  from { clip-path: inset(var(--band) 100% var(--band) 0); }
+  to { clip-path: inset(var(--band) 0 var(--band) 0); }
+}
+@keyframes dish-strike-out {
+  from { clip-path: inset(var(--band) 0 var(--band) 0); }
+  to { clip-path: inset(var(--band) 0 var(--band) 100%); }
+}
+.dish-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+
+/* Mouse: the photo just right of the cursor, so the name under it stays readable. */
+.dish-float {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 40;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.dish-float-img {
+  position: absolute;
+  width: clamp(160px, 15vw, 230px);
+  max-width: none; /* the global img rule caps at 100% of this zero-size box */
+  height: auto;
+  transform: translate(var(--space-5), -50%) scale(0.92);
+  opacity: 0;
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-slow) var(--ease-out);
+}
+.dish-float-img[data-on] {
+  opacity: 1;
+  transform: translate(var(--space-5), -50%) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dish-row[data-strike] .dish-name::before,
+  .dish-row[data-strike] .dish-name::after {
+    animation-duration: 1ms;
+  }
+  .dish-float-img {
+    transition: opacity var(--dur-fast) linear;
+    transform: translate(var(--space-5), -50%);
+  }
+}

@@ -1,0 +1,14 @@
+# Jayanth Kappagantula
+
+> Portfolio of Jayanth Kappagantula, a product manager who starts with the people using the product: engineer by training, then enterprise systems (Pega, Salesforce), most recently a Technical Product Manager co-op at Stage Zero Health, an early cancer detection startup. Based in Atlanta, GA; open to full-time product roles anywhere in the US.
+
+The site is a single-page app; this file and the Markdown version below are plain text for AI tools and search.
+
+## Text version
+
+- [About Jayanth (Markdown)](https://thisisjayk.github.io/Portfolio/jayanth-kappagantula.md): experience, education, certifications, skills and contact, in plain text.
+
+## Pages
+
+- [Home](https://thisisjayk.github.io/Portfolio/): introduction and contact.
+- [About me](https://thisisjayk.github.io/Portfolio/about-me): a short first-person story.

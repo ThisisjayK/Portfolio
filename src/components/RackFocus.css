@@ -1,0 +1,64 @@
+/* Rack focus (RackFocus.tsx): white statements on the theme blue, over two soft glows in
+   shades white stays readable on (cornflower 6.25:1, navy 16.6:1). */
+.rack {
+  position: relative;
+  height: 420svh; /* scroll distance for four statements (was 360svh for three) */
+  --ink: var(--on-accent);
+  --surface: var(--accent-fill);
+  background: var(--surface);
+  color: var(--ink);
+}
+.rack-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  display: grid;
+  place-content: center;
+  padding: 0 var(--gutter);
+}
+.rack-glow {
+  position: absolute;
+  opacity: 0; /* faded in and out with the scroll (RackFocus.tsx) */
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+}
+.rack-glow--a {
+  width: 50vmax;
+  height: 50vmax;
+  left: -10vmax;
+  top: 10vh;
+  background: var(--bloom-cornflower);
+}
+.rack-glow--b {
+  width: 40vmax;
+  height: 40vmax;
+  right: -8vmax;
+  bottom: -5vh;
+  background: var(--bloom-navy);
+}
+.rack-lines {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+}
+.rack-line {
+  font-size: clamp(36px, 6vw, 88px);
+  line-height: 1.05;
+  text-transform: none;
+  will-change: filter, opacity;
+}
+.rack--static {
+  height: auto;
+}
+/* Reduced motion: no fade to hide the glows' cut-off edges, so no glows. */
+.rack--static .rack-glow {
+  display: none;
+}
+.rack--static .rack-stage {
+  position: static;
+  min-height: 100svh;
+}

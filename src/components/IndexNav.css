@@ -1,0 +1,210 @@
+/* The index (IndexNav.tsx), after aiu.is: one ink (--accent), hierarchy from indentation, the
+   personality in the mono margins. Tokens only. */
+.index {
+  position: fixed;
+  z-index: 30;
+  left: var(--gutter);
+  /* Under the roll box, which fills the top fifth of the screen (RollBox.css). */
+  top: calc(20svh + var(--space-5));
+  bottom: var(--space-6);
+  width: var(--index-w);
+  display: flex;
+  flex-direction: column;
+  color: var(--accent);
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+.index--away {
+  opacity: 0;
+  pointer-events: none;
+}
+/* Home: an item steps aside while the bloom covers its spot (set from Hero.tsx). */
+.index [data-zoom-cover] {
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.index [data-covered] {
+  opacity: 0;
+}
+.index-label {
+  margin: 0 0 var(--space-4);
+}
+.index-list {
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.index-group + .index-group {
+  margin-top: var(--space-4);
+}
+
+/* Markers in the first column, the group title after it; items are indented one step further,
+   with their letter in the middle column. */
+.index-group-title {
+  display: grid;
+  grid-template-columns: var(--space-7) 1fr;
+  align-items: baseline;
+  margin: 0 0 var(--space-1);
+  font-family: var(--font-index);
+  font-weight: 700;
+  font-size: var(--text-index-group);
+  line-height: var(--leading-heading);
+  letter-spacing: -0.04em;
+}
+.index-items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.index-items li {
+  display: grid;
+  grid-template-columns: var(--space-7) var(--space-5) 1fr;
+  align-items: center;
+}
+.index-key {
+  grid-column: 2;
+}
+.index-marker {
+  align-self: center;
+}
+
+/* Items, and the strike. The bar and the white copy of the words share one clip, so they wipe
+   together: a band through the middle of the words (0.46em tall) with a gap above and below. */
+.index-link {
+  --band: calc(50% - 0.23em);
+  grid-column: 3;
+  justify-self: start;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--space-6); /* 32px rows on desktop; phones get 44px in the dialog */
+  padding: 0 var(--space-1);
+  margin-left: calc(var(--space-1) * -1);
+  border: 0;
+  background: none;
+  color: inherit;
+  font-family: var(--font-index);
+  font-weight: 700; /* Bold throughout the index (Jayanth, 2026-10-17) */
+  font-size: var(--text-index);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.index-link::before,
+.index-link::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  clip-path: inset(var(--band) 100% var(--band) 0);
+}
+.index-link::before {
+  content: '';
+  background: currentColor;
+}
+.index-link::after {
+  content: attr(data-label);
+  display: flex;
+  align-items: center;
+  padding: inherit;
+  color: var(--bg);
+}
+.index-link[data-strike='in']::before,
+.index-link[data-strike='in']::after {
+  animation: strike-in 400ms cubic-bezier(0.25, 1, 0.5, 1) forwards; /* ease-out-quart */
+}
+.index-link[data-strike='out']::before,
+.index-link[data-strike='out']::after {
+  animation: strike-out 400ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+/* The current page keeps the full strike. */
+.index-link[aria-current='page']::before,
+.index-link[aria-current='page']::after {
+  animation: none;
+  clip-path: inset(var(--band) 0 var(--band) 0);
+}
+@keyframes strike-in {
+  from { clip-path: inset(var(--band) 100% var(--band) 0); }
+  to { clip-path: inset(var(--band) 0 var(--band) 0); }
+}
+@keyframes strike-out {
+  from { clip-path: inset(var(--band) 0 var(--band) 0); }
+  to { clip-path: inset(var(--band) 0 var(--band) 100%); }
+}
+.index-link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.index-count {
+  margin: auto 0 0;
+  padding-top: var(--space-4);
+}
+
+/* While a page breaks apart, the index only twitches. */
+.index.is-twitching {
+  animation: index-twitch 320ms steps(2) 1;
+}
+@keyframes index-twitch {
+  33% { transform: translate(1px, -1px); }
+  66% { transform: translate(-1px, 1px); }
+}
+
+/* Phones: an Index button and a full-screen dialog. */
+.index-toggle {
+  display: none;
+}
+@media (max-width: 760px) {
+  .index {
+    display: none;
+  }
+  .index-toggle {
+    position: fixed;
+    z-index: 45;
+    top: var(--space-4);
+    left: var(--gutter); /* the roll box has the top-right corner */
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target);
+    padding: 0 var(--space-5);
+    border: 1.5px solid var(--accent);
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+  }
+  .index-toggle.is-open {
+    background: var(--accent);
+    color: var(--bg);
+  }
+  .index-dialog {
+    position: fixed;
+    z-index: 44;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: calc(var(--space-9) + var(--space-4)) var(--gutter) var(--space-6);
+    overflow-y: auto;
+    background: var(--bg);
+    color: var(--accent);
+  }
+  .index-list--big .index-group-title {
+    font-size: var(--text-h2);
+  }
+  .index-list--big .index-link {
+    min-height: var(--target);
+    font-size: var(--text-index-group);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .index-link[data-strike]::before,
+  .index-link[data-strike]::after {
+    animation-duration: 1ms;
+  }
+  .index.is-twitching {
+    animation: none;
+  }
+}

@@ -1,0 +1,126 @@
+/* A satellite picture with one place marked (2026-10-19). Wide layout like the dish figures:
+   the picture centred, its label on the right; phones put the label underneath. */
+.mapfig {
+  --figure-mode: arrows;
+  position: relative;
+  width: min(980px, calc(100vw - var(--index-w) - var(--gutter) * 4));
+  margin: var(--space-6) 0 var(--space-5);
+  margin-left: 50%;
+  translate: -50% 0;
+  color: var(--accent);
+}
+.mapfig-media {
+  position: relative;
+  width: min(480px, calc(100% - 2 * 220px));
+  margin: 0 auto;
+}
+.mapfig-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.mapfig-media svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Label on the right, level with the circle (the circle sits about a third of the way down). */
+.mapfig-label {
+  position: absolute;
+  top: 26%; /* replaced by the figure's own measure: level with the target */
+  right: 0;
+  width: 200px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: 'num name' '. note';
+  column-gap: var(--space-2);
+  align-items: baseline;
+}
+.mapfig-num { grid-area: num; line-height: 1; }
+.mapfig-name {
+  grid-area: name;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-body);
+  line-height: var(--leading-heading);
+  letter-spacing: -0.01em;
+}
+.mapfig-note {
+  grid-area: note;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+/* Thin lines that draw themselves in once: circle, then the arrow. */
+.mapfig-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.mapfig-circle {
+  stroke: var(--accent);
+}
+.mapfig-arrow {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.mapfig-blue {
+  stroke: var(--accent);
+}
+.mapfig-stem.mapfig-blue,
+.mapfig-head.mapfig-blue {
+  stroke-width: 1.2px;
+}
+.mapfig[data-seen] .mapfig-circle {
+  animation: mapfig-draw 1000ms var(--ease-out) 200ms forwards;
+}
+.mapfig[data-seen] .mapfig-stem {
+  animation: mapfig-draw 800ms var(--ease-out) 1000ms forwards;
+}
+.mapfig[data-seen] .mapfig-head {
+  animation: mapfig-draw 250ms var(--ease-out) 1750ms forwards;
+}
+@keyframes mapfig-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Phones: the label goes under the picture and the arrow is dropped. */
+@media (max-width: 760px) {
+  .mapfig {
+    --figure-mode: list;
+    width: 100%;
+    margin-left: 0;
+    translate: none;
+  }
+  .mapfig-media {
+    width: min(100%, 420px);
+  }
+  .mapfig-arrow {
+    display: none;
+  }
+  .mapfig-label {
+    position: static;
+    width: auto;
+    margin-top: var(--space-4);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--accent);
+    grid-template-columns: var(--space-6) 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mapfig-line {
+    stroke-dashoffset: 0;
+  }
+  .mapfig[data-seen] .mapfig-line {
+    animation: none;
+  }
+}

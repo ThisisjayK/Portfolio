@@ -1,0 +1,159 @@
+/* A dish's labelled picture (Jayanth, 2026-10-19). Wider than the text column so the labels
+   have room either side of the picture. All --accent on --bg; the picture is the only colour. */
+.dish-figure {
+  --label-w: clamp(150px, 15vw, 210px);
+  --figure-mode: arrows;
+  position: relative;
+  /* Break out of the 62ch column, centred on it, never wider than the space right of the index. */
+  width: min(980px, calc(100vw - var(--index-w) - var(--gutter) * 4));
+  margin: 0 0 var(--space-6);
+  margin-left: 50%;
+  translate: -50% 0;
+  color: var(--accent);
+}
+
+.dish-figure-media {
+  position: relative;
+  /* At most 320px wide and 340px tall (--ratio is width / height, set in DishFigure.tsx). */
+  width: min(320px, calc(340px * var(--ratio, 1)), calc(100% - var(--label-w) * 2 - var(--space-8) * 2));
+  margin: 0 auto;
+}
+.dish-figure-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Desktop: labels sit absolutely at the height JS gives them, in the side bands. */
+.dish-figure-labels {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.dish-figure-label {
+  position: absolute;
+  width: var(--label-w);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: 'num name' '. note';
+  column-gap: var(--space-2);
+  align-items: baseline;
+}
+/* Left labels mirror: number on the inside edge, next to the arrow. */
+.dish-figure-label[data-side='left'] {
+  left: 0;
+  text-align: right;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: 'name num' 'note .';
+}
+.dish-figure-label[data-side='right'] {
+  right: 0;
+}
+.dish-figure-num { grid-area: num; }
+.dish-figure-name { grid-area: name; }
+.dish-figure-note { grid-area: note; }
+.dish-figure-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-body);
+  line-height: var(--leading-heading);
+  letter-spacing: -0.01em;
+}
+.dish-figure-note {
+  font-size: 14px;
+  line-height: 1.35;
+}
+.dish-figure-num {
+  line-height: 1;
+}
+
+/* The arrows: thin hand-drawn strokes that draw in one after another. */
+.dish-figure-arrows {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.dish-figure-arrows path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.dish-figure-line {
+  /* --len is the path's measured length, set in DishFigure.tsx. */
+  stroke-dasharray: var(--len);
+  stroke-dashoffset: var(--len);
+  animation: dish-arrow-draw 600ms var(--ease-out) forwards;
+  animation-delay: calc(500ms + var(--i) * 80ms);
+}
+.dish-figure-head {
+  opacity: 0;
+  animation: dish-arrow-tip var(--dur-fast) linear forwards;
+  animation-delay: calc(1000ms + var(--i) * 80ms);
+}
+@keyframes dish-arrow-draw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes dish-arrow-tip {
+  to { opacity: 1; }
+}
+
+/* Numbered dots only show on phones. */
+.dish-figure-pin {
+  display: none;
+}
+
+/* Phones: no room beside the picture, so numbered dots on it and a numbered list under it. */
+@media (max-width: 760px) {
+  .dish-figure {
+    --figure-mode: list;
+    width: 100%;
+    margin-left: 0;
+    translate: none;
+  }
+  .dish-figure-media {
+    width: min(100%, 280px, calc(300px * var(--ratio, 1)));
+  }
+  .dish-figure-arrows {
+    display: none;
+  }
+  .dish-figure-pin {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-size: 11px;
+  }
+  .dish-figure-labels {
+    margin-top: var(--space-5);
+    border-top: 1px solid var(--accent);
+  }
+  .dish-figure-label,
+  .dish-figure-label[data-side='left'] {
+    position: static;
+    width: auto;
+    text-align: left;
+    grid-template-columns: var(--space-6) 1fr;
+    grid-template-areas: 'num name' '. note';
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dish-figure-line,
+  .dish-figure-head {
+    animation: none;
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}

@@ -25,15 +25,17 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Node 22, matching local development (Vite 8 needs a current Node).
+          node-version: 22
           cache: npm
       - run: npm ci
+      # Typechecks, builds into ./dist, and copies index.html to 404.html so letter pages
+      # (SPA routes) load when opened directly (see package.json).
       - run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          # Vite builds into ./docs (see vite.config.ts).
-          path: docs
+          path: dist
 
   deploy:
     needs: build

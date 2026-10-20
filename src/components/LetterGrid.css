@@ -1,0 +1,87 @@
+/* An even 7×5 grid over the whole hero stage: every column the same width, every row the
+   same height, so the gaps between letters stay constant. Each letter sits centred in its cell. */
+.letters {
+  position: absolute;
+  z-index: 2;
+  inset: var(--space-5) var(--gutter) var(--space-7);
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-rows: repeat(5, minmax(0, 1fr));
+  place-items: center;
+  pointer-events: none; /* only the letters themselves take the pointer */
+  /* Darken lets the bloom's pale mist show through the white knock-out inside each blob,
+     instead of a white patch; covered letters are hidden from Hero.tsx. */
+  mix-blend-mode: darken;
+}
+
+.letter {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: max(var(--target), 1.6em);
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: var(--text-letters);
+  font-synthesis: none;
+  line-height: 1;
+  color: var(--accent);
+  pointer-events: auto;
+  isolation: isolate;
+  transform: scale(var(--swell, 1));
+  transition: transform var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+    opacity var(--dur-fast) var(--ease-out);
+}
+
+/* Clickable letters: the SVG blob fills the button; its text inherits the letter's font. */
+.letter--button {
+  cursor: pointer;
+}
+.blob-letter {
+  /* Sized from the letter (1.6em), not the button, so the blob shrinks with the type while
+     the button keeps its 44px tap target. Centred in the button. */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1.6em;
+  height: 1.6em;
+  margin: -0.8em 0 0 -0.8em;
+  overflow: visible;
+  pointer-events: none;
+}
+.blob-letter text {
+  font: inherit;
+  font-size: 62.5px; /* 1em of the letter, in the SVG's 100-unit box (the SVG is 1.6em) */
+}
+.blob-ink {
+  fill: var(--accent);
+}
+.blob-fill {
+  fill: var(--accent-fill);
+}
+.blob-knock {
+  fill: var(--bg);
+}
+.letter--button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 50%;
+}
+
+/* Phones: hidden (Jayanth, 2026-10-17). The silhouette and nav stand alone. */
+@media (max-width: 760px) {
+  .letters {
+    display: none;
+  }
+}
+
+/* Once scrolled away, no letter takes the pointer. */
+.letters[aria-hidden='true'] .letter {
+  pointer-events: none;
+}
+
+/* Covered by the zoom (set from Hero.tsx): gone until the zoom moves off it again. */
+.letter[data-covered] {
+  opacity: 0;
+}

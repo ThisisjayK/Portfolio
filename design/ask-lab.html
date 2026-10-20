@@ -1,0 +1,1000 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ask lab</title>
+<!--
+  Prototype (2026-10-18): three redesigns of the home page's "Ask about me" section, for Jayanth
+  to choose from. Not shipped. Same fixed answers and matching rules as src/content/ask.ts
+  (copied below), so every answer is from about-me.md and shows its source. No AI.
+  1. Conversation: a chat thread that has already started.
+  2. Question index: big questions in the index's type, each opening its answer in place.
+  3. Question and card: your question in huge type, the answer on a paper card beside it.
+  Minimal set (added the same day): 4. One sentence ("Ask me ____")  5. One question at a time
+  6. Plain list, every answer visible, nothing to click.
+  7. Question board, after aiu.is's analytics page: ask, and a board of fact cards drops in below.
+  8. Answer shapes, improvised from 7: each answer takes the shape of its facts.
+  Answer only (Jayanth, 2026-10-18: no sources, no "read as", no interpretation):
+  9. Redacted: white bars lift off the answer line by line; private questions stay redacted.
+  10. Transcript: the visitor interviews Jayanth, Q and A, typed straight into the transcript.
+-->
+<style>
+  @font-face { font-family: 'Meshed Display'; src: url('../src/assets/fonts/MeshedDisplay-Bold.woff2') format('woff2'); font-weight: 700; unicode-range: U+0000-002C, U+002E-2012, U+2015-FFFF; }
+  @font-face { font-family: 'Meshed Display'; src: url('../src/assets/fonts/MeshedDisplay-Black.woff2') format('woff2'); font-weight: 900; unicode-range: U+0000-002C, U+002E-2012, U+2015-FFFF; }
+  @font-face { font-family: 'Alte Haas Grotesk'; src: url('../src/assets/fonts/AlteHaasGrotesk-Bold.ttf') format('truetype'); font-weight: 700; }
+
+  /* Meshed's hyphens are hairlines, so - – — fall back to the next font, as on the site. */
+  /* Token values copied from src/styles/tokens.css (2026-10-18). */
+  :root {
+    --bg: #ffffff; --fg: #111111; --paper: #fbfaf8;
+    --accent: #1110e4; --accent-fill: #1110e4; --on-accent: #ffffff;
+    --bloom-mist: #e8e8fc; --bloom-powder: #bfbff8; --bloom-cornflower: #3434f4; --bloom-navy: #060561;
+    --font-body: 'Meshed Display', Georgia, serif;
+    --font-index: 'Alte Haas Grotesk', system-ui, sans-serif;
+    --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+    --text-body: 18px; --text-h1: clamp(40px, 4.5vw, 57px);
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px;
+    --space-6: 32px; --space-7: 48px; --space-8: 64px; --space-9: 96px;
+    --gutter: var(--space-6); --reading: 62ch; --target: 44px;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1); --dur-base: 250ms; --dur-slow: 450ms;
+  }
+  @media (max-width: 640px) { :root { --gutter: var(--space-4); } }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--accent-fill); color: var(--on-accent);
+    font: 700 var(--text-body)/1.5 var(--font-body);
+  }
+  button, input { font: inherit; color: inherit; }
+  .mono { font-family: var(--font-mono); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 400; }
+  :focus-visible { outline: 2px solid var(--on-accent); outline-offset: 3px; }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* Switcher between the three options. */
+  .lab-bar {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2);
+    padding: var(--space-3) var(--gutter);
+    background: var(--bg); color: var(--accent);
+  }
+  .lab-bar p { margin: 0 var(--space-3) 0 0; }
+  .lab-bar button {
+    min-height: var(--target); padding: 0 var(--space-4);
+    border: 1.5px solid var(--accent); border-radius: 999px; background: none; cursor: pointer;
+  }
+  .lab-bar button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+  .lab-bar :focus-visible { outline-color: var(--accent); }
+  .option { min-height: calc(100svh - 68px); padding: var(--space-8) var(--gutter); }
+  .option[hidden] { display: none; }
+
+  /* Shared pieces. */
+  .pill {
+    min-height: var(--target); padding: 0 var(--space-4);
+    border: 1px solid var(--on-accent); border-radius: 999px; background: none; cursor: pointer;
+    transition: background var(--dur-base), color var(--dur-base);
+  }
+  .pill:hover { background: var(--on-accent); color: var(--accent); }
+  .pill--solid { background: var(--on-accent); color: var(--accent); }
+  .field {
+    flex: 1; min-width: 0; min-height: var(--target); padding: 0 var(--space-4);
+    border: 1.5px solid var(--on-accent); border-radius: 999px; background: var(--bg); color: var(--fg);
+  }
+  .field:focus-visible { outline: 2px solid var(--on-accent); outline-offset: 2px; }
+  .row { display: flex; gap: var(--space-3); }
+  .chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+
+  /* ── 1. Conversation ─────────────────────────────────────────────── */
+  .chat { width: min(100%, 720px); margin: 0 auto; display: flex; flex-direction: column; min-height: calc(100svh - 68px - 2 * var(--space-8)); }
+  .chat-head { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-6); }
+  .chat-avatar {
+    width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--on-accent); color: var(--accent); font: 900 18px/1 var(--font-body);
+  }
+  .chat-head h2 { margin: 0; font-size: 24px; font-weight: 900; line-height: 1.1; }
+  .chat-head p { margin: 0; opacity: 0.75; }
+  .thread { flex: 1; display: flex; flex-direction: column; gap: var(--space-4); margin: 0; padding: 0; list-style: none; }
+  .msg { max-width: 85%; animation: rise var(--dur-slow) var(--ease-out) both; }
+  .msg--me { align-self: flex-start; }
+  .msg--me p { margin: 0; font-size: 22px; line-height: 1.4; }
+  .msg--me .mono { display: block; margin-top: var(--space-2); opacity: 0.75; }
+  .msg--you {
+    align-self: flex-end; padding: var(--space-3) var(--space-4);
+    background: var(--on-accent); color: var(--accent); border-radius: 22px 22px 6px 22px;
+  }
+  .typing { display: inline-flex; gap: 6px; padding: var(--space-3) 0; }
+  .typing i { width: 8px; height: 8px; border-radius: 50%; background: var(--on-accent); animation: blink 1s infinite; }
+  .typing i:nth-child(2) { animation-delay: 0.15s; } .typing i:nth-child(3) { animation-delay: 0.3s; }
+  .chat-foot { margin-top: var(--space-6); display: grid; gap: var(--space-3); }
+  @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+  @keyframes blink { 50% { opacity: 0.25; } }
+
+  /* ── 2. Question index ───────────────────────────────────────────── */
+  .qi { width: min(100%, 1040px); margin: 0 auto; }
+  .qi-label { margin: 0 0 var(--space-5); }
+  .qi-list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--on-accent); }
+  .qi-list > li { border-bottom: 1px solid var(--on-accent); }
+  .qi-q {
+    position: relative; width: 100%; display: flex; align-items: baseline; gap: var(--space-5);
+    padding: var(--space-5) 0; border: 0; background: none; cursor: pointer; text-align: left;
+    font: 700 clamp(28px, 4.2vw, 56px)/1.05 var(--font-index); letter-spacing: -0.01em;
+  }
+  .qi-q .mono { flex: none; width: 3ch; }
+  .qi-q .qi-text { position: relative; }
+  /* The index's strike: a heavy white bar wipes through the middle of the words, and the words
+     knock out to blue where it crosses them (a blue copy clipped to the bar, as in IndexNav). */
+  .qi-q .qi-text::after {
+    content: attr(data-label); position: absolute; inset: 0 -0.08em;
+    padding: 0 0.08em; background: var(--on-accent); color: var(--accent);
+    clip-path: inset(30% 100% 26% 0); transition: clip-path var(--dur-slow) var(--ease-out);
+  }
+  .qi-q:hover .qi-text::after, .qi-q:focus-visible .qi-text::after, .qi-q[aria-expanded="true"] .qi-text::after { clip-path: inset(30% 0 26% 0); }
+  .qi-plus { margin-left: auto; font-family: var(--font-mono); font-weight: 400; transition: transform var(--dur-base); }
+  .qi-q[aria-expanded="true"] .qi-plus { transform: rotate(45deg); }
+  .qi-a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--dur-slow) var(--ease-out); }
+  .qi-a > div { overflow: hidden; }
+  .qi-a.is-open { grid-template-rows: 1fr; }
+  .qi-a p { margin: 0 0 var(--space-2) calc(3ch + var(--space-5)); max-width: var(--reading); font-size: 22px; line-height: 1.45; }
+  .qi-a .mono { display: block; margin: 0 0 var(--space-6) calc(3ch + var(--space-5)); opacity: 0.75; }
+  .qi-other { display: flex; align-items: center; gap: var(--space-5); padding: var(--space-5) 0; }
+  .qi-other form { flex: 1; }
+  .qi-other-out { margin: 0 0 var(--space-5) calc(3ch + var(--space-5)); }
+  .qi-other-out p { margin: 0 0 var(--space-2); max-width: var(--reading); font-size: 22px; line-height: 1.45; }
+  @media (max-width: 640px) {
+    .qi-a p, .qi-a .mono, .qi-other-out { margin-left: 0; }
+    .qi-q { gap: var(--space-3); }
+  }
+
+  /* ── 3. Question and card ────────────────────────────────────────── */
+  .qc { width: min(100%, 1200px); margin: 0 auto; display: grid; gap: var(--space-7); }
+  .qc-stage { display: grid; grid-template-columns: 1.3fr 1fr; gap: var(--space-7); align-items: center; min-height: 52svh; }
+  .qc-asked .mono { opacity: 0.75; }
+  .qc-question { margin: var(--space-3) 0 0; font: 900 clamp(40px, 6.5vw, 96px)/0.98 var(--font-body); }
+  .qc-question .caret { display: inline-block; width: 0.06em; height: 0.8em; margin-left: 0.05em; background: currentColor; vertical-align: -0.05em; animation: blink 1s steps(1) infinite; }
+  .qc-card {
+    position: relative; padding: var(--space-6); border-radius: 18px;
+    background: var(--paper); color: var(--accent);
+    box-shadow: 0 30px 60px -20px var(--bloom-navy);
+    transform: rotate(-2deg);
+  }
+  .qc-card.is-new { animation: deal var(--dur-slow) var(--ease-out); }
+  .qc-card p { margin: var(--space-3) 0 0; font-size: 22px; line-height: 1.45; }
+  .qc-stamp {
+    display: inline-block; margin-top: var(--space-5); padding: var(--space-1) var(--space-3);
+    border: 1.5px solid var(--accent); border-radius: 6px; transform: rotate(-3deg);
+  }
+  .qc-dock { display: grid; gap: var(--space-3); }
+  @keyframes deal { from { opacity: 0; transform: translate(40px, 20px) rotate(6deg); } }
+  @media (max-width: 800px) {
+    .qc-stage { grid-template-columns: 1fr; min-height: 0; }
+    .qc-card { transform: rotate(-1deg); }
+  }
+
+
+  /* ── 4. One sentence ─────────────────────────────────────────────── */
+  .os { width: min(100%, 1100px); margin: 0 auto; min-height: calc(100svh - 68px - 2 * var(--space-8)); display: flex; flex-direction: column; justify-content: center; }
+  .os-form { margin: 0; font: 900 clamp(36px, 6vw, 88px)/1.05 var(--font-body); }
+  .os-form label { display: inline; }
+  .os-input {
+    width: 100%; max-width: 100%; padding: 0 0 var(--space-1); border: 0; border-bottom: 3px solid var(--on-accent);
+    background: none; color: var(--on-accent); font: inherit; outline: none;
+  }
+  .os-input::placeholder { color: var(--on-accent); opacity: 0.35; }
+  .os-input:focus-visible { border-bottom-style: dashed; }
+  .os-out { min-height: 8em; margin-top: var(--space-6); max-width: var(--reading); }
+  .os-out p { margin: 0 0 var(--space-2); font-size: 24px; line-height: 1.45; animation: rise var(--dur-slow) var(--ease-out) both; }
+  .os-out .mono { opacity: 0.75; }
+  .os-try { margin-top: var(--space-5); }
+  .os-try button { padding: 0; min-height: var(--target); border: 0; background: none; cursor: pointer; font: inherit; text-decoration: underline; text-underline-offset: 4px; }
+
+  /* ── 5. One at a time ────────────────────────────────────────────── */
+  .ot { width: min(100%, 1000px); margin: 0 auto; min-height: calc(100svh - 68px - 2 * var(--space-8)); display: grid; grid-template-rows: auto 1fr auto; gap: var(--space-6); }
+  .ot-top { display: flex; justify-content: space-between; align-items: baseline; }
+  .ot-top p { margin: 0; }
+  .ot-body { align-self: center; }
+  .ot-body.is-new { animation: rise var(--dur-slow) var(--ease-out) both; }
+  .ot-q { margin: 0 0 var(--space-5); font: 900 clamp(36px, 5.5vw, 80px)/1.02 var(--font-body); }
+  .ot-a { margin: 0 0 var(--space-3); max-width: var(--reading); font-size: 22px; line-height: 1.45; }
+  .ot-a + .mono { opacity: 0.75; }
+  .ot-nav { display: flex; gap: var(--space-5); align-items: center; }
+  .ot-nav button { min-height: var(--target); padding: 0; border: 0; background: none; cursor: pointer; font: inherit; }
+  .ot-nav .ot-next { margin-left: auto; font-size: 22px; }
+  .ot-nav button:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+  /* ── 6. Plain list (everything visible) ──────────────────────────── */
+  .pl { width: min(100%, 1100px); margin: 0 auto; }
+  .pl-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-5); margin: 0 0 var(--space-7); }
+  .pl-head h2 { margin: 0; font: 900 var(--text-h1)/1.1 var(--font-body); }
+  .pl-head p { margin: 0; max-width: 32ch; opacity: 0.75; }
+  .pl-list { margin: 0; padding: 0; }
+  .pl-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--space-6); padding: var(--space-5) 0; border-top: 1px solid var(--on-accent); }
+  .pl-row dt { padding-top: 0.35em; }
+  .pl-row dd { margin: 0; font-size: 22px; line-height: 1.45; }
+  .pl-row dd .mono { display: block; margin-top: var(--space-2); opacity: 0.6; }
+  .pl-end { display: flex; justify-content: space-between; align-items: center; gap: var(--space-5); padding-top: var(--space-5); border-top: 1px solid var(--on-accent); }
+  .pl-end p { margin: 0; font-size: 22px; }
+  @media (max-width: 640px) {
+    .pl-row { grid-template-columns: 1fr; gap: var(--space-2); }
+    .pl-head { flex-direction: column; }
+  }
+
+
+  /* ── 7. Question board (after aiu.is's analytics page) ───────────── */
+  .opt-light { background: var(--bg); color: var(--accent); }
+  .opt-light :focus-visible { outline-color: var(--accent); }
+  .qb { width: min(100%, 1240px); margin: 0 auto; }
+  .qb-ask { padding-top: 30svh; transition: padding-top 600ms var(--ease-out); }
+  .qb.is-asked .qb-ask { padding-top: 0; }
+  .qb-form { display: flex; align-items: flex-end; gap: var(--space-3); border-bottom: 1.5px solid var(--accent); }
+  .qb-form .qb-plus { padding-bottom: var(--space-3); font-family: var(--font-mono); }
+  .qb-input {
+    flex: 1; min-width: 0; padding: 0 0 var(--space-2); border: 0; background: none; color: var(--accent);
+    font: 700 clamp(28px, 3.4vw, 44px)/1.2 var(--font-index); letter-spacing: -0.03em; outline: none;
+  }
+  .qb-input::placeholder { color: var(--accent); opacity: 0.35; }
+  .qb-examples { display: flex; flex-wrap: wrap; gap: 0 var(--space-4); margin-top: var(--space-2); }
+  .qb-examples button { min-height: var(--target); padding: 0; border: 0; background: none; color: var(--accent); cursor: pointer; opacity: 0.6; }
+  .qb-examples button:hover { opacity: 1; text-decoration: underline; text-underline-offset: 3px; }
+  .qb.is-asked .qb-examples { display: none; }
+
+  .qb-board { margin-top: var(--space-7); }
+  .qb-board.is-new > * { animation: rise var(--dur-slow) var(--ease-out) both; }
+  .qb-board.is-new > *:nth-child(2) { animation-delay: 60ms; }
+  .qb-board.is-new > *:nth-child(3) { animation-delay: 120ms; }
+  .qb-board.is-new > *:nth-child(4) { animation-delay: 180ms; }
+  .qb-title { margin: 0; font: 700 clamp(36px, 4.2vw, 56px)/1 var(--font-index); letter-spacing: -0.04em; }
+  .qb-sum { margin: var(--space-3) 0 var(--space-1); font: 700 22px/1.3 var(--font-index); letter-spacing: -0.02em; }
+  .qb-read { margin: 0 0 var(--space-6); opacity: 0.6; text-transform: none; }
+  .qb-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+  .qb-card { display: flex; flex-direction: column; padding: var(--space-5); border: 1px solid var(--accent); }
+  .qb-card.is-wide { grid-column: 1 / -1; }
+  .qb-card h4 { margin: 0 0 var(--space-4); font: 700 20px/1.2 var(--font-index); letter-spacing: -0.02em; }
+  .qb-value { margin: 0; font: 700 clamp(32px, 3.6vw, 48px)/1 var(--font-index); letter-spacing: -0.04em; }
+  .qb-note { margin: var(--space-2) 0 0; opacity: 0.7; text-transform: none; }
+  .qb-foot { margin-top: auto; padding-top: var(--space-4); }
+  .qb-foot p { margin: var(--space-4) 0 var(--space-1); padding-top: var(--space-3); border-top: 1px solid var(--bloom-powder); font: 700 16px/1.35 var(--font-index); }
+  .qb-foot .mono { opacity: 0.55; text-transform: none; font-size: 11px; }
+  .qb-tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+  .qb-tags li { padding: var(--space-1) var(--space-3); border: 1px solid var(--accent); font: 700 16px/1.3 var(--font-index); }
+  .qb-groups { display: grid; gap: var(--space-3); margin: 0; }
+  .qb-groups > div { display: grid; grid-template-columns: 9ch 1fr; gap: var(--space-3); align-items: baseline; }
+  .qb-groups dt { opacity: 0.7; }
+  .qb-groups dd { margin: 0; font: 700 18px/1.35 var(--font-index); }
+  /* Timeline: real start and end dates on a shared axis. */
+  .qb-tl { display: grid; gap: var(--space-2); }
+  .qb-tl-row { display: grid; grid-template-columns: minmax(0, 15ch) 1fr; gap: var(--space-4); align-items: center; }
+  .qb-tl-row span:first-child { font: 700 15px/1.2 var(--font-index); }
+  .qb-tl-track { position: relative; height: 10px; background: var(--bloom-mist, #e8e8fc); }
+  .qb-tl-bar { position: absolute; top: 0; bottom: 0; background: var(--accent); }
+  .qb-tl-axis { position: relative; height: 1.4em; margin-left: calc(15ch + var(--space-4)); }
+  .qb-tl-axis span { position: absolute; transform: translateX(-50%); opacity: 0.6; }
+  .qb-in-short { margin-top: var(--space-5); padding: var(--space-5); border: 1px dashed var(--accent); }
+  .qb-in-short h4 { margin: 0 0 var(--space-3); font: 700 18px/1.2 var(--font-index); }
+  .qb-in-short p { margin: 0; font: 700 clamp(20px, 2vw, 26px)/1.3 var(--font-index); letter-spacing: -0.02em; }
+  .qb-new { min-height: var(--target); padding: 0 var(--space-3); border: 0; background: none; color: var(--accent); cursor: pointer; }
+  .qb-new:hover { background: var(--accent); color: var(--bg); }
+  .qb-head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-5); }
+  @media (max-width: 760px) {
+    .qb-grid { grid-template-columns: 1fr; }
+    .qb-ask { padding-top: 18svh; }
+    .qb-tl-row { grid-template-columns: 1fr; gap: var(--space-1); }
+    .qb-tl-axis { margin-left: 0; }
+  }
+
+
+  /* ── 8. Answer shapes (improvised from the board) ────────────────── */
+  .sh { width: min(100%, 1100px); margin: 0 auto; }
+  .sh-ask { padding-top: 28svh; transition: padding-top 600ms var(--ease-out); }
+  .sh.is-asked .sh-ask { padding-top: 0; }
+  .sh-form { display: flex; align-items: flex-end; gap: var(--space-3); border-bottom: 2px solid var(--on-accent); }
+  .sh-input {
+    flex: 1; min-width: 0; padding: 0 0 var(--space-2); border: 0; background: none; color: var(--on-accent);
+    font: 900 clamp(32px, 4.4vw, 60px)/1.1 var(--font-body); outline: none;
+  }
+  .sh-input::placeholder { color: var(--on-accent); opacity: 0.4; }
+  .sh-form:focus-within { border-bottom-style: dashed; }
+  .sh-examples { display: flex; flex-wrap: wrap; gap: 0 var(--space-4); margin-top: var(--space-2); }
+  .sh-examples button { min-height: var(--target); padding: 0; border: 0; background: none; cursor: pointer; opacity: 0.7; }
+  .sh-examples button:hover { opacity: 1; text-decoration: underline; text-underline-offset: 3px; }
+
+  .sh-out { margin-top: var(--space-8); }
+  .sh-read { display: flex; justify-content: space-between; gap: var(--space-4); margin: 0 0 var(--space-6); opacity: 0.75; }
+  .sh-read button { min-height: var(--target); padding: 0 var(--space-3); border: 1px solid var(--on-accent); border-radius: 999px; background: none; cursor: pointer; }
+  .sh-say { margin: var(--space-7) 0 var(--space-2); max-width: 30ch; font: 900 clamp(24px, 2.6vw, 34px)/1.2 var(--font-body); }
+  .sh-src { opacity: 0.65; }
+  .sh-step { animation: rise var(--dur-slow) var(--ease-out) both; animation-delay: calc(var(--i, 0) * 120ms); }
+
+  /* Route: the path as stops on a line that draws itself. */
+  .route { position: relative; display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: var(--space-4); margin: 0; padding: var(--space-6) 0 0; list-style: none; }
+  .route::before { content: ''; position: absolute; left: 0; right: 0; top: calc(var(--space-6) + 7px); height: 2px; background: var(--on-accent); transform-origin: left; animation: draw 1.2s var(--ease-out) both; }
+  .route li { position: relative; padding-top: var(--space-6); }
+  .route li::before { content: ''; position: absolute; top: 0; left: 0; width: 16px; height: 16px; border-radius: 50%; background: var(--accent-fill); border: 2px solid var(--on-accent); }
+  .route li.is-now::before { background: var(--on-accent); box-shadow: 0 0 0 6px color-mix(in srgb, var(--on-accent) 25%, transparent); }
+  .route strong { display: block; font: 900 22px/1.15 var(--font-body); }
+  .route span { display: block; margin-top: var(--space-2); opacity: 0.75; }
+  @keyframes draw { from { transform: scaleX(0); } }
+
+  /* Ruler: years with spans that grow, plus certification stamps. */
+  .ruler { position: relative; padding-bottom: var(--space-6); }
+  .ruler-row { position: relative; height: 64px; margin-bottom: var(--space-3); }
+  .ruler-span { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; padding: 0 var(--space-4); background: var(--on-accent); color: var(--accent); transform-origin: left; animation: grow 900ms var(--ease-out) both; animation-delay: calc(var(--i, 0) * 200ms); overflow: hidden; white-space: nowrap; font: 900 18px/1.1 var(--font-body); }
+  .ruler-axis { position: relative; height: 24px; border-top: 1px solid var(--on-accent); }
+  .ruler-axis span { position: absolute; top: var(--space-2); transform: translateX(-50%); opacity: 0.75; }
+  .ruler-axis span::before { content: ''; position: absolute; left: 50%; top: calc(-1 * var(--space-2) - 6px); height: 6px; border-left: 1px solid var(--on-accent); }
+  .stamps { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-6); }
+  .stamp { padding: var(--space-3) var(--space-4); border: 2px solid var(--on-accent); border-radius: 8px; transform: rotate(var(--r, -2deg)); font: 900 16px/1.2 var(--font-body); animation: stampin 400ms var(--ease-out) both; animation-delay: calc(600ms + var(--i, 0) * 150ms); }
+  @keyframes grow { from { transform: scaleX(0); } }
+  @keyframes stampin { from { opacity: 0; transform: scale(1.4) rotate(0deg); } }
+
+  /* Story: four beats, then the pilot as six week blocks. */
+  .story { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-5); margin: 0; padding: 0; list-style: none; counter-reset: beat; }
+  .story li { padding-top: var(--space-4); border-top: 2px solid var(--on-accent); }
+  .story li::before { counter-increment: beat; content: '0' counter(beat); display: block; margin-bottom: var(--space-3); font-family: var(--font-mono); font-size: 13px; opacity: 0.75; }
+  .story strong { display: block; margin-bottom: var(--space-2); font: 900 24px/1.1 var(--font-body); }
+  .pilot { margin-top: var(--space-7); }
+  .pilot-weeks { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-2); margin-top: var(--space-3); }
+  .pilot-weeks span { height: 40px; background: var(--on-accent); color: var(--accent); display: grid; place-items: center; animation: rise var(--dur-slow) var(--ease-out) both; animation-delay: calc(500ms + var(--i, 0) * 120ms); }
+
+  /* Place: the city big, coordinates, and three switches that are all on. */
+  .place-city { margin: 0; font: 900 clamp(56px, 10vw, 140px)/0.95 var(--font-body); }
+  .place-coord { margin: var(--space-3) 0 var(--space-6); opacity: 0.75; }
+  .switches { display: flex; flex-wrap: wrap; gap: var(--space-5); }
+  .switch { display: inline-flex; align-items: center; gap: var(--space-3); }
+  .switch i { position: relative; width: 44px; height: 24px; border-radius: 999px; background: var(--on-accent); }
+  .switch i::after { content: ''; position: absolute; top: 3px; right: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); animation: flip 500ms var(--ease-out) both; animation-delay: calc(300ms + var(--i, 0) * 150ms); }
+  @keyframes flip { from { transform: translateX(-20px); } }
+
+  /* Languages: each written in its own script. */
+  .langs { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
+  .langs div { padding-top: var(--space-4); border-top: 2px solid var(--on-accent); }
+  .langs strong { display: block; font: 700 clamp(40px, 6vw, 80px)/1.1 var(--font-body), system-ui, sans-serif; }
+
+  /* Tools: words sorted into shelves. */
+  .shelves { display: grid; gap: 0; }
+  .shelf { display: grid; grid-template-columns: 12ch 1fr; gap: var(--space-5); align-items: baseline; padding: var(--space-4) 0; border-top: 1px solid var(--on-accent); }
+  .shelf p { margin: 0; font: 900 clamp(22px, 2.6vw, 34px)/1.2 var(--font-body); }
+
+  @media (max-width: 760px) {
+    .sh-ask { padding-top: 16svh; }
+    .route { grid-template-columns: 1fr; padding: 0 0 0 var(--space-6); }
+    .route::before { left: 7px; right: auto; top: 0; bottom: 0; width: 2px; height: auto; transform-origin: top; animation-name: drawy; }
+    .route li { padding-top: 0; padding-bottom: var(--space-4); }
+    .route li::before { left: calc(-1 * var(--space-6)); }
+    .story, .langs { grid-template-columns: 1fr; }
+    .shelf { grid-template-columns: 1fr; gap: var(--space-1); }
+    .ruler-span { font-size: 14px; padding: 0 var(--space-2); }
+  }
+  @keyframes drawy { from { transform: scaleY(0); } }
+
+
+  /* Shared by 9 and 10: the big underlined question line. */
+  .bigq { display: flex; align-items: flex-end; border-bottom: 2px solid var(--on-accent); }
+  .bigq input {
+    flex: 1; min-width: 0; padding: 0 0 var(--space-2); border: 0; background: none; color: var(--on-accent);
+    font: 900 clamp(32px, 4.4vw, 60px)/1.1 var(--font-body); outline: none;
+  }
+  .bigq input::placeholder { color: var(--on-accent); opacity: 0.4; }
+  .bigq:focus-within { border-bottom-style: dashed; }
+  .tries { display: flex; flex-wrap: wrap; gap: 0 var(--space-4); margin-top: var(--space-2); }
+  .tries button { min-height: var(--target); padding: 0; border: 0; background: none; cursor: pointer; opacity: 0.7; }
+  .tries button:hover { opacity: 1; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ── 9. Redacted ─────────────────────────────────────────────────── */
+  .rd { width: min(100%, 1000px); margin: 0 auto; padding-top: 14svh; }
+  .rd-doc { position: relative; margin-top: var(--space-8); max-width: 28ch; font: 900 clamp(28px, 3.4vw, 46px)/1.25 var(--font-body); min-height: 3.75em; }
+  .rd-doc p { margin: 0; }
+  .rd-bar { position: absolute; background: var(--on-accent); transform-origin: right; pointer-events: none; }
+  .rd-bar.is-lifting { animation: lift 650ms var(--ease-out) both; animation-delay: calc(var(--i, 0) * 140ms); }
+  .rd-bar.is-closing { animation: lift 350ms var(--ease-out) reverse both; transform-origin: left; }
+  .rd-doc.is-sealed p { color: transparent; } /* nothing peeks out from under bars that stay */
+  .rd-private { margin-top: var(--space-5); }
+  @keyframes lift { to { transform: scaleX(0); } }
+
+  /* ── 10. Transcript ──────────────────────────────────────────────── */
+  .tr { width: min(100%, 900px); margin: 0 auto; padding-top: 6svh; }
+  .tr-list { margin: 0; padding: 0; list-style: none; }
+  .tr-ex { padding: var(--space-6) 0; border-top: 1px solid color-mix(in srgb, var(--on-accent) 35%, transparent); }
+  .tr-ex:first-child { border-top: 0; }
+  .tr-line { display: grid; grid-template-columns: 3ch 1fr; gap: var(--space-4); }
+  .tr-line + .tr-line { margin-top: var(--space-4); }
+  .tr-who { font-family: var(--font-mono); font-size: 14px; padding-top: 0.55em; }
+  .tr-q { margin: 0; font: 900 clamp(26px, 3vw, 40px)/1.15 var(--font-body); }
+  .tr-a { margin: 0; max-width: 46ch; font: 700 22px/1.5 var(--font-body); }
+  .tr-a .w { opacity: 0; animation: wordin 300ms var(--ease-out) forwards; animation-delay: calc(var(--i) * 28ms); }
+  .tr-next { padding-top: var(--space-6); border-top: 1px solid color-mix(in srgb, var(--on-accent) 35%, transparent); }
+  .tr-next .bigq { border-bottom: 0; }
+  .tr-next .bigq input { font-size: clamp(26px, 3vw, 40px); }
+  .tr-next .tries { margin-left: calc(3ch + var(--space-4)); }
+  .tr-end { margin: var(--space-5) 0 0 calc(3ch + var(--space-4)); }
+  @keyframes wordin { from { opacity: 0; filter: blur(4px); } to { opacity: 1; filter: none; } }
+  @media (max-width: 640px) {
+    .tr-line { grid-template-columns: 1fr; gap: var(--space-1); }
+    .tr-who { padding-top: 0; }
+    .tr-next .tries, .tr-end { margin-left: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="lab-bar" aria-label="Options">
+  <p class="mono">Ask lab</p>
+  <button type="button" data-opt="1" aria-pressed="true">1 · Conversation</button>
+  <button type="button" data-opt="2" aria-pressed="false">2 · Question index</button>
+  <button type="button" data-opt="3" aria-pressed="false">3 · Question + card</button>
+  <p class="mono" style="margin-left: var(--space-3)">Minimal</p>
+  <button type="button" data-opt="4" aria-pressed="false">4 · One sentence</button>
+  <button type="button" data-opt="5" aria-pressed="false">5 · One at a time</button>
+  <button type="button" data-opt="6" aria-pressed="false">6 · Plain list</button>
+  <p class="mono" style="margin-left: var(--space-3)">Your reference</p>
+  <button type="button" data-opt="7" aria-pressed="false">7 · Question board</button>
+  <button type="button" data-opt="8" aria-pressed="false">8 · Answer shapes</button>
+  <p class="mono" style="margin-left: var(--space-3)">Answer only</p>
+  <button type="button" data-opt="9" aria-pressed="false">9 · Redacted</button>
+  <button type="button" data-opt="10" aria-pressed="false">10 · Transcript</button>
+</nav>
+
+<!-- 1. Conversation -->
+<section class="option" id="opt-1" aria-labelledby="chat-title">
+  <div class="chat">
+    <div class="chat-head">
+      <div class="chat-avatar" aria-hidden="true">JK</div>
+      <div>
+        <h2 id="chat-title">Ask me something</h2>
+        <p>I answer only from my own notes, and show where each answer comes from.</p>
+      </div>
+    </div>
+    <ol class="thread" id="thread" aria-live="polite"></ol>
+    <div class="chat-foot">
+      <ul class="chips" id="chat-chips" aria-label="Suggested questions"></ul>
+      <form class="row" id="chat-form">
+        <label class="visually-hidden" for="chat-q">Your question</label>
+        <input class="field" id="chat-q" autocomplete="off" placeholder="Type a question…">
+        <button class="pill pill--solid" type="submit">Send</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- 2. Question index -->
+<section class="option" id="opt-2" aria-labelledby="qi-title" hidden>
+  <div class="qi">
+    <h2 class="qi-label mono" id="qi-title">Ask about me · answers from my own notes</h2>
+    <ol class="qi-list" id="qi-list"></ol>
+    <div class="qi-other">
+      <span class="mono" aria-hidden="true">?</span>
+      <form class="row" id="qi-form">
+        <label class="visually-hidden" for="qi-q">Something else</label>
+        <input class="field" id="qi-q" autocomplete="off" placeholder="Something else?">
+        <button class="pill pill--solid" type="submit">Ask</button>
+      </form>
+    </div>
+    <div class="qi-other-out" id="qi-out" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- 3. Question + card -->
+<section class="option" id="opt-3" aria-labelledby="qc-title" hidden>
+  <h2 class="visually-hidden" id="qc-title">Ask about me</h2>
+  <div class="qc">
+    <div class="qc-stage">
+      <div class="qc-asked">
+        <span class="mono">You asked</span>
+        <p class="qc-question" id="qc-question"></p>
+      </div>
+      <article class="qc-card" id="qc-card" aria-live="polite"></article>
+    </div>
+    <div class="qc-dock">
+      <ul class="chips" id="qc-chips" aria-label="Try one"></ul>
+      <form class="row" id="qc-form">
+        <label class="visually-hidden" for="qc-q">Your question</label>
+        <input class="field" id="qc-q" autocomplete="off" placeholder="Ask me anything about my work…">
+        <button class="pill pill--solid" type="submit">Ask</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- 4. One sentence -->
+<section class="option" id="opt-4" aria-labelledby="os-label" hidden>
+  <div class="os">
+    <form class="os-form" id="os-form">
+      <label id="os-label" for="os-q">Ask me</label>
+      <input class="os-input" id="os-q" autocomplete="off" placeholder="what I do">
+    </form>
+    <div class="os-out" id="os-out" aria-live="polite"></div>
+    <p class="os-try mono" id="os-try">Try · </p>
+  </div>
+</section>
+
+<!-- 5. One at a time -->
+<section class="option" id="opt-5" aria-labelledby="ot-label" hidden>
+  <div class="ot">
+    <div class="ot-top">
+      <h2 class="mono" id="ot-label" style="margin:0">Ask about me</h2>
+      <p class="mono" id="ot-count" aria-live="polite"></p>
+    </div>
+    <div class="ot-body" id="ot-body" aria-live="polite"></div>
+    <div class="ot-nav">
+      <button type="button" class="mono" id="ot-prev">← Back</button>
+      <button type="button" class="ot-next" id="ot-next">Next question →</button>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Plain list -->
+<section class="option" id="opt-6" aria-labelledby="pl-title" hidden>
+  <div class="pl">
+    <div class="pl-head">
+      <h2 id="pl-title">Ask about me</h2>
+      <p>The questions people ask most, answered from my own notes.</p>
+    </div>
+    <dl class="pl-list" id="pl-list"></dl>
+    <div class="pl-end">
+      <p>Something else?</p>
+      <button type="button" class="pill pill--solid">Say hi →</button>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Question board -->
+<section class="option opt-light" id="opt-7" aria-labelledby="qb-label" hidden>
+  <div class="qb" id="qb">
+    <div class="qb-ask">
+      <form class="qb-form" id="qb-form">
+        <span class="qb-plus" aria-hidden="true">+</span>
+        <label class="visually-hidden" id="qb-label" for="qb-q">Ask about me</label>
+        <input class="qb-input" id="qb-q" autocomplete="off" placeholder="Ask me something">
+      </form>
+      <div class="qb-examples mono" id="qb-examples"></div>
+    </div>
+    <div class="qb-board" id="qb-board" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- 8. Answer shapes -->
+<section class="option" id="opt-8" aria-labelledby="sh-label" hidden>
+  <div class="sh" id="sh">
+    <div class="sh-ask">
+      <form class="sh-form" id="sh-form">
+        <label class="visually-hidden" id="sh-label" for="sh-q">Ask about me</label>
+        <input class="sh-input" id="sh-q" autocomplete="off" placeholder="Ask me something">
+      </form>
+      <div class="sh-examples mono" id="sh-examples"></div>
+    </div>
+    <div class="sh-out" id="sh-out" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- 9. Redacted -->
+<section class="option" id="opt-9" aria-labelledby="rd-label" hidden>
+  <div class="rd">
+    <form class="bigq" id="rd-form">
+      <label class="visually-hidden" id="rd-label" for="rd-q">Ask about me</label>
+      <input id="rd-q" autocomplete="off" placeholder="Ask me something">
+    </form>
+    <div class="tries mono" id="rd-tries"></div>
+    <div class="rd-doc" id="rd-doc" aria-live="polite"><p id="rd-text"></p></div>
+    <div class="rd-private" id="rd-private" hidden>
+      <p class="mono" style="margin:0 0 var(--space-3)">Ask me directly.</p>
+      <button type="button" class="pill pill--solid">Say hi →</button>
+    </div>
+  </div>
+</section>
+
+<!-- 10. Transcript -->
+<section class="option" id="opt-10" aria-labelledby="tr-label" hidden>
+  <div class="tr">
+    <h2 class="visually-hidden" id="tr-label">Ask about me</h2>
+    <ol class="tr-list" id="tr-list" aria-live="polite"></ol>
+    <div class="tr-next">
+      <form class="tr-line" id="tr-form">
+        <span class="tr-who" aria-hidden="true">Q</span>
+        <div class="bigq">
+          <label class="visually-hidden" for="tr-q">Your question</label>
+          <input id="tr-q" autocomplete="off" placeholder="Your question…">
+        </div>
+      </form>
+      <div class="tries mono" id="tr-tries"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Copied from src/content/ask.ts (2026-10-18). Facts from about-me.md only.
+  const FACTS = [
+    { keys: ['do', 'role', 'job', 'work', 'who are you', 'what are you'], answer: "I'm a product manager. Most recently I was a Technical Product Manager co-op at Stage Zero Health, an early cancer detection startup.", source: 'about-me.md §3 Experience' },
+    { keys: ['study', 'studied', 'school', 'degree', 'university', 'education', 'master', 'college', 'graduate'], answer: 'An MS in Information Systems at Northeastern University in Boston (2024–2026), and before that a B.Tech in Electronics and Instrumentation Engineering at Keshav Memorial Institute of Technology, Hyderabad (2019–2023).', source: 'about-me.md §5 Education' },
+    { keys: ['live', 'based', 'where are you', 'location', 'city', 'remote', 'relocate', 'hybrid'], answer: "Atlanta, GA. I'm open to roles anywhere in the US: on-site, remote or hybrid.", source: 'about-me.md §1 Basics' },
+    { keys: ['stage zero', 'startup', 'cancer', 'pilot', 'co-op'], answer: 'Zero-to-one work on the breast cancer journey: customer interviews, requirements and PRDs, wireframes in Figma and Miro, testing with users, a 6-week paid pilot, and supporting the founder on launch planning, positioning and pricing.', source: 'about-me.md §3 Experience' },
+    { keys: ['tool', 'tools', 'stack', 'software', 'figma', 'jira'], answer: 'Jira, Asana, Miro, Notion, Figma, Salesforce, Pega, GitHub, Vercel, Supabase, GA4 and Claude Code.', source: 'about-me.md §6 Skills' },
+    { keys: ['language', 'languages', 'speak', 'hindi', 'telugu'], answer: 'English, Hindi (fluent) and Telugu (native).', source: 'about-me.md §6 Skills' },
+    { keys: ['certif', 'certified', 'pega', 'salesforce'], answer: 'Certified Salesforce Administrator, Pega Certified Business Architect and Pega Certified System Architect.', source: 'about-me.md §5 Education' },
+  ]
+  const ASK_DIRECT = ['visa', 'sponsor', ' opt ', 'authoriz', 'authoris', 'h-1b', 'h1b', 'salary', 'compensation', 'start date', 'when can you start', 'citizen', 'green card']
+  const SUGGESTIONS = ['What do you do?', 'Where did you study?', 'What did you do at Stage Zero?', 'Where are you based?']
+  // The question index shows more of what's in the notes, since nobody has to type.
+  const INDEX_QUESTIONS = [...SUGGESTIONS, 'Which tools do you use?', 'What are you certified in?', 'Which languages do you speak?']
+
+  function answer(question) {
+    const q = ` ${question.toLowerCase().replace(/[?!.,]/g, ' ')} `
+    if (!question.trim()) return null
+    if (ASK_DIRECT.some((k) => q.includes(k))) return { kind: 'direct' }
+    let best = null, score = 0
+    for (const f of FACTS) {
+      const s = f.keys.filter((k) => q.includes(k.length < 4 ? ` ${k} ` : k)).reduce((n, k) => n + k.length, 0)
+      if (s > score) { best = f; score = s }
+    }
+    return best ? { kind: 'answer', fact: best } : { kind: 'none' }
+  }
+  const replyText = (r) =>
+    r.kind === 'answer' ? { text: r.fact.answer, source: `Source · ${r.fact.source}` }
+    : r.kind === 'direct' ? { text: "That's one to ask me directly, so you get the exact answer.", source: 'Say hi → contact card' }
+    : { text: "Nothing in my notes about that, so I won't guess. Ask me directly?", source: 'Say hi → contact card' }
+  const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e }
+  const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c])
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  // Switcher
+  document.querySelectorAll('.lab-bar button').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('.lab-bar button').forEach((x) => x.setAttribute('aria-pressed', x === b))
+    document.querySelectorAll('.option').forEach((o) => (o.hidden = o.id !== `opt-${b.dataset.opt}`))
+  }))
+
+  // ── 1. Conversation: opens mid-conversation, so it's clear how it works before anyone types.
+  const thread = document.getElementById('thread')
+  const meMsg = (text, source) => {
+    const li = el('li', 'msg msg--me')
+    li.append(el('p', null, esc(text)))
+    if (source) li.append(el('span', 'mono', esc(source)))
+    thread.append(li)
+  }
+  const youMsg = (text) => thread.append(el('li', 'msg msg--you', esc(text)))
+  const asked = new Set()
+  function renderChatChips() {
+    const ul = document.getElementById('chat-chips'); ul.innerHTML = ''
+    SUGGESTIONS.filter((s) => !asked.has(s)).forEach((s) => {
+      const li = el('li'); const b = el('button', 'pill', esc(s)); b.type = 'button'
+      b.onclick = () => chatAsk(s); li.append(b); ul.append(li)
+    })
+  }
+  function chatAsk(q) {
+    const r = answer(q); if (!r) return
+    asked.add(q); youMsg(q); renderChatChips()
+    const t = el('li', 'msg msg--me'); t.innerHTML = '<span class="typing" aria-label="Typing"><i></i><i></i><i></i></span>'
+    thread.append(t)
+    setTimeout(() => { t.remove(); const { text, source } = replyText(r); meMsg(text, source) }, reduced ? 0 : 600)
+  }
+  meMsg("Hi, I'm Jayanth. Ask me about my work, my path, or where I'm based.")
+  youMsg('What do you do?'); asked.add('What do you do?')
+  meMsg(replyText(answer('What do you do?')).text, replyText(answer('What do you do?')).source)
+  renderChatChips()
+  document.getElementById('chat-form').addEventListener('submit', (e) => {
+    e.preventDefault(); const i = document.getElementById('chat-q'); chatAsk(i.value); i.value = ''
+  })
+
+  // ── 2. Question index: no typing needed; every question is already on the page.
+  const qiList = document.getElementById('qi-list')
+  INDEX_QUESTIONS.forEach((q, n) => {
+    const r = answer(q), { text, source } = replyText(r)
+    const li = el('li')
+    const id = `qi-a-${n}`
+    const b = el('button', 'qi-q', `<span class="mono">${String(n + 1).padStart(2, '0')}</span><span class="qi-text" data-label="${esc(q)}">${esc(q)}</span><span class="qi-plus" aria-hidden="true">+</span>`)
+    b.type = 'button'; b.setAttribute('aria-expanded', 'false'); b.setAttribute('aria-controls', id)
+    const a = el('div', 'qi-a'); a.id = id
+    a.innerHTML = `<div><p>${esc(text)}</p><span class="mono">${esc(source)}</span></div>`
+    b.onclick = () => {
+      const open = b.getAttribute('aria-expanded') === 'true'
+      qiList.querySelectorAll('.qi-q').forEach((x) => x.setAttribute('aria-expanded', 'false'))
+      qiList.querySelectorAll('.qi-a').forEach((x) => x.classList.remove('is-open'))
+      if (!open) { b.setAttribute('aria-expanded', 'true'); a.classList.add('is-open') }
+    }
+    li.append(b, a); qiList.append(li)
+  })
+  document.getElementById('qi-form').addEventListener('submit', (e) => {
+    e.preventDefault()
+    const r = answer(document.getElementById('qi-q').value); if (!r) return
+    const { text, source } = replyText(r)
+    document.getElementById('qi-out').innerHTML = `<p>${esc(text)}</p><span class="mono">${esc(source)}</span>`
+  })
+
+  // ── 3. Question + card: the question you type grows in huge type; the answer is dealt on a card.
+  const qcQ = document.getElementById('qc-question'), qcCard = document.getElementById('qc-card'), qcInput = document.getElementById('qc-q')
+  function showQuestion(q) { qcQ.innerHTML = `${esc(q || '…')}<span class="caret" aria-hidden="true"></span>` }
+  function qcAsk(q) {
+    const r = answer(q); if (!r) return
+    showQuestion(q)
+    const { text, source } = replyText(r)
+    qcCard.innerHTML = `<span class="mono">Jayanth</span><p>${esc(text)}</p><span class="qc-stamp mono">${esc(source)}</span>`
+    qcCard.classList.remove('is-new'); void qcCard.offsetWidth; qcCard.classList.add('is-new')
+  }
+  SUGGESTIONS.forEach((s) => {
+    const li = el('li'); const b = el('button', 'pill', esc(s)); b.type = 'button'
+    b.onclick = () => { qcInput.value = ''; qcAsk(s) }; li.append(b); document.getElementById('qc-chips').append(li)
+  })
+  qcInput.addEventListener('input', () => showQuestion(qcInput.value))
+  document.getElementById('qc-form').addEventListener('submit', (e) => { e.preventDefault(); qcAsk(qcInput.value) })
+  qcAsk('What did you do at Stage Zero?')
+
+  // ── 4. One sentence: the whole section is "Ask me ____". The empty part cycles through examples.
+  const osIn = document.getElementById('os-q'), osOut = document.getElementById('os-out')
+  const OS_HINTS = ['what I do', 'where I studied', 'about Stage Zero', "where I'm based", 'which tools I use']
+  let hint = 0
+  if (!reduced) setInterval(() => { if (!osIn.value && document.activeElement !== osIn) osIn.placeholder = OS_HINTS[(hint = (hint + 1) % OS_HINTS.length)] }, 2600)
+  function osAsk(q) {
+    const r = answer(q); if (!r) return
+    const { text, source } = replyText(r)
+    osOut.innerHTML = `<p>${esc(text)}</p><span class="mono">${esc(source)}</span>`
+  }
+  document.getElementById('os-form').addEventListener('submit', (e) => { e.preventDefault(); osAsk(osIn.value) })
+  const osTry = document.getElementById('os-try')
+  OS_HINTS.slice(0, 4).forEach((h, i) => {
+    const b = el('button', null, esc(h)); b.type = 'button'
+    b.onclick = () => { osIn.value = h; osAsk(h) }
+    osTry.append(b); if (i < 3) osTry.append(' · ')
+  })
+
+  // ── 5. One at a time: no input, no list. One question, its answer, and "Next".
+  let ot = 0
+  function otShow() {
+    const q = INDEX_QUESTIONS[ot], { text, source } = replyText(answer(q))
+    const body = document.getElementById('ot-body')
+    body.innerHTML = `<p class="ot-q">${esc(q)}</p><p class="ot-a">${esc(text)}</p><span class="mono">${esc(source)}</span>`
+    body.classList.remove('is-new'); void body.offsetWidth; body.classList.add('is-new')
+    document.getElementById('ot-count').textContent = `${String(ot + 1).padStart(2, '0')} / ${String(INDEX_QUESTIONS.length).padStart(2, '0')}`
+    document.getElementById('ot-prev').style.visibility = ot ? 'visible' : 'hidden'
+  }
+  document.getElementById('ot-next').onclick = () => { ot = (ot + 1) % INDEX_QUESTIONS.length; otShow() }
+  document.getElementById('ot-prev').onclick = () => { ot = Math.max(0, ot - 1); otShow() }
+  otShow()
+
+  // ── 6. Plain list: nothing to click. Every question and answer is on the page.
+  const pl = document.getElementById('pl-list')
+  INDEX_QUESTIONS.forEach((q) => {
+    const { text, source } = replyText(answer(q))
+    const row = el('div', 'pl-row')
+    row.append(el('dt', 'mono', esc(q)), el('dd', null, `${esc(text)}<span class="mono">${esc(source)}</span>`))
+    pl.append(row)
+  })
+
+  // ── 7. Question board: ask, and a board of facts drops in below. Every card is from
+  // about-me.md and names its section. No made-up numbers: where there's no real figure, the
+  // card shows words, not a bar.
+  const BOARDS = {
+    work: {
+      title: 'Work', sum: "I'm a product manager who starts with the people using the product.", topic: 'role and path',
+      cards: [
+        { type: 'stat', h: 'Most recently', value: 'Technical PM', note: 'co-op · Stage Zero Health · Aug–Dec 2025', line: 'Zero-to-one work at an early cancer detection startup.', src: 'about-me.md §3' },
+        { type: 'stat', h: 'Looking for', value: 'Full-time PM', note: 'anywhere in the US · on-site, remote or hybrid', line: 'Any sector. Healthcare is where I most want to be useful.', src: 'about-me.md §1 · site intro' },
+        { type: 'timeline', wide: true, h: 'Path', from: [2023, 0], to: [2026, 8], rows: [
+          ['Pega Business Architect', [2023, 0], [2023, 6]], ['SDE Intern, FormulaQ', [2023, 10], [2024, 1]], ['Pega Developer', [2024, 1], [2024, 7]],
+          ['MS, Northeastern', [2024, 8], [2026, 8]], ['TPM co-op, Stage Zero', [2025, 7], [2025, 12]] ],
+          line: 'Business architecture, then building on Pega and Salesforce, then product.', src: 'about-me.md §3 timeline, §5' },
+      ],
+      short: 'An engineer by training who moved through enterprise systems into product, most recently zero to one in healthcare.',
+    },
+    study: {
+      title: 'Education', sum: 'An MS in Information Systems, after a B.Tech in engineering.', topic: 'education and certifications',
+      cards: [
+        { type: 'stat', h: 'Masters', value: 'MS, Information Systems', note: 'Northeastern University · Boston · 2024–2026', line: 'Courses include Systems Thinking in Healthcare and Business Analysis.', src: 'about-me.md §5' },
+        { type: 'stat', h: 'Bachelors', value: 'B.Tech, E&I Engineering', note: 'Keshav Memorial Institute of Technology · Hyderabad · 2019–2023', line: 'IoT, semiconductors, control systems and chips.', src: 'about-me.md §5' },
+        { type: 'tags', wide: true, h: 'Certifications', items: ['Certified Salesforce Administrator', 'Pega Certified Business Architect', 'Pega Certified System Architect'], line: 'Three platform certifications.', src: 'about-me.md §5' },
+      ],
+      short: 'Trained as an engineer, then studied how information systems serve people, with a lean toward healthcare.',
+    },
+    based: {
+      title: 'Basics', sum: 'Based in Atlanta, open to roles anywhere in the US.', topic: 'location and languages',
+      cards: [
+        { type: 'stat', h: 'Based in', value: 'Atlanta, GA', note: 'moved from Boston', line: 'Open to on-site, remote or hybrid, anywhere in the US.', src: 'about-me.md §1' },
+        { type: 'tags', h: 'Languages', items: ['English', 'Hindi · fluent', 'Telugu · native'], line: 'Three languages.', src: 'about-me.md §6' },
+      ],
+      short: 'Easy to reach and ready to move. For start dates and work authorization, ask me directly.',
+    },
+    stagezero: {
+      title: 'Stage Zero Health', sum: 'Zero-to-one work on the breast cancer journey.', topic: 'the Stage Zero co-op',
+      cards: [
+        { type: 'stat', h: 'Role', value: 'Technical PM co-op', note: 'Aug–Dec 2025 · Cambridge, MA · on-site', line: 'An early-stage cancer detection startup.', src: 'about-me.md §3' },
+        { type: 'stat', h: 'Pilot', value: '6 weeks', note: 'paid pilot', line: 'Weekly surveys, calls and demos fed the backlog; pilot users signed off before release.', src: 'about-me.md §3' },
+        { type: 'tags', wide: true, h: 'What the work covered', items: ['Customer interviews', 'Market sizing', 'PRDs', 'Wireframes', 'Testing', 'Pilot', 'GTM support', 'HIPAA'], line: 'Discovery through launch.', src: 'about-me.md §3' },
+        { type: 'tags', wide: true, h: 'After users over 40 struggled to open sources', items: ['Focus management for dynamic content', 'Higher colour contrast', 'Tap targets ≥ 44×44 px'], line: 'The information was clear; getting to it was the barrier.', src: 'about-me.md §3' },
+      ],
+      short: 'People were skeptical of digital health, so we showed risk calmly and linked to the original sources.',
+    },
+    tools: {
+      title: 'Tools', sum: 'What I work with day to day.', topic: 'tools and skills',
+      cards: [
+        { type: 'groups', wide: true, h: 'By kind', groups: [['Product', 'Jira, Asana, Notion'], ['Design', 'Figma, Miro'], ['Platforms', 'Salesforce, Pega'], ['Build', 'GitHub, Vercel, Supabase, Claude Code'], ['Data', 'GA4, SQL, Python (working), R']],
+          line: 'Grouping is mine; the list is from my notes.', src: 'about-me.md §6' },
+      ],
+      short: 'Comfortable with engineers, designers and the business, in their own tools.',
+    },
+  }
+  const FACT_TO_BOARD = ['work', 'study', 'based', 'stagezero', 'tools', 'based', 'study']
+  const QB_EXAMPLES = ['what do you do', 'where did you study', 'what did you do at stage zero', 'where are you based', 'which tools']
+
+  const ym = ([y, m]) => y + m / 12
+  function cardHTML(c) {
+    let body = ''
+    if (c.type === 'stat') body = `<p class="qb-value">${esc(c.value)}</p><p class="qb-note mono">${esc(c.note)}</p>`
+    if (c.type === 'tags') body = `<ul class="qb-tags">${c.items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>`
+    if (c.type === 'groups') body = `<dl class="qb-groups">${c.groups.map(([k, v]) => `<div><dt class="mono">${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>`
+    if (c.type === 'timeline') {
+      const a = ym(c.from), b = ym(c.to), pct = (d) => ((ym(d) - a) / (b - a)) * 100
+      const rows = c.rows.map(([n, f, t]) => `<div class="qb-tl-row"><span>${esc(n)}</span><span class="qb-tl-track"><span class="qb-tl-bar" style="left:${pct(f)}%;width:${pct(t) - pct(f)}%"></span></span></div>`).join('')
+      const years = []; for (let y = c.from[0]; y <= c.to[0]; y++) years.push(`<span class="mono" style="left:${pct([y, 0])}%">${y}</span>`)
+      body = `<div class="qb-tl" role="img" aria-label="${esc(c.rows.map(([n]) => n).join(', '))}">${rows}</div><div class="qb-tl-axis">${years.join('')}</div>`
+    }
+    return `<article class="qb-card${c.wide ? ' is-wide' : ''}"><h4>${esc(c.h)}</h4>${body}<div class="qb-foot"><p>${esc(c.line)}</p><span class="mono">${esc(c.src)}</span></div></article>`
+  }
+  const qb = document.getElementById('qb'), qbBoard = document.getElementById('qb-board'), qbIn = document.getElementById('qb-q')
+  function qbAsk(q) {
+    const r = answer(q); if (!r) return
+    qb.classList.add('is-asked'); qbIn.value = ''; qbIn.placeholder = 'Change it, or ask something else'
+    let html
+    if (r.kind === 'answer') {
+      const b = BOARDS[FACT_TO_BOARD[FACTS.indexOf(r.fact)]]
+      html = `<div class="qb-head"><div><h3 class="qb-title">${esc(b.title)}</h3><p class="qb-sum">${esc(b.sum)}</p>
+        <p class="qb-read mono">"${esc(q)}" → read as ${esc(b.topic)}</p></div><button type="button" class="qb-new mono" id="qb-new">New</button></div>
+        <div class="qb-grid">${b.cards.map(cardHTML).join('')}</div>
+        <div class="qb-in-short"><h4>In short</h4><p>${esc(b.short)}</p></div>`
+    } else {
+      const { text } = replyText(r)
+      html = `<div class="qb-head"><div><h3 class="qb-title">${r.kind === 'direct' ? 'Ask me directly' : 'Not in my notes'}</h3><p class="qb-sum">${esc(text)}</p>
+        <p class="qb-read mono">"${esc(q)}" → ${r.kind === 'direct' ? 'read as a question for me' : 'no match, so no guess'}</p></div><button type="button" class="qb-new mono" id="qb-new">New</button></div>
+        <button type="button" class="pill pill--solid" style="background:var(--accent);color:var(--bg);border-color:var(--accent)">Say hi →</button>`
+    }
+    qbBoard.innerHTML = html
+    qbBoard.classList.remove('is-new'); void qbBoard.offsetWidth; qbBoard.classList.add('is-new')
+    document.getElementById('qb-new').onclick = () => { qb.classList.remove('is-asked'); qbBoard.innerHTML = ''; qbIn.placeholder = 'Ask me something'; qbIn.focus() }
+  }
+  QB_EXAMPLES.forEach((x) => { const b = el('button', null, esc(x)); b.type = 'button'; b.onclick = () => qbAsk(x); document.getElementById('qb-examples').append(b) })
+  document.getElementById('qb-form').addEventListener('submit', (e) => { e.preventDefault(); qbAsk(qbIn.value) })
+
+  // ── 8. Answer shapes: borrowed from the board, the idea that an answer takes the shape of its
+  // facts (a path draws as a route, years as a ruler, a story as beats, a place as a place), with
+  // the question read back, one plain sentence and a source under every answer. Facts:
+  // about-me.md only. Atlanta's coordinates are general knowledge, not from about-me.md.
+  const i8 = (n) => `style="--i:${n}"`
+  const SHAPES = {
+    work: {
+      topic: 'my path into product',
+      html: () => {
+        const stops = [['Engineering', 'B.Tech · 2019–2023'], ['Business architect', 'Pega · 2023'], ['Developer', 'Salesforce & Pega · 2023–2024'], ['MS, Information Systems', 'Northeastern · 2024–2026'], ['Technical PM', 'Stage Zero Health · 2025']]
+        return `<ol class="route" style="--n:${stops.length}">${stops.map(([a, b], n) => `<li class="sh-step${n === stops.length - 1 ? ' is-now' : ''}" ${i8(n + 2)}><strong>${a}</strong><span class="mono">${b}</span></li>`).join('')}</ol>`
+      },
+      say: "I'm a product manager. An engineer by training who moved through enterprise systems into product.",
+      src: 'about-me.md §3 timeline, §5',
+    },
+    study: {
+      topic: 'education and certifications',
+      html: () => {
+        const a = 2019, b = 2027, pct = (y, m) => (((y + m / 12) - a) / (b - a)) * 100
+        const spans = [['B.Tech · KMIT, Hyderabad', [2019, 7], [2023, 6]], ['MS · Northeastern', [2024, 8], [2026, 8]]]
+        const rows = spans.map(([t, f, e], n) => `<div class="ruler-row"><span class="ruler-span" style="--i:${n};left:${pct(...f)}%;width:${pct(...e) - pct(...f)}%">${t}</span></div>`).join('')
+        const ticks = []; for (let y = a; y <= b; y++) ticks.push(`<span class="mono" style="left:${pct(y, 0)}%">${y}</span>`)
+        const certs = ['Certified Salesforce Administrator', 'Pega Certified Business Architect', 'Pega Certified System Architect']
+        return `<div class="ruler">${rows}<div class="ruler-axis">${ticks.join('')}</div></div>
+          <div class="stamps">${certs.map((c, n) => `<span class="stamp" style="--i:${n};--r:${[-3, 2, -1][n]}deg">${c}</span>`).join('')}</div>`
+      },
+      say: 'Trained as an engineer in Hyderabad, then an MS in Information Systems in Boston. Three platform certifications along the way.',
+      src: 'about-me.md §5',
+    },
+    stagezero: {
+      topic: 'the Stage Zero Health co-op',
+      html: () => {
+        const beats = [['Heard it', 'Most people I interviewed were skeptical of digital health.'], ['Designed for it', 'Risk scores shown calmly, linked to original sources.'], ['Tested it', 'People understood it, but users over 40 struggled to open the sources.'], ['Fixed it', 'Focus handling, higher contrast, tap targets of at least 44px.']]
+        return `<ol class="story">${beats.map(([h, t], n) => `<li class="sh-step" ${i8(n)}><strong>${h}</strong>${t}</li>`).join('')}</ol>
+          <div class="pilot"><span class="mono">Then a 6-week paid pilot</span><div class="pilot-weeks" aria-hidden="true">${[1, 2, 3, 4, 5, 6].map((w) => `<span class="mono" ${i8(w)}>W${w}</span>`).join('')}</div></div>`
+      },
+      say: 'Technical PM co-op, Aug–Dec 2025, zero to one on the breast cancer journey. Pilot users signed off before release.',
+      src: 'about-me.md §3',
+    },
+    based: {
+      topic: 'where I am and where I can work',
+      html: () => `<p class="place-city sh-step">Atlanta, GA</p><p class="place-coord mono sh-step" ${i8(1)}>33.75° N, 84.39° W</p>
+        <div class="switches">${['On-site', 'Remote', 'Hybrid'].map((w, n) => `<span class="switch sh-step" ${i8(n + 2)}><i style="--i:${n}"></i>${w}</span>`).join('')}</div>`,
+      say: 'Based in Atlanta, open to roles anywhere in the US. For start dates or work authorization, ask me directly.',
+      src: 'about-me.md §1',
+    },
+    lang: {
+      topic: 'languages',
+      html: () => `<div class="langs">${[['English', 'English'], ['हिन्दी', 'Hindi · fluent'], ['తెలుగు', 'Telugu · native']].map(([w, l], n) => `<div class="sh-step" ${i8(n)}><strong lang="${['en', 'hi', 'te'][n]}">${w}</strong><span class="mono">${l}</span></div>`).join('')}</div>`,
+      say: 'Three languages, each written in its own script.',
+      src: 'about-me.md §6',
+    },
+    tools: {
+      topic: 'tools',
+      html: () => `<div class="shelves">${[['Product', 'Jira · Asana · Notion'], ['Design', 'Figma · Miro'], ['Platforms', 'Salesforce · Pega'], ['Build', 'GitHub · Vercel · Supabase · Claude Code'], ['Data', 'GA4 · SQL · Python · R']].map(([k, v], n) => `<div class="shelf sh-step" ${i8(n)}><span class="mono">${k}</span><p>${v}</p></div>`).join('')}</div>`,
+      say: 'The tools I use, sorted by what they’re for. The sorting is mine; the list is from my notes.',
+      src: 'about-me.md §6',
+    },
+  }
+  const FACT_TO_SHAPE = ['work', 'study', 'based', 'stagezero', 'tools', 'lang', 'study']
+  const sh = document.getElementById('sh'), shOut = document.getElementById('sh-out'), shIn = document.getElementById('sh-q')
+  function shAsk(q) {
+    const r = answer(q); if (!r) return
+    sh.classList.add('is-asked'); shIn.value = ''; shIn.placeholder = 'Ask something else'
+    const read = (t) => `<p class="sh-read mono"><span>“${esc(q)}” → ${t}</span><button type="button" id="sh-new">Start over</button></p>`
+    if (r.kind === 'answer') {
+      const x = SHAPES[FACT_TO_SHAPE[FACTS.indexOf(r.fact)]]
+      shOut.innerHTML = `${read(`read as ${esc(x.topic)}`)}${x.html()}<p class="sh-say sh-step" style="--i:6">${esc(x.say)}</p><span class="sh-src mono">Source · ${esc(x.src)}</span>`
+    } else {
+      const { text } = replyText(r)
+      shOut.innerHTML = `${read(r.kind === 'direct' ? 'one for me to answer myself' : 'not in my notes, so no guess')}<p class="sh-say sh-step" style="margin-top:0">${esc(text)}</p><button type="button" class="pill pill--solid">Say hi →</button>`
+    }
+    document.getElementById('sh-new').onclick = () => { sh.classList.remove('is-asked'); shOut.innerHTML = ''; shIn.placeholder = 'Ask me something'; shIn.focus() }
+  }
+  ;['what do you do', 'where did you study', 'what did you do at stage zero', 'where are you based', 'which languages', 'which tools'].forEach((x) => {
+    const b = el('button', null, esc(x)); b.type = 'button'; b.onclick = () => shAsk(x); document.getElementById('sh-examples').append(b)
+  })
+  document.getElementById('sh-form').addEventListener('submit', (e) => { e.preventDefault(); shAsk(shIn.value) })
+
+  const TRIES = ['what do you do', 'where did you study', 'what did you do at stage zero', 'where are you based']
+
+  // ── 9. Redacted: the answer sits under white bars that lift off line by line. Private questions
+  // stay redacted. Only the answer is shown.
+  const rdText = document.getElementById('rd-text'), rdDoc = document.getElementById('rd-doc'), rdPriv = document.getElementById('rd-private'), rdIn = document.getElementById('rd-q')
+  // Covers each rendered line of the paragraph with one bar, measured from where words wrapped.
+  function redact(text) {
+    rdDoc.querySelectorAll('.rd-bar').forEach((b) => b.remove())
+    rdText.innerHTML = text.split(' ').map((w) => `<span>${esc(w)}</span>`).join(' ')
+    const spans = [...rdText.querySelectorAll('span')], lines = []
+    spans.forEach((sp) => {
+      const top = sp.offsetTop, last = lines[lines.length - 1]
+      if (!last || last.top !== top) lines.push({ top, left: sp.offsetLeft, right: sp.offsetLeft + sp.offsetWidth, h: sp.offsetHeight })
+      else last.right = sp.offsetLeft + sp.offsetWidth
+    })
+    return lines.map((l, n) => {
+      const b = el('span', 'rd-bar'); b.style.cssText = `--i:${n};top:${l.top + l.h * 0.04}px;left:${l.left - 4}px;width:${l.right - l.left + 8}px;height:${l.h * 0.92}px`
+      rdDoc.append(b); return b
+    })
+  }
+  const FILLER = 'Nothing to read here yet, just ask a question above and this will open up'
+  function rdAsk(q) {
+    const r = answer(q); if (!r) return
+    rdIn.value = ''; rdIn.placeholder = 'Ask something else'
+    rdPriv.hidden = true
+    rdDoc.classList.toggle('is-sealed', r.kind === 'direct')
+    if (r.kind === 'answer') {
+      rdText.setAttribute('aria-hidden', 'false')
+      const bars = redact(r.fact.answer)
+      if (reduced) bars.forEach((b) => b.remove())
+      else bars.forEach((b) => { b.classList.add('is-lifting'); b.addEventListener('animationend', () => b.remove(), { once: true }) })
+    } else if (r.kind === 'direct') {
+      redact('This one is between us, so it stays off the page for now'); rdText.setAttribute('aria-hidden', 'true'); rdPriv.hidden = false
+    } else {
+      rdText.removeAttribute('aria-hidden'); redact("I don't have an answer for that one."); rdDoc.querySelectorAll('.rd-bar').forEach((b) => b.remove())
+    }
+  }
+  TRIES.forEach((x) => { const b = el('button', null, esc(x)); b.type = 'button'; b.onclick = () => rdAsk(x); document.getElementById('rd-tries').append(b) })
+  document.getElementById('rd-form').addEventListener('submit', (e) => { e.preventDefault(); rdAsk(rdIn.value) })
+  let rdReady = false
+  const rdInit = () => { if (rdReady || document.getElementById('opt-9').hidden) return; rdReady = true; rdDoc.classList.add('is-sealed'); redact(FILLER); rdText.setAttribute('aria-hidden', 'true') }
+
+  // ── 10. Transcript: the visitor interviews Jayanth. Q and A, one exchange under the next; the
+  // next question is typed straight into the transcript. Only the answer is shown.
+  const trList = document.getElementById('tr-list'), trIn = document.getElementById('tr-q')
+  const trWords = (t) => t.split(' ').map((w, n) => (reduced ? esc(w) : `<span class="w" style="--i:${n}">${esc(w)}</span>`)).join(' ')
+  function trAsk(q, quiet) {
+    const r = answer(q); if (!r) return
+    const a = r.kind === 'answer' ? r.fact.answer : r.kind === 'direct' ? "That's one for a real conversation. Say hi and I'll tell you." : "I don't have an answer for that one yet."
+    const li = el('li', 'tr-ex')
+    li.innerHTML = `<div class="tr-line"><span class="tr-who" aria-hidden="true">Q</span><p class="tr-q">${esc(q.charAt(0).toUpperCase() + q.slice(1)).replace(/([^?])$/, '$1?')}</p></div>
+      <div class="tr-line"><span class="tr-who" aria-hidden="true">A</span><p class="tr-a">${quiet ? esc(a) : trWords(a)}</p></div>`
+    trList.append(li); trIn.value = ''
+    if (!quiet) li.scrollIntoView({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' })
+  }
+  TRIES.forEach((x) => { const b = el('button', null, esc(x)); b.type = 'button'; b.onclick = () => trAsk(x); document.getElementById('tr-tries').append(b) })
+  document.getElementById('tr-form').addEventListener('submit', (e) => { e.preventDefault(); trAsk(trIn.value) })
+  trAsk('what do you do', true)
+
+  // Option 9 measures text, so it waits until it's on screen.
+  document.querySelectorAll('.lab-bar button').forEach((b) => b.addEventListener('click', () => requestAnimationFrame(rdInit)))
+  addEventListener('resize', () => { if (rdReady && rdDoc.querySelector('.rd-bar')) redact(rdText.textContent) })
+</script>
+</body>
+</html>

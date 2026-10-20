@@ -1,0 +1,39 @@
+/* The email link in the bottom-right corner of every page (TalkLink.tsx). Same type and line as
+   the index's page counter ("006", .index-count: .mono, bottom --space-6), so the two sit on
+   one baseline (Jayanth, 2026-10-19). Kept in lower case: it's an address. */
+.talk {
+  position: fixed;
+  z-index: 30;
+  right: var(--gutter);
+  bottom: var(--space-6);
+  line-height: var(--leading-body);
+  color: var(--accent);
+  text-transform: none;
+  text-decoration: none;
+  transition: color var(--dur-base) var(--ease-out);
+}
+/* A 44px tap target without moving the text off the counter's line. */
+.talk::after {
+  content: '';
+  position: absolute;
+  inset: 50% 0 auto;
+  height: var(--target);
+  transform: translateY(-50%);
+}
+.talk:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.talk:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+.talk--on-blue {
+  color: var(--on-accent);
+}
+@media (max-width: 760px) {
+  /* No index on phones; tucked into the corner. */
+  .talk {
+    bottom: var(--space-4);
+  }
+}

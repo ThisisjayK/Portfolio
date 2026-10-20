@@ -1,0 +1,85 @@
+/* Top-right corner (moved there by Jayanth, 2026-10-17; was top-left in the A–Z grid): a
+   --space-5 from the top, flush with the right gutter. No blend mode: the box keeps its own
+   colours. Fixed to the viewport, so it stays on screen for the whole landing page. z-index sits
+   above the page sections but below the index (30) and the cards (40). */
+.roll-slot {
+  position: fixed;
+  z-index: 20;
+  top: var(--space-5);
+  right: var(--gutter);
+  pointer-events: none;
+}
+
+.roll-cell {
+  perspective: 900px;
+}
+
+/* The box keeps the collage's shape (2752:1536) and scales with the screen's height: about
+   14.7% of it, the size Jayanth marked (256×142 at 1920×964). Its depth equals its height, so
+   every face is the same size and a quarter turn brings the next face exactly to the front. */
+.roll-link {
+  --ratio: 1.7917;
+  --h: clamp(72px, 14.7svh, 168px);
+  display: block;
+  width: calc(var(--h) * var(--ratio));
+  height: var(--h);
+  pointer-events: auto;
+  cursor: pointer;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.roll-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* Scrolling down tips the front face up and away (positive rotateX), bringing the face that was
+   underneath to the front. */
+.roll-box {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform: translateZ(calc(var(--h) / -2)) rotateX(calc(var(--turn, 0) * 90deg));
+  transition: transform calc(var(--dur-slow) + var(--dur-base)) var(--ease-out);
+}
+
+.roll-face {
+  position: absolute;
+  inset: 0;
+  background: var(--bg); /* the line drawing is transparent; each face reads as a white card */
+  transition: background var(--dur-slow) var(--ease-out);
+  overflow: hidden;
+  backface-visibility: hidden;
+  display: block;
+  transform: rotateX(calc(var(--k) * -90deg)) translateZ(calc(var(--h) / 2));
+}
+.roll-face img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+
+/* On the blue screen (Jayanth, 2026-10-17): the face takes the page's blue and the drawing turns
+   white, cross-fading over --dur-slow. */
+.roll-img {
+  transition: opacity var(--dur-slow) var(--ease-out);
+}
+.roll-img--on-blue {
+  opacity: 0;
+}
+.roll-slot--on-blue .roll-face {
+  background: var(--accent-fill);
+}
+.roll-slot--on-blue .roll-img--on-blue {
+  opacity: 1;
+}
+.roll-slot--on-blue .roll-img:not(.roll-img--on-blue):has(+ .roll-img--on-blue) {
+  opacity: 0;
+}
+.roll-slot--on-blue .roll-link:focus-visible {
+  outline-color: var(--on-accent);
+}

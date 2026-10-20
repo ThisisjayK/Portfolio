@@ -1,0 +1,50 @@
+/* The hover preview of a letter page's article (LetterPreview.tsx). Tokens only. Fixed to the
+   viewport beside the hovered index item, its top level with the item's. */
+.letter-preview {
+  position: fixed;
+  z-index: 35; /* above the index nav (30), under the cards (40) */
+  width: min(320px, 30vw);
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--space-4);
+  background: var(--bg);
+  color: var(--accent);
+  pointer-events: none;
+  /* Top-aligned with the letter; the left-opening card grows from its right edge. */
+}
+.letter-preview--left {
+  translate: -100% 0;
+}
+
+.letter-preview-kicker {
+  margin: 0 0 var(--space-2);
+}
+
+.letter-preview-title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-h2);
+  line-height: var(--leading-heading);
+  text-transform: none;
+}
+
+.letter-preview-body {
+  margin: 0;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  text-align: justify;
+  hyphens: auto; /* keeps justified lines in this narrow card from opening wide gaps */
+  /* The first lines only, ending on an ellipsis. */
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Phones hide the A–Z, so there's nothing to preview there. */
+@media (max-width: 760px) {
+  .letter-preview {
+    display: none;
+  }
+}

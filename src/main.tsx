@@ -1,23 +1,17 @@
-import { StrictMode } from "react"
-import { createRoot } from "react-dom/client"
-import App from "./pages/App"
-import "./styles/index.css"
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import '@fontsource-variable/inter'
+import '@fontsource-variable/jetbrains-mono'
+import './styles/fonts.css'
+import './styles/tokens.css'
+import './styles/global.css'
+import App from './App'
 
-createRoot(document.getElementById("root")!).render(
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <App />
+    </BrowserRouter>
   </StrictMode>,
 )
-
-// Clear the boot loader (declared in index.html) once React has painted. Two
-// rAFs wait for the first real frame rather than just the render call, so the
-// loader fades out over the mounted UI instead of over a still-blank root.
-const boot = document.getElementById("boot")
-if (boot) {
-  requestAnimationFrame(() =>
-    requestAnimationFrame(() => {
-      boot.classList.add("boot--done")
-      window.setTimeout(() => boot.remove(), 600)
-    }),
-  )
-}

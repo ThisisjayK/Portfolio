@@ -1,0 +1,23 @@
+/* The World Cup block on the Arsenal F.C page (Jayanth, 2026-10-19). */
+.world-cup {
+  margin: var(--space-7) 0 var(--space-5);
+}
+
+/* The carousel breaks out of the 62ch column, like the dish pictures, and needs a fixed height
+   (the component fills its box). Its captions sit under the row, inside the box. */
+.world-cup-reel {
+  position: relative;
+  width: min(980px, calc(100vw - var(--index-w) - var(--gutter) * 4));
+  height: 460px;
+  margin-left: 50%;
+  translate: -50% 0;
+}
+
+@media (max-width: 760px) {
+  .world-cup-reel {
+    width: 100%;
+    height: 380px;
+    margin-left: 0;
+    translate: none;
+  }
+}

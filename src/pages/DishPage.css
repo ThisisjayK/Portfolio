@@ -1,0 +1,5 @@
+/* A dish page (Jayanth, 2026-10-19): the dish name is smaller than a letter page's heading,
+   so the labelled picture leads. */
+.lp-title.dish-title {
+  font-size: var(--text-h2);
+}

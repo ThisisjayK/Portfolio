@@ -1,0 +1,124 @@
+/* The floating book (2026-10-19). Size from the cover's proportions; the only colour is the
+   book's own blue. Front, back and spine are images; the page edges are drawn. */
+.book3d {
+  --w: 190px;
+  --h: 268px;
+  --d: 24px;
+  position: relative;
+  width: var(--w);
+  height: calc(var(--h) + 70px);
+  margin: var(--space-5) auto var(--space-3);
+  perspective: 900px;
+}
+
+.book3d-float,
+.book3d-tilt,
+.book3d-spin {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: var(--w);
+  height: var(--h);
+  transform-style: preserve-3d;
+}
+.book3d-float {
+  animation: book-bob 5s ease-in-out infinite;
+}
+.book3d-tilt {
+  top: 0;
+  transform: rotateX(-9deg);
+}
+.book3d-spin {
+  top: 0;
+  animation: book-turn 16s linear infinite;
+}
+.book3d:hover .book3d-spin,
+.book3d:hover .book3d-float,
+.book3d:hover .book3d-shadow {
+  animation-play-state: paused;
+}
+
+.book3d-face {
+  position: absolute;
+  display: block;
+  backface-visibility: hidden;
+}
+.book3d-front {
+  width: var(--w);
+  height: var(--h);
+  object-fit: cover;
+  transform: translateZ(calc(var(--d) / 2));
+  border-radius: 0 3px 3px 0;
+}
+.book3d-back {
+  width: var(--w);
+  height: var(--h);
+  object-fit: cover;
+  transform: rotateY(180deg) translateZ(calc(var(--d) / 2));
+}
+.book3d-spine {
+  left: calc(50% - var(--d) / 2);
+  width: var(--d);
+  height: var(--h);
+  object-fit: cover;
+  transform: rotateY(-90deg) translateZ(calc(var(--w) / 2));
+}
+/* Page block: off-white with fine lines so it reads as paper. */
+.book3d-pages {
+  background: repeating-linear-gradient(to bottom, #f4f1ea 0 2px, #e2ded4 2px 3px);
+}
+.book3d-right {
+  left: calc(50% - var(--d) / 2);
+  width: var(--d);
+  height: var(--h);
+  transform: rotateY(90deg) translateZ(calc(var(--w) / 2 - 2px));
+}
+.book3d-top,
+.book3d-bottom {
+  width: var(--w);
+  height: var(--d);
+  top: calc(50% - var(--d) / 2);
+  background: repeating-linear-gradient(to right, #f4f1ea 0 2px, #e2ded4 2px 3px);
+}
+.book3d-top {
+  transform: rotateX(90deg) translateZ(calc(var(--h) / 2 - 2px));
+}
+.book3d-bottom {
+  transform: rotateX(-90deg) translateZ(calc(var(--h) / 2 - 2px));
+}
+
+.book3d-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: var(--w);
+  height: 18px;
+  margin-left: calc(var(--w) / -2);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.28);
+  filter: blur(12px);
+  animation: book-shadow 5s ease-in-out infinite;
+}
+
+@keyframes book-turn {
+  to { transform: rotateY(360deg); }
+}
+@keyframes book-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes book-shadow {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(0.82); opacity: 0.6; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book3d-float,
+  .book3d-shadow {
+    animation: none;
+  }
+  .book3d-spin {
+    animation: none;
+    transform: rotateY(-32deg);
+  }
+}

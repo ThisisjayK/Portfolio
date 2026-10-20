@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jayanth Kappagantula · Product Manager</title>
+<meta name="description" content="Product manager who starts with the people using the product. Healthcare, 0→1, engineer by training.">
+<!--
+  Full-site prototype (2026-10-16). Creative direction: "Calm on the surface, curious underneath."
+  Every page reads at a glance; the playful layer (head lid, doodles, flip card) only appears when
+  someone reaches for it. Facts come only from about-me.md. Copy marked DRAFT needs Jayanth's review.
+  Fonts load from Google Fonts here; production self-hosts them (architecture.md).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:opsz,wght@14..32,400..600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ---------------------------------------------------------------------------
+   Tokens. 60 / 30 / 10: white ground, ink type and line art, red only for
+   things that are personal or interactive. All text pairs pass WCAG AA:
+   ink 18.9:1, muted 5.3:1, red 4.97:1 on white.
+--------------------------------------------------------------------------- */
+:root {
+  --bg: #ffffff;
+  --paper: #fffdf8;
+  --fg: #111111;
+  --muted: #6b6b6b;
+  --line: #e6e6e6;
+  --accent: #d62b1f;
+
+  --font-display: 'Anton', Impact, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* 4px base, 8pt rhythm */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px; --s9: 96px;
+  --gutter: var(--s6);
+  --nav: 64px;
+
+  /* Type scale. Display sizes follow the screen height as well as width so
+     every desktop page fits one screen without scrolling. */
+  --fs-mono: 12px;
+  --fs-small: 14px;
+  --fs-body: clamp(14px, 0.55vw + 0.9vh, 17px);
+  --fs-lead: clamp(16px, 0.6vw + 1.1vh, 21px);
+  --fs-h3: clamp(22px, min(2.2vw, 3.4vh), 32px);
+  --fs-h2: clamp(32px, min(3.8vw, 6vh), 64px);
+  --fs-h1: clamp(48px, min(7vw, 11vh), 132px);
+  --fs-giant: clamp(80px, min(14vw, 17vh), 220px);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --fast: 150ms; --base: 250ms; --slow: 450ms;
+  --target: 44px;
+}
+@media (max-width: 760px) { :root { --gutter: var(--s4); --nav: 56px; } }
+
+/* ---------------------------------------------------------------------------
+   Base
+--------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+html, body { overflow-x: clip; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 400 var(--fs-body)/1.55 var(--font-body);
+  font-feature-settings: 'ss01', 'cv11'; /* Inter: straighter, calmer forms */
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+p { margin: 0; text-wrap: pretty; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+
+.mono { font: 500 var(--fs-mono)/1.6 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.display { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; line-height: 0.92; letter-spacing: 0.005em; }
+.red { color: var(--accent); }
+.muted { color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip { position: absolute; left: var(--s4); top: -100px; z-index: 100; background: var(--fg); color: var(--bg); padding: var(--s2) var(--s4); }
+.skip:focus { top: var(--s4); }
+
+/* Buttons: pill, 44px min target */
+.btn {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  min-height: var(--target); padding: 0 var(--s5); border-radius: 999px;
+  border: 1.5px solid var(--fg); background: var(--fg); color: var(--bg);
+  font: 500 15px/1 var(--font-body); text-decoration: none; cursor: pointer;
+  transition: transform var(--fast) var(--ease), background var(--base) var(--ease), color var(--base) var(--ease);
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0) scale(0.98); }
+.btn--ghost { background: transparent; color: var(--fg); }
+.btn--ghost:hover { background: var(--fg); color: var(--bg); }
+.btn .arrow { transition: transform var(--base) var(--ease); }
+.btn:hover .arrow { transform: translateX(3px); }
+.link { color: var(--fg); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; }
+.link:hover { color: var(--accent); }
+
+/* ---------------------------------------------------------------------------
+   Nav
+--------------------------------------------------------------------------- */
+.nav {
+  position: relative; z-index: 20; height: var(--nav);
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s4);
+  padding: 0 var(--gutter);
+}
+.nav-name { text-decoration: none; display: inline-flex; align-items: center; gap: var(--s2); min-height: var(--target); }
+.nav-name .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.nav ul { display: flex; gap: 0 var(--s5); list-style: none; margin: 0; padding: 0; }
+.nav ul a { position: relative; display: inline-flex; align-items: center; min-height: var(--target); text-decoration: none; transition: color var(--fast) var(--ease); }
+.nav ul a:hover, .nav ul a[aria-current='page'] { color: var(--accent); }
+.nav ul a[aria-current='page']::after {
+  content: ''; position: absolute; left: 50%; bottom: 6px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--accent);
+}
+@media (max-width: 760px) {
+  .nav { height: auto; flex-direction: column; align-items: flex-start; padding-top: var(--s2); }
+  .nav ul { gap: 0 var(--s4); flex-wrap: wrap; }
+}
+
+/* ---------------------------------------------------------------------------
+   Pages: one screen each on laptop/desktop, free to scroll on phones.
+--------------------------------------------------------------------------- */
+.page { position: relative; padding: var(--s4) var(--gutter) var(--s5); }
+.page[hidden] { display: none; }
+@media (min-width: 961px) {
+  .page { height: calc(100svh - var(--nav)); overflow: clip; }
+}
+.page.enter > * { animation: rise var(--slow) var(--ease) both; }
+.page.enter > *:nth-child(2) { animation-delay: 40ms; }
+.page.enter > *:nth-child(3) { animation-delay: 80ms; }
+.page.enter > *:nth-child(4) { animation-delay: 120ms; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* ---------------------------------------------------------------------------
+   01 Home
+--------------------------------------------------------------------------- */
+.home {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto 1fr auto;
+  gap: var(--s5) var(--s7);
+}
+.home-meta { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: var(--s4); flex-wrap: wrap; }
+.home-title { grid-column: 1; align-self: center; font-size: var(--fs-h1); }
+.home-title .red { color: var(--accent); }
+.home-side { grid-column: 2; grid-row: 2 / 4; align-self: center; display: grid; justify-items: center; gap: var(--s3); }
+.home-face {
+  width: clamp(160px, 30vh, 300px); aspect-ratio: 1; padding: 0; border: 0; background: none; cursor: pointer;
+  transition: transform var(--slow) var(--ease);
+}
+.home-face:hover { transform: rotate(-3deg) translateY(-4px); }
+.home-face img { width: 100%; height: 100%; object-fit: contain; }
+.home-foot { grid-column: 1; display: grid; gap: var(--s5); }
+.home-lead { font-size: var(--fs-lead); line-height: 1.5; max-width: 52ch; }
+.home-actions { display: flex; flex-wrap: wrap; gap: var(--s3); }
+@media (max-width: 960px) {
+  .home { grid-template-columns: 1fr; }
+  .home-side { grid-column: 1; grid-row: auto; justify-items: start; }
+  .home-title { margin: var(--s6) 0 var(--s2); }
+}
+
+/* ---------------------------------------------------------------------------
+   02 About
+--------------------------------------------------------------------------- */
+.about {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 34vh) minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto; gap: var(--s4) var(--s6);
+}
+.year { margin: 0; font-size: var(--fs-giant); overflow: clip; }
+.year--top { grid-column: 1; grid-row: 1; }
+.year--bottom { grid-column: 1; grid-row: 3; align-self: end; }
+.list { margin: 0; padding: 0; list-style: none; text-align: right; color: var(--accent); justify-self: end; }
+.list li { line-height: 1.85; }
+.list--top { grid-column: 3; grid-row: 1; }
+.list--bottom { grid-column: 3; grid-row: 3; align-self: end; }
+.about-face { grid-column: 2; grid-row: 1 / 4; align-self: center; justify-self: center; width: 100%; }
+.about-intro { grid-column: 3; grid-row: 2; align-self: center; justify-self: end; max-width: 40ch; text-align: right; display: grid; gap: var(--s3); }
+.about-intro h2 { font-size: var(--fs-h3); line-height: 1; }
+.about-intro .actions { display: flex; justify-content: flex-end; gap: var(--s3); flex-wrap: wrap; margin-top: var(--s2); }
+.about-path { grid-column: 1; grid-row: 2; align-self: center; display: grid; gap: var(--s2); max-width: 30ch; }
+.about-path ol { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s2); }
+.about-path li { display: grid; grid-template-columns: 9ch 1fr; gap: var(--s3); font-size: var(--fs-small); line-height: 1.4; }
+.about-path li span:first-child { color: var(--muted); }
+@media (max-width: 960px) {
+  .about { grid-template-columns: auto minmax(0, 1fr); }
+  .year--top { grid-column: 1; grid-row: 1; } .list--top { grid-column: 2; grid-row: 1; }
+  /* The open arc is ~1.5x the head's width and reaches ~60% of it above, so the head
+     stays small enough to keep every doodle on screen and makes room when it opens. */
+  .about-face { grid-column: 1 / -1; grid-row: 2; margin: var(--s8) auto var(--s4); max-width: min(200px, 56vw); transition: margin-top var(--slow) var(--ease); }
+  .about-face:has(.head.open) { margin-top: min(150px, 42vw); }
+  .about-intro { grid-column: 1 / -1; grid-row: 3; justify-self: stretch; text-align: left; max-width: none; }
+  .about-intro .actions { justify-content: flex-start; }
+  .about-path { grid-column: 1 / -1; grid-row: 4; max-width: none; margin-top: var(--s5); }
+  .year--bottom { grid-column: 1; grid-row: 5; } .list--bottom { grid-column: 2; grid-row: 5; }
+}
+
+/* The head: click to lift the lid; eight things fly out in an arc. */
+.head { position: relative; width: 100%; aspect-ratio: 1; }
+.head-face { position: absolute; inset: 0; z-index: 4; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; }
+.head-bottom, .head-lid img { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; user-select: none; }
+.head-bottom { clip-path: inset(30% 0 0 0); z-index: 1; transform-origin: 50% 100%; }
+.head-lid { position: absolute; inset: 0; z-index: 3; pointer-events: none; transform-origin: 53% 30%; transition: transform 700ms cubic-bezier(0.3, 0.6, 0.3, 1) 0ms; }
+.head-lid img { clip-path: inset(0 0 calc(70% - 1.5px) 0); }
+.head-rim {
+  position: absolute; z-index: 2; left: calc(53.3% - 29.2%); top: calc(30% - 4.7%); width: 58.4%; height: 9.4%;
+  border: 3px solid var(--fg); border-radius: 50%;
+  background: radial-gradient(circle, var(--fg) 1.2px, transparent 1.4px) 0 0 / 5px 5px, #fff;
+  transform: scaleY(0); transition: transform 200ms var(--ease) 500ms;
+}
+.head.open .head-lid { transform: translate(-3%, -66%) rotate(-11deg); }
+.head.open .head-rim { transform: scaleY(1); transition-delay: 100ms; }
+.head.open .head-bottom { animation: squish 600ms var(--ease); }
+@keyframes squish { 20% { transform: scaleY(0.95); } 45% { transform: scaleY(1.02); } }
+.hint {
+  position: absolute; z-index: 5; left: 53%; top: 2%; transform: translate(-50%, -100%);
+  background: var(--fg); color: var(--bg); padding: 6px 10px; border-radius: 4px; white-space: nowrap;
+  transition: opacity var(--base) var(--ease); pointer-events: none;
+}
+.hint::after { content: ''; position: absolute; left: 50%; bottom: -6px; margin-left: -6px; border: 6px solid transparent; border-bottom: 0; border-top-color: var(--fg); }
+.head.open .hint { opacity: 0; }
+.doodle {
+  position: absolute; z-index: 3; left: var(--x); top: var(--y); width: 23%; aspect-ratio: 1;
+  margin: -11.5% 0 0 -11.5%; padding: 0; border: 0; background: none; cursor: pointer; border-radius: 12px;
+  opacity: 0; pointer-events: none; visibility: hidden;
+  transform: translate(var(--fromx), var(--fromy)) scale(0.3);
+  transition: transform 300ms var(--ease), opacity 200ms var(--ease), visibility 0s linear 300ms;
+}
+.doodle img { width: 100%; height: 100%; object-fit: contain; }
+.head.open .doodle {
+  opacity: 1; pointer-events: auto; visibility: visible;
+  transform: translate(0, 0) rotate(var(--r)) scale(1);
+  transition: transform 800ms cubic-bezier(0.2, 0.9, 0.25, 1.15) var(--d), opacity 200ms var(--ease) var(--d), visibility 0s;
+}
+.head.open .doodle:hover { transform: rotate(0deg) scale(1.1); transition-delay: 0s; transition-duration: var(--base); }
+
+/* Notes: collectible paper cards, native <dialog> for focus + Esc handling */
+.note {
+  width: min(92vw, 380px); padding: var(--s5); border: 1.5px solid var(--fg); border-radius: 6px;
+  background: var(--paper); color: var(--fg); box-shadow: 6px 6px 0 var(--fg);
+  transform: rotate(-1deg);
+}
+.note[open] { animation: note-in var(--base) var(--ease); }
+@keyframes note-in { from { opacity: 0; transform: rotate(-2deg) scale(0.96) translateY(8px); } }
+.note::backdrop { background: rgb(255 255 255 / 0.75); }
+.note-head { display: flex; justify-content: space-between; padding-bottom: var(--s3); border-bottom: 1px dashed var(--fg); color: var(--accent); }
+.note img { width: 88px; height: 88px; margin: var(--s5) auto var(--s3); object-fit: contain; }
+.note h3 { font-size: 36px; text-align: center; margin-bottom: var(--s2); }
+.note p { text-align: center; margin-bottom: var(--s5); }
+.note .btn { width: 100%; justify-content: center; }
+
+/* ---------------------------------------------------------------------------
+   03 Work: the case study as chapters you step through (no page scroll)
+--------------------------------------------------------------------------- */
+.work { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: var(--s4); }
+.work-top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s4); flex-wrap: wrap; }
+.chapters { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+.chapters::-webkit-scrollbar { display: none; }
+.chapter {
+  flex: 0 0 100%; scroll-snap-align: start; min-width: 0;
+  display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--s7); align-items: center;
+  padding: var(--s2) 0;
+}
+.chapter-num { font-size: var(--fs-giant); color: var(--line); -webkit-text-stroke: 1.5px var(--fg); color: transparent; line-height: 0.85; }
+.chapter h2 { font-size: var(--fs-h2); margin: var(--s3) 0 var(--s4); }
+.chapter .body { display: grid; gap: var(--s4); max-width: 54ch; }
+.chapter .body p { font-size: var(--fs-lead); line-height: 1.5; }
+.pull { font-size: var(--fs-h3); line-height: 1.25; font-weight: 500; letter-spacing: -0.01em; max-width: 26ch; }
+.pull::before { content: '“'; color: var(--accent); }
+.pull::after { content: '”'; color: var(--accent); }
+.ticks { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s3); }
+.ticks li { display: grid; grid-template-columns: 22px 1fr; gap: var(--s3); align-items: start; }
+.ticks li::before { content: ''; width: 10px; height: 10px; margin-top: 0.45em; border-radius: 50%; border: 2px solid var(--accent); }
+.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s3); }
+.tile { border: 1.5px solid var(--fg); border-radius: 8px; padding: var(--s4); display: grid; gap: var(--s2); align-content: start; }
+.tile b { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-h3); text-transform: uppercase; line-height: 1; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s4) var(--s6); }
+.grid2 h3 { font: 600 var(--fs-body)/1.3 var(--font-body); margin-bottom: var(--s1); }
+.grid2 p { font-size: var(--fs-small); color: var(--muted); line-height: 1.5; }
+
+/* Illustrative mock of the calm risk card (not the real product) */
+.mock { justify-self: center; width: min(100%, 340px); border: 1.5px solid var(--fg); border-radius: 14px; padding: var(--s5); background: var(--paper); box-shadow: 8px 8px 0 var(--fg); display: grid; gap: var(--s3); }
+.mock .bar { height: 10px; border-radius: 99px; background: linear-gradient(90deg, #e9e9e9 0 100%); position: relative; }
+.mock .bar::after { content: ''; position: absolute; left: 32%; top: -4px; width: 18px; height: 18px; border-radius: 50%; background: var(--fg); border: 3px solid var(--paper); }
+.mock .src { display: inline-flex; align-items: center; gap: var(--s2); min-height: var(--target); padding: 0 var(--s4); border-radius: 999px; border: 1.5px solid var(--fg); font-weight: 500; width: fit-content; }
+.mock small { color: var(--muted); }
+
+.work-nav { display: flex; align-items: center; gap: var(--s4); }
+.progress { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--s2); }
+.progress button { height: var(--target); padding: 0; border: 0; background: none; cursor: pointer; display: grid; align-content: center; gap: 6px; text-align: left; color: var(--muted); }
+.progress button::before { content: ''; height: 3px; border-radius: 3px; background: var(--line); transition: background var(--base) var(--ease); }
+.progress button[aria-current='step'] { color: var(--fg); }
+.progress button[aria-current='step']::before { background: var(--accent); }
+.progress span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.round { width: var(--target); height: var(--target); border-radius: 50%; border: 1.5px solid var(--fg); background: none; cursor: pointer; display: grid; place-items: center; transition: background var(--base), color var(--base); }
+.round:hover:not(:disabled) { background: var(--fg); color: var(--bg); }
+.round:disabled { opacity: 0.3; cursor: default; }
+@media (max-width: 960px) {
+  .chapter { grid-template-columns: 1fr; gap: var(--s5); align-content: start; padding-bottom: var(--s6); }
+  .chapter-num { font-size: 72px; }
+  .tiles, .grid2 { grid-template-columns: 1fr; }
+  .progress span { display: none; }
+}
+
+/* ---------------------------------------------------------------------------
+   04 Playground
+--------------------------------------------------------------------------- */
+.play { display: grid; place-items: center; text-align: center; align-content: center; gap: var(--s5); }
+.play h1 { font-size: var(--fs-giant); }
+.play-doodles { display: flex; gap: var(--s4); flex-wrap: wrap; justify-content: center; }
+.play-doodles img { width: clamp(44px, 7vh, 72px); transition: transform var(--slow) var(--ease); }
+.play-doodles img:hover { transform: translateY(-6px) rotate(-8deg); }
+
+/* ---------------------------------------------------------------------------
+   05 Contact: a card you flip, and a link built to be passed on
+--------------------------------------------------------------------------- */
+.contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s8); align-items: center; }
+.contact-copy { display: grid; gap: var(--s5); max-width: 46ch; }
+.contact-copy h1 { font-size: var(--fs-h1); }
+.contact-copy p { font-size: var(--fs-lead); }
+.share { display: grid; gap: var(--s3); padding: var(--s5); border: 1.5px dashed var(--fg); border-radius: 10px; }
+.share p { font-size: var(--fs-body); }
+.toast { min-height: 1.5em; color: var(--accent); }
+.card-wrap { justify-self: center; width: min(100%, 460px); perspective: 1400px; }
+.card { position: relative; width: 100%; aspect-ratio: 1.75; transform-style: preserve-3d; transition: transform 700ms var(--ease); }
+.card.flipped { transform: rotateY(180deg); }
+.face {
+  position: absolute; inset: 0; backface-visibility: hidden; border: 1.5px solid var(--fg); border-radius: 14px;
+  background: var(--paper); box-shadow: 8px 8px 0 var(--fg); padding: var(--s5); display: grid;
+}
+.face--front { grid-template-rows: auto 1fr auto; gap: var(--s3); }
+.face--front .name { font-size: clamp(28px, 3.6vw, 44px); align-self: end; }
+.face--front .row { display: flex; justify-content: space-between; align-items: end; }
+.face--front img { position: absolute; right: var(--s5); top: var(--s4); width: 64px; transform: rotate(8deg); }
+.face--back { transform: rotateY(180deg); align-content: center; gap: var(--s2); }
+.face--back a { display: flex; justify-content: space-between; align-items: center; min-height: var(--target); border-bottom: 1px solid var(--line); text-decoration: none; transition: color var(--fast); }
+.face--back a:hover { color: var(--accent); }
+.flip { margin-top: var(--s5); justify-self: center; }
+.credit { position: absolute; left: var(--gutter); bottom: var(--s4); }
+@media (max-width: 960px) {
+  .contact { grid-template-columns: 1fr; gap: var(--s7); }
+  .credit { position: static; margin-top: var(--s6); }
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion: things still open and close, nothing travels.
+--------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; transition-duration: 1ms !important; transition-delay: 0ms !important; }
+  .chapters { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav mono">
+  <a class="nav-name" href="#/"><span class="dot" aria-hidden="true"></span>Jayanth K.</a>
+  <nav aria-label="Main">
+    <ul>
+      <li><a href="#/" data-nav="home">Home</a></li>
+      <li><a href="#/about" data-nav="about">About</a></li>
+      <li><a href="#/work" data-nav="work">Work</a></li>
+      <li><a href="#/playground" data-nav="playground">Playground</a></li>
+      <li><a href="#/contact" data-nav="contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- ===================================================== 01 HOME -->
+  <section class="page home" data-page="home" aria-labelledby="home-title">
+    <div class="home-meta mono">
+      <span>Product manager · Healthcare · 0 → 1</span>
+      <span class="muted">Atlanta, GA · Open to full-time roles across the US</span>
+    </div>
+    <h1 id="home-title" class="display home-title">I start with<br>the people using<br>the product<span class="red">.</span></h1>
+    <aside class="home-side" aria-label="Portrait">
+      <a class="home-face" href="#/about" aria-label="Meet me on the About page">
+        <img src="../../src/assets/portrait.webp" alt="" width="880" height="880">
+      </a>
+      <span class="mono muted">Psst. My head opens →</span>
+    </aside>
+    <div class="home-foot">
+      <p class="home-lead">An engineer by training who moved through enterprise systems into product. Most recently, I helped take a cancer detection startup from zero to one.</p>
+      <div class="home-actions">
+        <a class="btn" href="#/work">See how I work <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn--ghost" href="#/contact">Say hi</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== 02 ABOUT -->
+  <section class="page about" data-page="about" aria-labelledby="about-title" hidden>
+    <h1 id="about-title" class="sr-only">About Jayanth Kappagantula</h1>
+    <p class="display year year--top" aria-hidden="true">20</p>
+
+    <ul class="mono list list--top" aria-label="A few of my favorite things">
+      <li>London is red</li>
+      <li>Drizzy since Take Care</li>
+      <li>Kitchen experiments, always</li>
+      <li>Indoor jungle, full-time</li>
+      <li>High scores &amp; Gomu Gomu</li>
+      <li>Building weekly mileage</li>
+    </ul>
+
+    <div class="about-path">
+      <span class="mono red">The path so far</span>
+      <ol>
+        <li><span class="mono">2019–23</span><span>B.Tech, Electronics &amp; Instrumentation</span></li>
+        <li><span class="mono">2023</span><span>Pega Business Architect, Bluevoir</span></li>
+        <li><span class="mono">2023–24</span><span>SDE Intern (Salesforce), FormulaQ</span></li>
+        <li><span class="mono">2024</span><span>Pega Developer, Bluevoir</span></li>
+        <li><span class="mono">2024–26</span><span>MS, Information Systems, Northeastern</span></li>
+        <li><span class="mono">2025</span><span>Technical PM Co-op, Stage Zero Health</span></li>
+      </ol>
+    </div>
+
+    <div class="about-face">
+      <div class="head" id="head">
+        <img class="head-bottom" src="../../src/assets/portrait.webp" alt="" width="880" height="880">
+        <div class="head-rim" aria-hidden="true"></div>
+        <div class="head-lid" aria-hidden="true"><img src="../../src/assets/portrait.webp" alt=""></div>
+        <button class="head-face" type="button" aria-expanded="false" aria-controls="doodles" aria-label="Ink illustration of Jayanth. Open my head to see what's on my mind"></button>
+        <!-- After the face in DOM order so Tab goes face → doodles. They land in an arc around
+             the head; --fromx/--fromy send them back into it. -->
+        <div id="doodles"></div>
+        <span class="hint mono" aria-hidden="true">Pop the lid</span>
+      </div>
+    </div>
+
+    <div class="about-intro">
+      <h2 class="display">Hi, I'm Jayanth<span class="red">.</span></h2>
+      <p>I trained as an engineer in electronics and instrumentation, then moved into enterprise systems, starting as a Pega business architect, then building on Salesforce and Pega as a developer. Most recently, I was a technical product manager co-op at Stage Zero Health, an early cancer detection startup, where I helped take the product from zero to one. Cancer has touched my family closely, so healthcare is where I most want to be useful. I'm looking for full-time PM roles anywhere in the US.</p>
+      <div class="actions">
+        <a class="btn" href="mailto:jayanthadityaaa@gmail.com">Email me</a>
+        <a class="btn btn--ghost" href="https://www.linkedin.com/in/jayanth-kappagantula/" target="_blank" rel="noreferrer">LinkedIn</a>
+      </div>
+    </div>
+
+    <p class="display year year--bottom" aria-hidden="true">02</p>
+    <ul class="mono list list--bottom" aria-label="What I do">
+      <li>Product manager</li>
+      <li>Healthcare · 0 → 1</li>
+      <li>Customers first</li>
+      <li>Engineer by training</li>
+    </ul>
+  </section>
+
+  <!-- ===================================================== 03 WORK -->
+  <section class="page work" data-page="work" aria-labelledby="work-title" hidden>
+    <div class="work-top">
+      <h1 id="work-title" class="mono"><span class="red">Case study</span> · Stage Zero Health</h1>
+      <span class="mono muted">Technical PM co-op · Aug–Dec 2025 · Cambridge, MA · B2C</span>
+    </div>
+
+    <div class="chapters" id="chapters" tabindex="0" aria-roledescription="carousel" aria-label="Case study chapters. Use the left and right arrow keys.">
+
+      <article class="chapter" aria-label="Chapter 1 of 7: The setting">
+        <div>
+          <p class="display chapter-num" aria-hidden="true">01</p>
+          <h2 class="display">Earning trust for a cancer risk score<span class="red">.</span></h2>
+        </div>
+        <div class="body">
+          <p>Stage Zero Health is an early-stage startup helping people understand their breast cancer risk and what to do next. I joined as a technical product manager co-op and worked across the whole breast cancer journey, from discovery to a paid pilot.</p>
+          <p class="muted">This is the story of one problem I found, owned and shipped: people didn't trust digital health.</p>
+        </div>
+      </article>
+
+      <article class="chapter" aria-label="Chapter 2 of 7: What I heard">
+        <div>
+          <p class="display chapter-num" aria-hidden="true">02</p>
+          <h2 class="display">What I heard</h2>
+        </div>
+        <div class="body">
+          <p>US healthcare was new to me, so every customer interview taught me something: how insurance and claims work, how much of care falls on family caregivers.</p>
+          <p class="pull">People were deeply aware of their health. Most were skeptical of digital health.</p>
+          <p class="muted">Skepticism, not awareness, was the real barrier.</p>
+        </div>
+      </article>
+
+      <article class="chapter" aria-label="Chapter 3 of 7: My bet">
+        <div>
+          <p class="display chapter-num" aria-hidden="true">03</p>
+          <h2 class="display">My bet: calm and checkable</h2>
+        </div>
+        <div class="body">
+          <p>A risk score that feels alarming, or that you can't verify, gets ignored. I proposed the opposite, and owned it end to end:</p>
+          <ul class="ticks">
+            <li>Raised the skepticism from the interviews with the team</li>
+            <li>Wrote the requirements for how scores and recommendations were shown: calm and non-alarming</li>
+            <li>Linked to original sources or verified facts wherever people needed to check</li>
+            <li>Designed the wireframes, then tested them with users</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="chapter" aria-label="Chapter 4 of 7: What it looked like">
+        <div>
+          <p class="display chapter-num" aria-hidden="true">04</p>
+          <h2 class="display">What calm looks like</h2>
+          <p class="muted" style="margin-top: var(--s3); max-width: 40ch">An illustrative mock of the principles, not the real product. Real screens and numbers stay private.</p>
+        </div>
+        <div class="mock" role="img" aria-label="Illustrative mock of a calm risk card with a plain-language summary and a See the source button">
+          <span class="mono muted">Your risk, explained</span>
+          <strong style="font-size: 20px; line-height: 1.3">Here's where you are, and what most people in your situation do next.</strong>
+          <div class="bar" aria-hidden="true"></div>
+          <small>Based on validated clinical risk models.</small>
+          <span class="src">See the source ↗</span>
+        </div>
+      </article>
+
+      <article class="chapter" aria-label="Chapter 5 of 7: What users taught me">
+        <div>
+          <p class="display chapter-num" aria-hidden="true">05</p>
+          <h2 class="display">What users taught me</h2>
+        </div>
+        <div class="body">
+          <p>Most of our users were over 40. They understood the information easily. <strong>Finding it was the problem:</strong> the source links were hard to spot and hard to tap.</p>
+          <div class="tiles">
+            <div class="tile"><b>Focus</b><span>Focus management reworked for content that loads in</span></div>
+            <div class="tile"><b>Contrast</b><span>Color contrast raised across the flow</span></div>
+            <div class="tile"><b>44 × 44</b><span>Every tap target at least 44 CSS pixels</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="chapter" aria-label="Chapter 6 of 7: Into the pilot">
+        <div>
+          <p class="display chapter-num" aria-hidden="true">06</p>
+          <h2 class="display">Into a paid pilot</h2>
+        </div>
+        <div class="body">
+          <p>We shipped the risk score, explanation and referral journey to our waitlist and beta cohorts, then ran a <strong>6-week paid pilot</strong>.</p>
+          <ul class="ticks">
+            <li>Weekly surveys, Zoom calls and demos with pilot users, feeding the backlog</li>
+            <li>Pilot users signed off before release; I wrote the test plans and user docs</li>
+            <li>Supported the founder's go-to-market: launch, positioning, pricing, target users</li>
+          </ul>
+          <div class="grid2" style="margin-top: var(--s3)">
+            <div><h3>Also owned</h3><p>AI assistant prompts and evals · health and genetic report extraction · risk-model spec and API contracts · FHIR pre-fill and insurance verification</p></div>
+            <div><h3>And</h3><p>TAM/SAM/SOM and competitive research · KPI dashboard · building under HIPAA</p></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="chapter" aria-label="Chapter 7 of 7: What I took away">
+        <div>
+          <p class="display chapter-num" aria-hidden="true">07</p>
+          <h2 class="display">What I took away</h2>
+        </div>
+        <div class="body">
+          <ul class="ticks">
+            <li>Trust is a feature. You design it, test it and ship it like anything else.</li>
+            <li>I started taking ownership more seriously, and collaborating more widely across the team.</li>
+            <li>I learned what it takes to build a company from the ground up, and how a startup decides what matters.</li>
+            <li>Every day was different and a little messy. I loved it.</li>
+          </ul>
+          <div class="home-actions" style="margin-top: var(--s3)">
+            <a class="btn" href="#/contact">Let's talk <span class="arrow" aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="work-nav">
+      <button class="round" id="prev" type="button" aria-label="Previous chapter">←</button>
+      <div class="progress mono" id="progress" role="group" aria-label="Chapters"></div>
+      <button class="round" id="next" type="button" aria-label="Next chapter">→</button>
+    </div>
+  </section>
+
+  <!-- ===================================================== 04 PLAYGROUND -->
+  <section class="page play" data-page="playground" aria-labelledby="play-title" hidden>
+    <h1 id="play-title" class="display">Playground</h1>
+    <p class="mono muted">A mood board in progress. Opening after launch.</p>
+    <div class="play-doodles" aria-hidden="true" id="play-doodles"></div>
+  </section>
+
+  <!-- ===================================================== 05 CONTACT -->
+  <section class="page contact" data-page="contact" aria-labelledby="contact-title" hidden>
+    <div class="contact-copy">
+      <h1 id="contact-title" class="display">Say hi<span class="red">.</span></h1>
+      <p>I'm looking for full-time product manager roles anywhere in the US, ideally in healthcare. On-site, hybrid or remote.</p>
+      <div class="share">
+        <span class="mono red">Not hiring right now?</span>
+        <p>If you know someone who is, passing this along would mean a lot.</p>
+        <div><button class="btn btn--ghost" type="button" id="copy">Copy my portfolio link</button></div>
+        <p class="toast mono" id="toast" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card" id="card">
+        <div class="face face--front" id="front">
+          <span class="mono red">Product Manager</span>
+          <img src="../../src/assets/doodles/ramen.webp" alt="" aria-hidden="true">
+          <span class="display name">Jayanth<br>Kappagantula</span>
+          <div class="row mono muted"><span>Atlanta, GA</span><span>Healthcare · 0 → 1</span></div>
+        </div>
+        <div class="face face--back" id="back" inert>
+          <a href="mailto:jayanthadityaaa@gmail.com"><span>jayanthadityaaa@gmail.com</span><span class="mono red">Email</span></a>
+          <a href="https://www.linkedin.com/in/jayanth-kappagantula/" target="_blank" rel="noreferrer"><span>in/jayanth-kappagantula</span><span class="mono red">LinkedIn</span></a>
+          <a href="https://github.com/ThisisjayK/" target="_blank" rel="noreferrer"><span>github.com/ThisisjayK</span><span class="mono red">GitHub</span></a>
+          <a href="#" aria-disabled="true" onclick="return false"><span>Résumé (PDF)</span><span class="mono muted">Soon</span></a>
+        </div>
+      </div>
+      <div style="display: grid"><button class="btn flip" type="button" id="flip" aria-pressed="false">Flip the card ↻</button></div>
+    </div>
+
+    <p class="mono muted credit">Layout inspired by Huy Phan's <a class="link" href="https://huyml.co/" target="_blank" rel="noreferrer">huyml.co</a></p>
+  </section>
+</main>
+
+<dialog class="note" id="note" aria-labelledby="note-title">
+  <div class="note-head mono"><span id="note-count">Note 01 / 08</span><span>On my mind</span></div>
+  <img id="note-img" src="" alt="">
+  <h3 class="display" id="note-title"></h3>
+  <p id="note-body"></p>
+  <form method="dialog"><button class="btn" type="submit">Close <span class="mono" aria-hidden="true">(Esc)</span></button></form>
+</dialog>
+
+<script>
+/* Content: from about-me.md 1b (Jayanth's words). */
+const NOTES = [
+  { file: 'cannon',     alt: 'Arsenal cannon',          title: 'London is red',       body: 'Gooner, raised on Invincibles highlights.' },
+  { file: 'owl',        alt: 'OVO owl',                 title: 'Drizzy',              body: 'Drizzy fan since Take Care.' },
+  { file: 'ramen',      alt: 'Bowl of ramen',           title: 'Kitchen experiments', body: 'Always experimenting in the kitchen.' },
+  { file: 'football',   alt: 'Football',                title: 'Football',            body: 'London is red.' },
+  { file: 'plant',      alt: 'Potted plant',            title: 'Indoor jungle',       body: 'Full-time indoor jungle dad.' },
+  { file: 'controller', alt: 'PS5 controller',          title: 'High scores',         body: 'Chasing high scores.' },
+  { file: 'strawhat',   alt: 'Straw Hat Pirates flag',  title: 'Gomu Gomu',           body: 'Gomu Gomu. One Piece.' },
+  { file: 'sneaker',    alt: 'Running shoe',            title: 'Weekly mileage',      body: 'Actively building weekly mileage.' },
+]
+const DOODLE = (f) => `../../src/assets/doodles/${f}.webp`
+const TITLES = { home: 'Jayanth Kappagantula · Product Manager', about: 'About · Jayanth K.', work: 'Stage Zero Health · Jayanth K.', playground: 'Playground · Jayanth K.', contact: 'Contact · Jayanth K.' }
+
+/* ---------- Router: #/page, one screen per page ---------- */
+const pages = [...document.querySelectorAll('[data-page]')]
+function route() {
+  const id = (location.hash.replace(/^#\/?/, '') || 'home').split('/')[0]
+  const target = pages.find((p) => p.dataset.page === id) ? id : 'home'
+  pages.forEach((p) => {
+    const on = p.dataset.page === target
+    p.hidden = !on
+    if (on) { p.classList.remove('enter'); void p.offsetWidth; p.classList.add('enter') }
+  })
+  document.querySelectorAll('[data-nav]').forEach((a) => a.dataset.nav === target ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'))
+  document.title = TITLES[target]
+  if (target !== 'about') setHead(false)
+}
+addEventListener('hashchange', route)
+
+/* ---------- Head lid ---------- */
+const head = document.getElementById('head')
+const face = head.querySelector('.head-face')
+const wrap = document.getElementById('doodles')
+const note = document.getElementById('note')
+let primed = false
+// Eight spots on an arc above and around the head (percent of the head box).
+NOTES.forEach((n, i) => {
+  const a = (-162 + (i * 144) / (NOTES.length - 1)) * Math.PI / 180
+  const x = 50 + 78 * Math.cos(a), y = 52 + 74 * Math.sin(a)
+  const b = document.createElement('button')
+  b.type = 'button'; b.className = 'doodle'; b.tabIndex = -1
+  b.setAttribute('aria-label', `Open note: ${n.title}`)
+  b.style.cssText = `--x:${x}%;--y:${y}%;--r:${[-10, 6, 12, -8, 8, -6, 10, -4][i]}deg;--d:${120 + i * 55}ms;` +
+    `--fromx:${(53 - x) * 4}%;--fromy:${(30 - y) * 4}%`
+  b.addEventListener('click', () => openNote(i))
+  wrap.appendChild(b)
+})
+const doodles = [...wrap.children]
+function prime() {
+  if (primed) return
+  primed = true
+  doodles.forEach((b, i) => { const img = new Image(); img.src = DOODLE(NOTES[i].file); img.alt = ''; b.appendChild(img) })
+}
+function setHead(open) {
+  head.classList.toggle('open', open)
+  face.setAttribute('aria-expanded', String(open))
+  face.setAttribute('aria-label', open ? 'Close my head' : "Ink illustration of Jayanth. Open my head to see what's on my mind")
+  doodles.forEach((b) => (b.tabIndex = open ? 0 : -1))
+}
+head.addEventListener('pointerenter', prime)
+face.addEventListener('focus', prime)
+face.addEventListener('click', () => { prime(); setHead(!head.classList.contains('open')) })
+function openNote(i) {
+  const n = NOTES[i]
+  document.getElementById('note-count').textContent = `Note ${String(i + 1).padStart(2, '0')} / ${String(NOTES.length).padStart(2, '0')}`
+  const img = document.getElementById('note-img'); img.src = DOODLE(n.file); img.alt = n.alt
+  document.getElementById('note-title').textContent = n.title
+  document.getElementById('note-body').textContent = n.body
+  note.showModal()
+}
+note.addEventListener('click', (e) => { if (e.target === note) note.close() }) // click on the backdrop closes
+
+/* ---------- Case study chapters ---------- */
+const track = document.getElementById('chapters')
+const chapters = [...track.children]
+const progress = document.getElementById('progress')
+const LABELS = ['Setting', 'Heard', 'Bet', 'Calm', 'Learned', 'Pilot', 'Takeaways']
+let current = 0
+LABELS.forEach((l, i) => {
+  const b = document.createElement('button')
+  b.type = 'button'; b.innerHTML = `<span>${String(i + 1).padStart(2, '0')} ${l}</span>`
+  b.setAttribute('aria-label', `Chapter ${i + 1}: ${l}`)
+  b.addEventListener('click', () => go(i))
+  progress.appendChild(b)
+})
+function go(i) {
+  current = Math.max(0, Math.min(chapters.length - 1, i))
+  track.scrollTo({ left: chapters[current].offsetLeft - track.offsetLeft, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+  sync()
+}
+function sync() {
+  ;[...progress.children].forEach((b, i) => i === current ? b.setAttribute('aria-current', 'step') : b.removeAttribute('aria-current'))
+  document.getElementById('prev').disabled = current === 0
+  document.getElementById('next').disabled = current === chapters.length - 1
+}
+track.addEventListener('scroll', () => {
+  const i = Math.round(track.scrollLeft / track.clientWidth)
+  if (i !== current) { current = i; sync() }
+}, { passive: true })
+document.getElementById('prev').addEventListener('click', () => go(current - 1))
+document.getElementById('next').addEventListener('click', () => go(current + 1))
+addEventListener('keydown', (e) => {
+  if (document.querySelector('[data-page="work"]').hidden || note.open) return
+  if (e.key === 'ArrowRight') { e.preventDefault(); go(current + 1) }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); go(current - 1) }
+})
+sync()
+
+/* ---------- Playground teaser ---------- */
+NOTES.forEach((n) => { const img = new Image(); img.src = DOODLE(n.file); img.alt = ''; img.loading = 'lazy'; document.getElementById('play-doodles').appendChild(img) })
+
+/* ---------- Contact ---------- */
+const card = document.getElementById('card'), flip = document.getElementById('flip')
+flip.addEventListener('click', () => {
+  const on = !card.classList.contains('flipped')
+  card.classList.toggle('flipped', on)
+  flip.setAttribute('aria-pressed', String(on))
+  document.getElementById('back').inert = !on
+  document.getElementById('front').inert = on
+})
+document.getElementById('copy').addEventListener('click', async () => {
+  const toast = document.getElementById('toast')
+  try {
+    await navigator.clipboard.writeText('https://thisisjayk.github.io/Portfolio/')
+    toast.textContent = 'Copied. Thank you, genuinely.'
+  } catch {
+    toast.textContent = 'thisisjayk.github.io/Portfolio'
+  }
+})
+
+route()
+</script>
+</body>
+</html>

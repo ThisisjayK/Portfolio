@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Head-click prototypes</title>
+<style>
+  :root { --bg: #ededed; --ink: #111; --muted: #666; color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.45 system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; }
+  header { max-width: 1280px; margin: 0 auto; padding: 40px 24px 0; }
+  h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 44px); letter-spacing: -.02em; text-transform: uppercase; }
+  header p { margin: 0; color: var(--muted); max-width: 70ch; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
+    gap: 24px; max-width: 1280px; margin: 0 auto; padding: 24px; }
+  .card { border: 2px solid var(--ink); border-radius: 18px; overflow: hidden; }
+  .card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 12px 16px; border-bottom: 2px solid var(--ink); }
+  .card-head h2 { margin: 0; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; }
+  .card-head small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .reset { font: inherit; font-size: 13px; color: var(--ink); background: none; cursor: pointer;
+    border: 2px solid var(--ink); border-radius: 999px; padding: 4px 12px; flex: none; }
+  .stage { position: relative; aspect-ratio: 600 / 680; overflow: hidden; }
+  .canvas { position: absolute; left: 0; top: 0; width: 600px; height: 680px; transform-origin: 0 0; }
+
+  .hd { position: absolute; }
+  button.hd { padding: 0; border: 0; background: none; cursor: pointer; }
+  button.hd:focus-visible { outline: 3px dashed var(--ink); outline-offset: 4px; border-radius: 50%; }
+  .face-img { position: absolute; inset: 0; width: 100%; height: 100%; display: block;
+    pointer-events: none; user-select: none; }
+  .ov { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+  /* Lid lift layers */
+  .bottom { z-index: 1; transform-origin: 50% 100%; }
+  .rim { z-index: 2; pointer-events: none; }
+  .lid { z-index: 4; pointer-events: none; }
+  .hit { z-index: 5; }
+  .rimg, .ug { transform-box: fill-box; transform-origin: center; transform: scaleY(0); }
+
+  .lines { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+  .lines svg { width: 100%; height: 100%; }
+  .lines path { stroke-dasharray: 1 1.1; stroke-dashoffset: 1.05; }
+
+  .layer { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+  .dd, .bit { position: absolute; z-index: 3; opacity: 0; pointer-events: none; }
+  .dd { width: var(--s); height: var(--s); margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2); }
+  .bit { width: 20px; height: 20px; margin: -10px 0 0 -10px; }
+  .dd svg, .bit svg { width: 100%; height: 100%; overflow: visible; display: block; }
+  .bob { width: 100%; height: 100%; }
+
+  .lbl { position: absolute; z-index: 3; transform: translateX(-50%); opacity: 0; white-space: nowrap;
+    font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+
+  .hint { position: absolute; z-index: 6; transform: translate(-50%, -100%); pointer-events: none;
+    background: var(--ink); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; padding: 8px 12px; border-radius: 4px; white-space: nowrap;
+    animation: nudge 1.6s ease-in-out infinite; }
+  .hint::after { content: ""; position: absolute; left: 50%; bottom: -7px; margin-left: -7px;
+    border: 7px solid transparent; border-bottom: 0; border-top-color: var(--ink); }
+  @keyframes nudge { 50% { transform: translate(-50%, calc(-100% - 6px)); } }
+
+  /* Zoom transition */
+  .mind { position: absolute; inset: 0; z-index: 10; background: var(--ink); color: #fff; }
+  .mind h3 { position: absolute; left: 0; right: 0; top: 78px; margin: 0; text-align: center; opacity: 0;
+    font-size: 40px; letter-spacing: -.01em; text-transform: uppercase; }
+  .mind .dd svg { filter: invert(1); }  /* white line art on black, so the outlines stay visible */
+  .back { position: absolute; left: 50%; top: 586px; transform: translateX(-50%); visibility: hidden;
+    font: inherit; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: #fff; background: none; border: 2px solid #fff; border-radius: 999px; padding: 10px 18px;
+    cursor: pointer; }
+  .back:focus-visible { outline: 3px dashed #fff; outline-offset: 4px; }
+
+  /* Self-drawing mind map: shapes start undrawn and unfilled */
+  .map .dd svg [pathLength] { stroke-dasharray: 1 1.1; stroke-dashoffset: 1.05; }
+  .map .dd svg * { fill-opacity: 0; }
+
+  @media (prefers-reduced-motion: reduce) { .hint { animation: none; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <pattern id="ht" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <circle cx="2.5" cy="2.5" r="1.2" fill="#111"/>
+    </pattern>
+    <pattern id="htd" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <circle cx="2.5" cy="2.5" r="1.9" fill="#111"/>
+    </pattern>
+  </defs>
+</svg>
+
+<header>
+  <h1>Head-click prototypes</h1>
+  <p>Four ways to show what's on my mind. Click (or tap) the face in each card, click again to close.
+    Plain HTML and JavaScript to compare the feel, not Framer. The doodles are placeholder drawings for this test.</p>
+</header>
+
+<main class="grid">
+  <section class="card" id="lid">
+    <div class="card-head"><div><h2>01 · Lid lift</h2><small>Framer: native variants. Needs the hair as its own layer.</small></div><button class="reset">Reset</button></div>
+    <div class="stage"><div class="canvas"></div></div>
+  </section>
+  <section class="card" id="burst">
+    <div class="card-head"><div><h2>02 · Doodle burst</h2><small>Framer: native, works with the flat portrait.</small></div><button class="reset">Reset</button></div>
+    <div class="stage"><div class="canvas"></div></div>
+  </section>
+  <section class="card" id="zoom">
+    <div class="card-head"><div><h2>03 · Zoom transition</h2><small>Framer: overlay + scale. The circle reveal may need code.</small></div><button class="reset">Reset</button></div>
+    <div class="stage"><div class="canvas"></div></div>
+  </section>
+  <section class="card map" id="map">
+    <div class="card-head"><div><h2>04 · Self-drawing mind map</h2><small>Framer: code component. Needs the doodles as SVG.</small></div><button class="reset">Reset</button></div>
+    <div class="stage"><div class="canvas"></div></div>
+  </section>
+</main>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const T = ms => (RM ? 0 : ms);
+
+/* ---------- Doodles (viewBox 0 0 120 120, ink outlines + halftone) ---------- */
+
+// White base plus halftone fill for the same shape; the halftone copy carries the outline.
+const ht = (d, stroke = true) =>
+  `<path d="${d}" fill="#fff" stroke="none"/><path d="${d}" fill="url(#ht)"${stroke ? '' : ' stroke="none"'}/>`;
+
+const DOODLES = [
+  { label: 'Arsenal', svg: `
+    ${ht('M22 84L94 38Q104 32 109 41Q113 50 104 55L32 98Z')}
+    <path d="M70 53L79 67" stroke-width="3.5"/>
+    <ellipse cx="106" cy="47" rx="6" ry="10" transform="rotate(-32 106 47)" fill="#111"/>
+    <circle cx="48" cy="82" r="24" fill="#fff"/>
+    <circle cx="48" cy="82" r="17" stroke-width="3"/>
+    <path d="M48 65V99M31 82H65M36 70L60 94M60 70L36 94" stroke-width="3.5"/>
+    <circle cx="48" cy="82" r="6" fill="#111"/>
+    <path d="M12 110H104"/>` },
+  { label: 'Drake', svg: `
+    <path d="M34 32L27 12L47 24Z" fill="#111"/>
+    <path d="M86 32L93 12L73 24Z" fill="#111"/>
+    <path d="M60 20C88 20 98 44 98 68C98 96 82 110 60 110C38 110 22 96 22 68C22 44 32 20 60 20Z" fill="#fff"/>
+    <ellipse cx="60" cy="90" rx="24" ry="16" fill="url(#ht)" stroke="none"/>
+    <path d="M47 84l6 5l7-5l7 5l6-5M52 94l8 5l8-5" stroke-width="3"/>
+    <circle cx="45" cy="52" r="14" fill="#fff"/>
+    <circle cx="75" cy="52" r="14" fill="#fff"/>
+    <circle cx="47" cy="54" r="6" fill="#111" stroke="none"/>
+    <circle cx="73" cy="54" r="6" fill="#111" stroke="none"/>
+    <circle cx="45" cy="51" r="2" fill="#fff" stroke="none"/>
+    <circle cx="71" cy="51" r="2" fill="#fff" stroke="none"/>
+    <path d="M55 66H65L60 75Z" fill="#111" stroke-width="3"/>
+    <path d="M24 66Q36 80 32 100M96 66Q84 80 88 100"/>` },
+  { label: 'Plants', svg: `
+    ${ht('M58 72C30 76 12 58 14 36C38 34 54 50 58 72Z')}
+    <path d="M58 72Q38 58 22 42" stroke-width="3"/>
+    <path d="M62 72C90 76 108 58 106 36C82 34 66 50 62 72Z" fill="#fff"/>
+    <path d="M62 72Q82 58 98 42" stroke-width="3"/>
+    <path d="M60 74C38 54 36 24 60 8C84 24 82 54 60 74Z" fill="#fff"/>
+    <path d="M60 70V16M60 30L49 24M60 44L47 39M60 30L71 24M60 44L73 39" stroke-width="3"/>
+    ${ht('M36 82H84L78 112H42Z')}
+    <path d="M32 70H88V82H32Z" fill="#fff"/>` },
+  { label: 'Video games', svg: `
+    <path d="M32 44H88C102 44 110 58 113 76C116 94 104 104 93 94L83 82H37L27 94C16 104 4 94 7 76C10 58 18 44 32 44Z" fill="#fff"/>
+    <path d="M28 52h8v6h6v8h-6v6h-8v-6h-6v-8h6Z" fill="#111" stroke="none"/>
+    <circle cx="88" cy="51" r="4.5" fill="#111" stroke="none"/>
+    <circle cx="97" cy="60" r="4.5" fill="#fff" stroke-width="3"/>
+    <circle cx="88" cy="69" r="4.5" fill="#111" stroke="none"/>
+    <circle cx="79" cy="60" r="4.5" fill="#fff" stroke-width="3"/>
+    <circle cx="48" cy="70" r="7" fill="url(#ht)" stroke-width="4"/>
+    <circle cx="72" cy="70" r="7" fill="url(#ht)" stroke-width="4"/>
+    <path d="M53 54h4M63 54h4" stroke-width="3"/>` },
+  { label: 'Animals', svg: `
+    <path d="M60 24C84 24 96 44 96 64C96 90 80 106 60 106C40 106 24 90 24 64C24 44 36 24 60 24Z" fill="#fff"/>
+    ${ht('M34 32C16 30 8 54 14 76C20 84 30 72 32 58Z')}
+    ${ht('M86 32C104 30 112 54 106 76C100 84 90 72 88 58Z')}
+    <ellipse cx="75" cy="55" rx="12" ry="11" fill="url(#ht)" stroke="none"/>
+    <circle cx="46" cy="56" r="4.5" fill="#111" stroke="none"/>
+    <circle cx="75" cy="56" r="4.5" fill="#111" stroke="none"/>
+    <ellipse cx="60" cy="80" rx="17" ry="13" fill="#fff"/>
+    <path d="M52 72Q60 66 68 72Q65 80 60 80Q55 80 52 72Z" fill="#111" stroke-width="3"/>
+    <path d="M56 89Q60 100 64 89" fill="#fff" stroke-width="3"/>
+    <path d="M60 80V86M51 86Q60 93 69 86" stroke-width="3.5"/>` },
+  { label: 'Running', svg: `
+    <path d="M4 56H18M2 68H14M6 80H16" stroke-width="4"/>
+    <path d="M22 82C22 64 32 54 46 52L58 44C64 54 74 58 86 60C100 62 110 70 112 82Z" fill="#fff"/>
+    <path d="M86 60C100 62 110 70 112 82H92C94 72 91 64 86 60Z" fill="url(#ht)" stroke="none"/>
+    <path d="M50 60L58 54M56 64L64 58M62 67L70 61" stroke-width="3.5"/>
+    <path d="M38 74Q62 66 86 76" stroke-width="3.5"/>
+    <path d="M18 82H114C116 90 112 96 104 96H24C18 96 14 90 18 82Z" fill="#fff"/>
+    <path d="M30 96v-5M44 96v-5M58 96v-5M72 96v-5M86 96v-5M100 96v-5" stroke-width="3"/>` },
+  { label: 'Trekking', svg: `
+    <path d="M30 104L64 28L98 104Z" fill="#fff" stroke="none"/>
+    <path d="M64 28L98 104H76Z" fill="url(#ht)" stroke="none"/>
+    <path d="M52 55L64 28L76 55L70 50L64 58L58 50Z" fill="#fff" stroke-width="3.5"/>
+    <path d="M30 104L64 28L98 104Z"/>
+    <path d="M6 104L38 60L70 104Z" fill="#fff" stroke="none"/>
+    <path d="M38 60L70 104H54Z" fill="url(#ht)" stroke="none"/>
+    <path d="M6 104L38 60L70 104Z"/>
+    <path d="M64 28V10"/>
+    <path d="M64 10L80 15L64 20Z" fill="#111" stroke-width="3"/>
+    <path d="M2 104H118"/>` },
+];
+
+const BITS = [
+  '<circle cx="10" cy="10" r="5" stroke-width="2.5"/>',
+  '<path d="M2 12q4-8 8 0t8 0" stroke-width="2.5"/>',
+  '<path d="M4 4l12 5l-7 7z" fill="#fff" stroke-width="2.5"/>',
+];
+
+/* ---------- Helpers ---------- */
+
+function el(tag, cls, parent) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function place(e, x, y, w, h) {
+  e.style.left = x + 'px'; e.style.top = y + 'px';
+  if (w) { e.style.width = w + 'px'; e.style.height = (h || w) + 'px'; }
+  return e;
+}
+const doodleSvg = d => `<svg viewBox="0 0 120 120" fill="none" stroke="#111" stroke-width="5"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d.svg}</svg>`;
+function doodle(parent, d, x, y, size) {
+  const w = place(el('div', 'dd', parent), x, y);
+  w.style.setProperty('--s', size + 'px');
+  w.innerHTML = `<div class="bob">${doodleSvg(d)}</div>`;
+  return w;
+}
+function bit(parent, i, x, y) {
+  const b = place(el('div', 'bit', parent), x, y);
+  b.innerHTML = `<svg viewBox="0 0 20 20" fill="none" stroke="#111" stroke-linecap="round"
+    stroke-linejoin="round" aria-hidden="true">${BITS[i % BITS.length]}</svg>`;
+  return b;
+}
+function hint(parent, x, y, text) {
+  const h = place(el('div', 'hint', parent), x, y);
+  h.textContent = text;
+  return h;
+}
+function lineLayer(parent, paths) {
+  const l = el('div', 'lines', parent);
+  l.innerHTML = `<svg viewBox="0 0 600 680" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round"
+    aria-hidden="true">${paths.map(d => `<path pathLength="1" d="${d}"/>`).join('')}</svg>`;
+  return l;
+}
+function go(e, kf, o = {}) {
+  return e.animate(kf, { duration: T(o.d ?? 600), delay: T(o.delay ?? 0),
+    easing: o.ease ?? 'cubic-bezier(.2,.8,.2,1)', fill: 'both' });
+}
+function bob(w, i, delay) {
+  if (RM) return;
+  w.firstElementChild.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-7px)' }],
+    { duration: 1500 + i * 170, delay, direction: 'alternate', iterations: Infinity, easing: 'ease-in-out' });
+}
+// Cancel every script-driven animation in a card, returning it to its closed state.
+function stopAll(root) {
+  root.getAnimations({ subtree: true }).forEach(a => { if (!(a instanceof CSSAnimation)) a.cancel(); });
+}
+const later = (fn, ms) => setTimeout(fn, T(ms));
+const rand = (a, b) => a + Math.random() * (b - a);
+const ROT = [-10, 6, 12, -14, 8, -6, 10];
+
+/* ---------- 01 Lid lift ---------- */
+
+function setupLid(card) {
+  const cv = $('.canvas', card);
+  const H = { x: 150, y: 370, s: 300 };            // head box on the canvas
+  const R = { cx: 160, cy: 90, rx: 88, ry: 14 };  // cut line / rim, in head-box pixels
+  const cut = R.cy / H.s * 100;
+  const ox = H.x + R.cx, oy = H.y + R.cy;
+  const POS = [[190, 268], [300, 256], [410, 270], [128, 372], [240, 362], [360, 364], [472, 376]];
+  const box = (tag, cls) => place(el(tag, 'hd ' + cls, cv), H.x, H.y, H.s);
+  const rimSvg = cls => `<svg class="ov" viewBox="0 0 300 300" fill="none" stroke="#111" stroke-width="5" aria-hidden="true">
+    <g class="${cls}"><ellipse cx="${R.cx}" cy="${R.cy}" rx="${R.rx}" ry="${R.ry}" fill="#fff" stroke="none"/>
+    <ellipse cx="${R.cx}" cy="${R.cy}" rx="${R.rx}" ry="${R.ry}" fill="url(#htd)"/></g></svg>`;
+
+  const bottom = box('div', 'bottom');
+  bottom.innerHTML = `<img class="face-img" alt="" style="clip-path:inset(${cut}% 0 0 0)">`;
+  const rim = box('div', 'rim');
+  rim.innerHTML = rimSvg('rimg');
+  const lines = lineLayer(cv, ['M66 236L100 336', 'M44 256L74 340', 'M534 236L500 336', 'M556 256L526 340']);
+  const bits = Array.from({ length: 12 }, (_, i) => {
+    const b = bit(cv, i, rand(90, 510), rand(200, 430)); b._r = rand(0, 360); return b;
+  });
+  const ds = DOODLES.map((d, i) => doodle(cv, d, POS[i][0], POS[i][1], 96));
+  const lid = box('div', 'lid');
+  lid.style.transformOrigin = `${R.cx / H.s * 100}% ${cut}%`;
+  lid.innerHTML = rimSvg('ug') + `<img class="face-img" alt="" style="clip-path:inset(0 0 calc(${100 - cut}% - 1.5px) 0)">`;  // overlap by a hair so no seam shows when closed
+  const hit = box('button', 'hit');
+  const tip = hint(cv, ox, H.y + 14, 'Pop the lid');
+  const LIFTED = 'translate(-6px,-272px) rotate(-10deg)';
+
+  let isOpen = false, busy = false;
+  const label = () => {
+    hit.setAttribute('aria-label', isOpen ? 'Close my head' : 'Open my head to see what is on my mind');
+    hit.setAttribute('aria-expanded', String(isOpen));
+  };
+  label();
+
+  function open() {
+    busy = true; isOpen = true; label();
+    go(tip, [{ opacity: 1 }, { opacity: 0 }], { d: 150 });
+    go(bottom, [{ transform: 'none' }, { transform: 'scaleY(.95)', offset: .2 },
+      { transform: 'scaleY(1.02)', offset: .45 }, { transform: 'none' }], { d: 650 });
+    go($('.rimg', rim), [{ transform: 'scaleY(0)' }, { transform: 'scaleY(1)' }], { d: 260, delay: 110 });
+    go($('.ug', lid), [{ transform: 'scaleY(0)' }, { transform: 'scaleY(1)' }], { d: 260, delay: 110 });
+    go(lid, [{ transform: 'none' }, { transform: 'translateY(6px)', offset: .12 },
+      { transform: 'translate(-8px,-296px) rotate(-13deg)', offset: .68 }, { transform: LIFTED }],
+      { d: 1000, ease: 'cubic-bezier(.3,.6,.3,1)' });
+    $$('path', lines).forEach((p, i) =>
+      go(p, [{ strokeDashoffset: 1.05 }, { strokeDashoffset: 0 }], { d: 350, delay: 520 + i * 60 }));
+    bits.forEach((b, i) => {
+      const x = parseFloat(b.style.left), y = parseFloat(b.style.top);
+      go(b, [{ opacity: 0, transform: `translate(${ox - x}px,${oy - y}px) scale(.2)` },
+        { opacity: 1, transform: `rotate(${b._r}deg)` }], { d: 800, delay: 200 + i * 25, ease: 'cubic-bezier(.15,.85,.3,1.1)' });
+    });
+    ds.forEach((w, i) => {
+      const [x, y] = POS[i], dx = ox - x, dy = oy - y, r = ROT[i];
+      go(w, [{ opacity: 0, transform: `translate(${dx}px,${dy}px) scale(.3)` },
+        { opacity: 1, transform: `translate(${dx * .85}px,${dy * .85}px) scale(.45)`, offset: .15 },
+        { opacity: 1, transform: `translate(${dx * .1}px,-24px) scale(1.06) rotate(${r}deg)`, offset: .7 },
+        { opacity: 1, transform: `rotate(${r}deg)` }], { d: 900, delay: 220 + i * 70 });
+      bob(w, i, T(1200 + i * 70));
+    });
+    later(() => (busy = false), 1300);
+  }
+
+  function close() {
+    busy = true; isOpen = false; label();
+    ds.forEach((w, i) => {
+      const [x, y] = POS[i];
+      w.firstElementChild.getAnimations().forEach(a => a.cancel());
+      go(w, [{ opacity: 1, transform: `rotate(${ROT[i]}deg)` },
+        { opacity: 0, transform: `translate(${ox - x}px,${oy - y}px) scale(.3)` }],
+        { d: 380, delay: i * 30, ease: 'cubic-bezier(.55,0,.75,.3)' });
+    });
+    bits.forEach(b => go(b, [{ opacity: 1 }, { opacity: 0 }], { d: 200 }));
+    go(lines, [{ opacity: 1 }, { opacity: 0 }], { d: 200 });
+    go(lid, [{ transform: LIFTED }, { transform: 'none' }], { d: 480, delay: 380, ease: 'cubic-bezier(.6,0,.4,1)' });
+    go($('.rimg', rim), [{ transform: 'scaleY(1)' }, { transform: 'scaleY(0)' }], { d: 140, delay: 760 });
+    go($('.ug', lid), [{ transform: 'scaleY(1)' }, { transform: 'scaleY(0)' }], { d: 140, delay: 760 });
+    go(bottom, [{ transform: 'none' }, { transform: 'scaleY(.96)', offset: .5 }, { transform: 'none' }], { d: 260, delay: 850 });
+    later(() => { stopAll(cv); busy = false; }, 1130);
+  }
+
+  hit.addEventListener('click', () => { if (!busy) (isOpen ? close : open)(); });
+  return () => { stopAll(cv); isOpen = busy = false; label(); };
+}
+
+/* ---------- 02 Doodle burst ---------- */
+
+function setupBurst(card) {
+  const cv = $('.canvas', card);
+  const C = { x: 300, y: 345 }, S = 250;
+  const pos = DOODLES.map((_, i) => {
+    const a = -Math.PI / 2 + i * 2 * Math.PI / 7;
+    return [C.x + Math.cos(a) * 222, C.y + Math.sin(a) * 236];
+  });
+  const pops = lineLayer(cv, Array.from({ length: 10 }, (_, i) => {
+    const a = (i * 36 + 9) * Math.PI / 180, c = Math.cos(a), s = Math.sin(a);
+    return `M${C.x + c * 148} ${C.y + s * 148}L${C.x + c * 184} ${C.y + s * 184}`;
+  }));
+  const bits = Array.from({ length: 16 }, (_, i) => {
+    const a = rand(0, Math.PI * 2), r = rand(165, 300);
+    const b = bit(cv, i, Math.min(580, Math.max(20, C.x + Math.cos(a) * r)), Math.min(660, Math.max(20, C.y + Math.sin(a) * r)));
+    b._r = rand(0, 360); return b;
+  });
+  const ds = DOODLES.map((d, i) => doodle(cv, d, pos[i][0], pos[i][1], 100));
+  const face = place(el('button', 'hd', cv), C.x - S / 2, C.y - S / 2, S);
+  face.style.zIndex = 4;
+  face.innerHTML = '<img class="face-img" alt="">';
+  const tip = hint(cv, C.x, C.y - S / 2 + 8, 'Click my head');
+
+  let isOpen = false, busy = false;
+  const label = () => {
+    face.setAttribute('aria-label', isOpen ? 'Put the doodles back' : 'Show what is on my mind');
+    face.setAttribute('aria-expanded', String(isOpen));
+  };
+  label();
+
+  function open() {
+    busy = true; isOpen = true; label();
+    go(tip, [{ opacity: 1 }, { opacity: 0 }], { d: 150 });
+    go(face, [{ transform: 'none' }, { transform: 'scale(.88)', offset: .3 },
+      { transform: 'scale(1.07)', offset: .6 }, { transform: 'none' }], { d: 520 });
+    $$('path', pops).forEach((p, i) => go(p, [{ strokeDashoffset: 1.05 },
+      { strokeDashoffset: 0, offset: .5 }, { strokeDashoffset: -1.05 }], { d: 420, delay: 140 + i * 12, ease: 'linear' }));
+    bits.forEach((b, i) => {
+      const x = parseFloat(b.style.left), y = parseFloat(b.style.top);
+      go(b, [{ opacity: 0, transform: `translate(${C.x - x}px,${C.y - y}px) scale(.2)` },
+        { opacity: 1, transform: `rotate(${b._r}deg)` }], { d: 900, delay: 150 + i * 15, ease: 'cubic-bezier(.12,.9,.3,1.1)' });
+    });
+    ds.forEach((w, i) => {
+      const [x, y] = pos[i];
+      go(w, [{ opacity: 0, transform: `translate(${C.x - x}px,${C.y - y}px) scale(.2)` },
+        { opacity: 1, transform: `rotate(${ROT[i]}deg)` }], { d: 750, delay: 160 + i * 40, ease: 'cubic-bezier(.17,.89,.32,1.28)' });
+      bob(w, i, T(950 + i * 40));
+    });
+    later(() => (busy = false), 1000);
+  }
+
+  function close() {
+    busy = true; isOpen = false; label();
+    ds.forEach((w, i) => {
+      const [x, y] = pos[i];
+      w.firstElementChild.getAnimations().forEach(a => a.cancel());
+      go(w, [{ opacity: 1, transform: `rotate(${ROT[i]}deg)` },
+        { opacity: 0, transform: `translate(${C.x - x}px,${C.y - y}px) scale(.2)` }],
+        { d: 420, delay: i * 25, ease: 'cubic-bezier(.55,0,.75,.3)' });
+    });
+    bits.forEach(b => go(b, [{ opacity: 1 }, { opacity: 0 }], { d: 250 }));
+    go(face, [{ transform: 'none' }, { transform: 'scale(1.06)', offset: .5 }, { transform: 'none' }], { d: 300, delay: 480 });
+    later(() => { stopAll(cv); busy = false; }, 800);
+  }
+
+  face.addEventListener('click', () => { if (!busy) (isOpen ? close : open)(); });
+  return () => { stopAll(cv); isOpen = busy = false; label(); };
+}
+
+/* ---------- 03 Zoom transition ---------- */
+
+function setupZoom(card) {
+  const cv = $('.canvas', card);
+  const F = { x: 150, y: 175, s: 300 };
+  const fo = { x: .52, y: .42 };                       // zoom focus: the forehead
+  const fx = F.x + fo.x * F.s, fy = F.y + fo.y * F.s;
+  const GRID = [[120, 250], [240, 250], [360, 250], [480, 250], [180, 430], [300, 430], [420, 430]];
+
+  const face = place(el('button', 'hd', cv), F.x, F.y, F.s);
+  face.style.transformOrigin = `${fo.x * 100}% ${fo.y * 100}%`;
+  face.innerHTML = '<img class="face-img" alt="">';
+  const tip = hint(cv, F.x + F.s / 2, F.y + 14, 'Step inside');
+
+  const mind = el('div', 'mind', cv);
+  const CLOSED = `circle(0px at ${fx}px ${fy}px)`, OPEN = `circle(900px at ${fx}px ${fy}px)`;
+  mind.style.clipPath = CLOSED;
+  mind.inert = true;
+  const title = el('h3', '', mind);
+  title.textContent = "What's on my mind";
+  const ds = DOODLES.map((d, i) => doodle(mind, d, GRID[i][0], GRID[i][1], 100));
+  const lbls = DOODLES.map((d, i) => {
+    const l = place(el('div', 'lbl', mind), GRID[i][0], GRID[i][1] + 62);
+    l.textContent = d.label; return l;
+  });
+  const back = el('button', 'back', mind);
+  back.textContent = '← Back out';
+
+  let isOpen = false, busy = false;
+  face.setAttribute('aria-label', 'Zoom into my head to see what is on my mind');
+
+  function open() {
+    busy = true; isOpen = true;
+    go(tip, [{ opacity: 1 }, { opacity: 0 }], { d: 150 });
+    go(face, [{ transform: 'none' }, { transform: 'scale(9)' }], { d: 950, ease: 'cubic-bezier(.7,0,.25,1)' });
+    go(mind, [{ clipPath: CLOSED }, { clipPath: OPEN }], { d: 750, delay: 380, ease: 'cubic-bezier(.65,0,.25,1)' });
+    go(title, [{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }], { d: 500, delay: 820 });
+    ds.forEach((w, i) => go(w, [{ opacity: 0, transform: 'translateY(28px) scale(.7)' },
+      { opacity: 1, transform: `rotate(${ROT[i] / 2}deg)` }], { d: 560, delay: 900 + i * 60, ease: 'cubic-bezier(.17,.89,.32,1.28)' }));
+    lbls.forEach((l, i) => go(l, [{ opacity: 0 }, { opacity: 1 }], { d: 300, delay: 1050 + i * 60 }));
+    go(back, [{ opacity: 0 }, { opacity: 1 }], { d: 300, delay: 1300 });
+    later(() => { mind.inert = false; back.style.visibility = 'visible'; back.focus(); busy = false; }, 1350);
+  }
+
+  function close() {
+    busy = true; isOpen = false;
+    [...ds, ...lbls, title, back].forEach(e => go(e, [{ opacity: 1 }, { opacity: 0 }], { d: 180 }));
+    go(mind, [{ clipPath: OPEN }, { clipPath: CLOSED }], { d: 550, delay: 150, ease: 'cubic-bezier(.65,0,.35,1)' });
+    go(face, [{ transform: 'scale(9)' }, { transform: 'none' }], { d: 800, delay: 300, ease: 'cubic-bezier(.6,0,.2,1)' });
+    later(() => {
+      stopAll(cv); mind.inert = true; back.style.visibility = 'hidden'; face.focus(); busy = false;
+    }, 1150);
+  }
+
+  face.addEventListener('click', () => { if (!busy && !isOpen) open(); });
+  back.addEventListener('click', () => { if (!busy && isOpen) close(); });
+  return () => { stopAll(cv); mind.inert = true; back.style.visibility = 'hidden'; isOpen = busy = false; };
+}
+
+/* ---------- 04 Self-drawing mind map ---------- */
+
+function setupMap(card) {
+  const cv = $('.canvas', card);
+  const C = { x: 300, y: 345 }, S = 190;
+  const nodes = DOODLES.map((_, i) => {
+    const a = -Math.PI / 2 + i * 2 * Math.PI / 7;
+    return { a, x: C.x + Math.cos(a) * 220, y: C.y + Math.sin(a) * 235 };
+  });
+  const lines = lineLayer(cv, nodes.map(({ a, x, y }, i) => {
+    const c = Math.cos(a), s = Math.sin(a);
+    const gap = 52 + (s < 0 ? -s * 30 : 0);  // nodes above the face: stop short of the label under them
+    const x1 = C.x + c * 88, y1 = C.y + s * 100, x2 = x - c * gap, y2 = y - s * gap;
+    const bend = (i % 2 ? 1 : -1) * 22;
+    return `M${x1} ${y1}Q${(x1 + x2) / 2 - s * bend} ${(y1 + y2) / 2 + c * bend} ${x2} ${y2}`;
+  }));
+  $('svg', lines).setAttribute('stroke-width', '3.5');
+  const layer = el('div', 'layer', cv);
+  const ds = DOODLES.map((d, i) => doodle(layer, d, nodes[i].x, nodes[i].y, 84));
+  const lbls = DOODLES.map((d, i) => {
+    const l = place(el('div', 'lbl', layer), nodes[i].x, nodes[i].y + 48);
+    l.textContent = d.label; return l;
+  });
+  const shapes = ds.map(w => $$('path,circle,ellipse,rect,line', w).map(s => {
+    const stroked = s.getAttribute('stroke') !== 'none';
+    if (stroked) s.setAttribute('pathLength', '1');
+    return { s, stroked };
+  }));
+  const face = place(el('button', 'hd', cv), C.x - S / 2, C.y - S / 2, S);
+  face.style.zIndex = 4;
+  face.innerHTML = '<img class="face-img" alt="">';
+  const tip = hint(cv, C.x, C.y - S / 2 + 6, 'Map my mind');
+
+  let isOpen = false, busy = false;
+  const label = () => {
+    face.setAttribute('aria-label', isOpen ? 'Clear the mind map' : 'Draw a map of what is on my mind');
+    face.setAttribute('aria-expanded', String(isOpen));
+  };
+  label();
+
+  function open() {
+    busy = true; isOpen = true; label();
+    go(tip, [{ opacity: 1 }, { opacity: 0 }], { d: 150 });
+    go(face, [{ transform: 'none' }, { transform: 'scale(1.06)', offset: .4 }, { transform: 'none' }], { d: 450 });
+    $$('path', lines).forEach((p, i) =>
+      go(p, [{ strokeDashoffset: 1.05 }, { strokeDashoffset: 0 }], { d: 450, delay: 200 + i * 110, ease: 'ease-in-out' }));
+    ds.forEach((w, i) => {
+      const base = 550 + i * 110;
+      go(w, [{ opacity: 0 }, { opacity: 1 }], { d: 1, delay: base });
+      shapes[i].forEach(({ s, stroked }, j) => {
+        if (stroked) go(s, [{ strokeDashoffset: 1.05 }, { strokeDashoffset: 0 }], { d: 600, delay: base + j * 35, ease: 'ease-in-out' });
+        go(s, [{ fillOpacity: 0 }, { fillOpacity: 1 }], { d: 300, delay: base + 550 + j * 20 });
+      });
+      const n = lbls[i].textContent.length;
+      go(lbls[i], [{ opacity: 1, clipPath: 'inset(0 100% 0 0)' }, { opacity: 1, clipPath: 'inset(0 0 0 0)' }],
+        { d: n * 45, delay: base + 700, ease: `steps(${n})` });
+    });
+    later(() => (busy = false), 2100);
+  }
+
+  function close() {
+    busy = true; isOpen = false; label();
+    go(layer, [{ opacity: 1 }, { opacity: 0 }], { d: 250 });
+    go(lines, [{ opacity: 1 }, { opacity: 0 }], { d: 250 });
+    later(() => { stopAll(cv); busy = false; }, 280);
+  }
+
+  face.addEventListener('click', () => { if (!busy) (isOpen ? close : open)(); });
+  return () => { stopAll(cv); isOpen = busy = false; label(); };
+}
+
+/* ---------- Boot ---------- */
+
+// The portrait has an opaque grey background. Flood-fill it to transparent from the edges,
+// so the lifted lid and the zoom don't drag a grey square around. Interior skin stays opaque.
+async function loadFace() {
+  const img = new Image();
+  img.src = 'face-original.webp';
+  await img.decode();
+  try {
+    const N = 720, c = document.createElement('canvas');
+    c.width = c.height = N;
+    const x = c.getContext('2d', { willReadFrequently: true });
+    x.drawImage(img, 0, 0, N, N);
+    const data = x.getImageData(0, 0, N, N), p = data.data;
+    const [br, bg, bb] = [p[0], p[1], p[2]];
+    document.documentElement.style.setProperty('--bg', `rgb(${br},${bg},${bb})`);
+    const seen = new Uint8Array(N * N), stack = [];
+    const push = i => { if (!seen[i]) { seen[i] = 1; stack.push(i); } };
+    for (let i = 0; i < N; i++) { push(i); push((N - 1) * N + i); push(i * N); push(i * N + N - 1); }
+    while (stack.length) {
+      const i = stack.pop(), o = i * 4;
+      if (Math.abs(p[o] - br) + Math.abs(p[o + 1] - bg) + Math.abs(p[o + 2] - bb) > 60) continue;
+      p[o + 3] = 0;
+      const cx = i % N, cy = (i / N) | 0;
+      if (cx > 0) push(i - 1); if (cx < N - 1) push(i + 1);
+      if (cy > 0) push(i - N); if (cy < N - 1) push(i + N);
+    }
+    x.putImageData(data, 0, 0);
+    return c.toDataURL('image/png');
+  } catch (err) {
+    console.warn('Could not cut out the portrait background (open this page over http, not file://).', err);
+    return img.src;
+  }
+}
+
+const resets = {
+  lid: setupLid($('#lid')), burst: setupBurst($('#burst')),
+  zoom: setupZoom($('#zoom')), map: setupMap($('#map')),
+};
+$$('.card').forEach(card => $('.reset', card).addEventListener('click', () => resets[card.id]()));
+
+const ro = new ResizeObserver(entries => entries.forEach(e => {
+  $('.canvas', e.target).style.transform = `scale(${e.contentRect.width / 600})`;
+}));
+$$('.stage').forEach(s => ro.observe(s));
+
+loadFace().then(src => $$('.face-img').forEach(i => (i.src = src)));
+</script>
+</body>
+</html>

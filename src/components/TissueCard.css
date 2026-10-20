@@ -1,0 +1,145 @@
+.tissue-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgb(17 17 17 / 0.08);
+}
+
+/* Floating card, bottom-anchored in the gap just right of the index column (Jayanth,
+   2026-10-18), on every page. It rises in from below. */
+.tissue {
+  position: fixed;
+  z-index: 41;
+  left: calc(var(--gutter) + var(--index-w));
+  bottom: var(--space-8);
+  width: min(380px, calc(100vw - 2 * var(--gutter)));
+  max-height: min(78svh, 680px);
+  overflow: auto;
+  padding: var(--space-6) var(--space-5) var(--space-5);
+  border-radius: 6px;
+  /* The blue card: white on the theme blue. The white card (on the blue sections) flips back. */
+  --ink: var(--on-accent);
+  --surface: var(--accent-fill);
+  color: var(--ink);
+  background-color: var(--surface);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.35) inset, 0 24px 60px rgb(17 17 17 / 0.22), 0 4px 12px rgb(17 17 17 / 0.12);
+  outline: none;
+  isolation: isolate;
+}
+
+/* Tissue-paper creases, multiplied over the colour so the card stays opaque. */
+.tissue::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='480' height='480'><filter id='t' x='0' y='0' width='100%25' height='100%25'><feTurbulence type='fractalNoise' baseFrequency='0.009 0.014' numOctaves='5' seed='11' stitchTiles='stitch' result='n'/><feDiffuseLighting in='n' lighting-color='%23ffffff' surfaceScale='3.2' diffuseConstant='1.05'><feDistantLight azimuth='225' elevation='48'/></feDiffuseLighting></filter><rect width='100%25' height='100%25' filter='url%28%23t%29'/></svg>");
+  background-size: 480px 480px;
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.tissue--white {
+  --ink: var(--fg);
+  --surface: var(--paper);
+  background-color: var(--paper);
+}
+.tissue--white::before {
+  opacity: 0.4;
+}
+
+.tissue:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+
+.tissue-close {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  min-height: var(--target);
+  padding: 0 var(--space-3);
+  border: 0;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.tissue h2 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-h2);
+  line-height: 0.95;
+}
+
+.tissue p {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+
+.tissue .meta {
+  padding-right: 6.5em; /* keeps clear of the Close button */
+  display: block;
+  margin-bottom: var(--space-4);
+}
+
+.tissue ul {
+  list-style: none;
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+
+.tissue li {
+  padding-left: var(--space-4);
+  position: relative;
+}
+.tissue li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.tissue-links {
+  display: grid;
+  gap: 0;
+  margin-bottom: var(--space-4);
+}
+.tissue-links a,
+.tissue-links span {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: var(--target);
+  border-bottom: 1px solid rgb(17 17 17 / 0.18);
+  text-decoration: none;
+  font-size: var(--text-body);
+}
+.tissue-links a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.tissue .btn--ink {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Phones: no index column, so the card sits at the bottom, full width. */
+@media (max-width: 760px) {
+  .tissue {
+    left: var(--gutter);
+    bottom: var(--gutter);
+    max-height: 72svh;
+  }
+}

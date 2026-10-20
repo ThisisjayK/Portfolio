@@ -1,0 +1,32 @@
+/* What's left of the nav: Contact, bottom-left, once the hero has turned blue (Nav.tsx). */
+.nav-contact {
+  position: fixed;
+  z-index: 30;
+  left: var(--gutter);
+  bottom: var(--space-5);
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--on-accent); /* only shown on the blue */
+  /* Meshed Display Bold, like the body text (Jayanth, 2026-10-17; was Mamenchisa). */
+  font-family: var(--font-body);
+  font-weight: var(--weight-body);
+  font-size: var(--text-body);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+}
+.nav-contact--on {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.nav-contact:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}

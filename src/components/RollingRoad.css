@@ -1,0 +1,110 @@
+/* The rolling blob section (RollingRoad.tsx): on the theme blue, white lines and a white blob. */
+.road {
+  position: relative;
+  height: 400svh; /* scroll distance for the roll */
+  --ink: var(--on-accent);
+  --surface: var(--accent-fill);
+  background: var(--surface);
+  color: var(--ink);
+}
+.road-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+.road-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.road-title {
+  position: absolute;
+  /* Below the pinned roll box, which fills the top fifth of the screen (RollBox.css). */
+  top: calc(20svh + var(--space-5));
+  left: var(--gutter);
+  max-width: 22ch;
+  margin: 0;
+  font-size: var(--text-h2);
+  line-height: var(--leading-heading);
+  text-transform: none;
+}
+.road-steps-wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--space-8);
+}
+.road-steps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: var(--space-3) var(--space-5);
+  margin: 0;
+  padding: 0 var(--gutter);
+  list-style: none;
+}
+/* No rings (removed 2026-10-17): the hopping amoeba above marks where the blob has got to.
+   Each step is a role (2026-10-19): dates, title, company, stacked and centred. */
+.road-steps li {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  max-width: 18ch;
+  text-align: center;
+}
+.road-role {
+  font-size: var(--text-body);
+  line-height: var(--leading-heading);
+}
+.road-when,
+.road-org {
+  opacity: 0.8;
+}
+@media (max-width: 760px) {
+  /* Two or three roles to a row on phones. */
+  .road-steps li {
+    flex: 1 1 40%;
+  }
+}
+
+/* The small blob that hops from step to step above the labels (RollingRoad.tsx). */
+.road-hopper {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + var(--space-2));
+  width: var(--space-5);
+  height: var(--space-5);
+  opacity: 0;
+  pointer-events: none;
+  transform-origin: 50% 100%; /* squash and stretch from where it lands */
+}
+.road-hopper svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: var(--ink);
+}
+.road-hopper path {
+  transition: d 0.6s var(--ease-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  .road-hopper path {
+    transition: none;
+  }
+}
+/* Its three eyes, in the page blue, and the blink. */
+.road-hopper-eyes {
+  fill: var(--surface);
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+.road-hopper.is-blinking .road-hopper-eyes {
+  animation: road-blink 160ms ease-in-out;
+}
+@keyframes road-blink {
+  50% { transform: scaleY(0.1); }
+}
