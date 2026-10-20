@@ -7,6 +7,7 @@ The site is a single-page app; this file and the Markdown version below are plai
 ## Text version
 
 - [About Jayanth (Markdown)](https://thisisjayk.github.io/Portfolio/jayanth-kappagantula.md): experience, education, certifications, skills and contact, in plain text.
+- [Résumé (PDF)](https://thisisjayk.github.io/Portfolio/resume.pdf): the one-page résumé.
 
 ## Pages
 

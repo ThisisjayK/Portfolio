@@ -32,4 +32,5 @@ Languages: English, Hindi (fluent), Telugu (native).
 - Email: jayanthadityaaa@gmail.com
 - LinkedIn: https://www.linkedin.com/in/jayanth-kappagantula/
 - GitHub: https://github.com/ThisisjayK/
+- Résumé (PDF): https://thisisjayk.github.io/Portfolio/resume.pdf
 - Site: https://thisisjayk.github.io/Portfolio/
