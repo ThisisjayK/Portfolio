@@ -38,6 +38,6 @@ export const timeline = [
 
 export const links = {
   email: 'mailto:jayanthadityaaa@gmail.com',
-  linkedin: 'https://www.linkedin.com/in/jayanth-kappagantula/',
+  linkedin: 'https://www.linkedin.com/in/jayanth-kappagantula',
   github: 'https://github.com/ThisisjayK/',
 }
