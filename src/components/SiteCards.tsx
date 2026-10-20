@@ -45,10 +45,11 @@ function ContactCard() {
           <span>github.com/ThisisjayK</span>
           <span className="mono">GitHub</span>
         </a>
-        <span aria-disabled="true">
+        {/* The résumé is live (public/resume.pdf, 2026-10-19); was a "Soon" placeholder. */}
+        <a href={`${import.meta.env.BASE_URL}resume.pdf`} target="_blank" rel="noopener">
           <span>Résumé (PDF)</span>
-          <span className="mono">Soon</span>
-        </span>
+          <span className="mono">Open</span>
+        </a>
       </div>
       <p>Not hiring right now? If you know someone who is, passing this along would mean a lot.</p>
       <button type="button" className="btn btn--ink" onClick={copy}>
