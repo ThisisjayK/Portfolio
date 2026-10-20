@@ -1,0 +1,44 @@
+/* The Skills page's list (SkillsList.tsx): the cooking menu's numbered rows and 1px rules, the
+   group name with its items under it. Tokens only. */
+.skills {
+  list-style: none;
+  margin: var(--space-6) 0 var(--space-5);
+  padding: 0;
+  border-top: 1px solid var(--accent);
+  color: var(--accent);
+}
+.skills-group {
+  display: grid;
+  grid-template-columns: var(--space-7) 1fr;
+  gap: 0;
+  align-items: baseline;
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--accent);
+}
+.skills-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--weight-heading);
+  font-size: var(--text-h2);
+  line-height: var(--leading-heading);
+  letter-spacing: -0.03em;
+}
+/* The items sit under the name, in two columns (one on phones). */
+.skills-items {
+  grid-column: 2;
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  columns: 2;
+  column-gap: var(--space-6);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+.skills-items li {
+  break-inside: avoid;
+}
+@media (max-width: 760px) {
+  .skills-items {
+    columns: 1;
+  }
+}
