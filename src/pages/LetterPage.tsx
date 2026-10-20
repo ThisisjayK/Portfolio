@@ -11,6 +11,7 @@ import CloseCross from '../components/CloseCross'
 import DishMenu from '../components/DishMenu'
 import WorldCup from '../components/WorldCup'
 import PlaylistPlayer from '../components/PlaylistPlayer'
+import SkillsList from '../components/SkillsList'
 import DrakeArtifacts from '../components/DrakeArtifacts'
 import MapFigure from '../components/MapFigure'
 import { chiralaMap, phiPhiMap, snorkelPhoto } from '../content/ocean'
@@ -80,6 +81,8 @@ export default function LetterPage({ page }: { page: Entry }) {
             )}
           </Fragment>
         ))}
+        {/* Skills is its list (Jayanth, 2026-10-19). */}
+        {page.slug === 'skills' && <SkillsList />}
         {/* Cooking also gets the menu of dishes (Jayanth, 2026-10-18). */}
         {page.slug === 'cooking' && <DishMenu />}
         {/* Arsenal F.C ends with the World Cup photos (Jayanth, 2026-10-19). */}

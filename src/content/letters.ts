@@ -31,6 +31,8 @@ const LOREM = [
 // note's title as subheading, and the filler.
 type Article = { topic?: string; subtitle?: string; body: string[] }
 const ARTICLES: Record<string, Article> = {
+  // S · Skills: no paragraphs, just the list (SkillsList, from src/content/skills.ts).
+  skills: { topic: 'Skills', body: [] },
   // About Me, Work and the four interest pages (Jayanth, 2026-10-18): written with Jayanth in
   // chat and approved, from about-me.md §1, §1c, §3, §5. Stage Zero follows the §8 disclosure
   // policy (no counts, no vendors). The family story stays at the one approved line (§6b).
@@ -128,6 +130,8 @@ const ENTRIES: [letter: string, slug: string, topic: string, noteKey?: string][]
   ['O', 'ocean', 'The ocean'],
   // W is Work, listed under About in the index (Jayanth, 2026-10-18). No note: it's an article.
   ['W', 'work', 'Work'],
+  // S is Skills, under About after Work (Jayanth, 2026-10-19). Its list is SkillsList.
+  ['S', 'skills', 'Skills'],
 ]
 
 export const letterPages: LetterPage[] = ENTRIES.map(([letter, slug, topic, noteKey], i) => {
